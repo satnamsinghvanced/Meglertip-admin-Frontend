@@ -1,0 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+:root {
+  --toastify-font-family: "Montserrat", serif;
+  --toastify-text-color-light: #333333;
+  --toastify-text-color-dark: #ffffff;
+  --toastify-color-dark: oklch(0.13 0.028 261.692);
+}
+
+@theme {
+  --font-display: "Montserrat", serif;
+  --color-primary: #2c3ea1;
+  --color-secondary: #3f1f71;
+  --color-blue-950: #0b1322;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+* {
+  font-family: var(--font-display);
+}
+
+@layer base {
+  body {
+    @apply text-gray-900;
+  }
+  h1 {
+    @apply text-4xl font-extrabold;
+  }
+  h2 {
+    @apply text-3xl font-extrabold;
+  }
+  h3 {
+    @apply text-2xl font-bold;
+  }
+  h4 {
+    @apply text-xl font-bold;
+  }
+  h5 {
+    @apply text-lg font-bold;
+  }
+  h6 {
+    @apply text-base font-bold;
+  }
+  button {
+    @apply cursor-pointer;
+  }
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    @apply w-5 h-5 border border-gray-400 rounded-md bg-white flex-shrink-0 overflow-hidden;
+  }
+  input[type="checkbox"]:checked {
+    appearance: none;
+    -webkit-appearance: none;
+    @apply text-white border-0;
+  }
+  input[type="checkbox"]:checked:before {
+    content: "✓";
+    font-size: 12px;
+    @apply text-center flex items-center justify-center w-full h-full text-white absolute bg-primary border-primary rounded-sm;
+  }
+  .btn {
+    @apply rounded-lg text-center justify-center text-white py-[0.8rem] px-6 border border-solid transition-colors;
+  }
+  .btn-xs {
+    @apply !text-xs;
+  }
+  .btn-sm {
+    @apply !text-sm py-3;
+  }
+  .btn-md {
+    @apply !text-base;
+  }
+  .btn-lg {
+    @apply !text-lg;
+  }
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-secondary border-primary hover:border-secondary rounded-lg transition-all duration-300;
+  }
+  .btn-transparent {
+    @apply text-gray-900 bg-transparent border border-gray-300 dark:border-white dark:text-white hover:border-gray-900;
+  }
+  .btn-white {
+    @apply text-gray-900 bg-white border border-gray-300 dark:bg-transparent dark:border-white dark:text-white;
+  }
+  .btn-white-border {
+    @apply bg-white border border-gray-900 dark:bg-transparent dark:border-white dark:text-white;
+  }
+  .btn-white-border:disabled {
+    @apply bg-white border cursor-not-allowed border-gray-900 dark:bg-transparent dark:border-white dark:text-white;
+  }
+  .btn-white:disabled,
+  .btn-main:disabled,
+  .btn-secondary:disabled,
+  .btn-primary:disabled {
+    @apply bg-gray-200 border-gray-200 text-gray-500 cursor-not-allowed;
+  }
+}
+
+.darkModelogo,
+body.dark .lightModelogo,
+.darkImage,
+body.dark .lightImage {
+  display: none;
+}
+
+body.dark .darkImage,
+body.dark .darkModelogo {
+  display: block;
+}
+
+.shadow {
+  box-shadow: rgba(149, 157, 165, 0.15) 0px 5px 24px;
+}
+
+.Toastify__toast-container {
+  font-size: 14px;
+}
