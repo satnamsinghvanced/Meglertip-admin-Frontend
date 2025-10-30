@@ -1,20 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { useFormik, FormikProvider, Field, FieldArray } from "formik";
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik, FormikProvider, Field } from "formik";
 import * as Yup from "yup";
+import {
+  getHomepageSection,
+  updateHomepageSection,
+  clearMessages,
+} from "../../store/slices/homepageSlice";
 
-// Assume these are your reusable UI components
-// You'll need Textarea, NumberInput, and FileUpload components
-const InputField = ({ label, name, type = "text", ...props }) => (
+const InputField = ({ label, name, type = "text", disabled, ...props }) => (
   <div className="mb-4">
-    <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
-    <Field name={name} type={type} id={name} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" {...props} />
+    <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+      {label}
+    </label>
+    <Field
+      name={name}
+      type={type}
+      id={name}
+      disabled={disabled}
+      className={`mt-1 block w-full border ${
+        disabled ? "bg-gray-100" : "bg-white"
+      } border-gray-300 rounded-md shadow-sm p-2`}
+      {...props}
+    />
     <div className="text-red-500 text-sm mt-1">
       <ErrorMessage name={name} />
     </div>
   </div>
 );
-
-// Formik's internal component for displaying errors
 const ErrorMessage = ({ name }) => (
   <Field name={name}>
     {({ form }) => {
@@ -25,300 +39,459 @@ const ErrorMessage = ({ name }) => (
   </Field>
 );
 
-// ----------------------------------------------------------------------------------
-// MOCK DATA and SCHEMAS for the Admin Panel
-// ----------------------------------------------------------------------------------
-
-// 1. Initial Empty Values (for a new homepage configuration)
-const INITIAL_VALUES = {
-  heroSection: { title: "", subtitle: "", backgroundImage: "", buttonText: "", ctaLink: "" },
-  howItWorks: [], // Start with an empty array
-  agentsSection: { title: "", agents: [] }, // Nested array
-  testimonials: [], // Start with an empty array
-  blogSection: { title: "", blogs: [] }, // Nested array
-  aboutSection: { heading: "", description: "", image: "" },
-  seo: { metaTitle: "", metaDescription: "", keywords: [] },
-};
-
-// 2. YUP Validation Schemas
 const validationSchema = Yup.object().shape({
   heroSection: Yup.object().shape({
     title: Yup.string().required("Hero Title is required"),
-    backgroundImage: Yup.string().url("Must be a valid URL").required("Background Image is required"),
-  }),
-  // Validation for nested arrays can be complex; this provides basic structure
-  howItWorks: Yup.array().of(
-    Yup.object().shape({
-      title: Yup.string().required("Title is required"),
-      price: Yup.number().required("Price is required").min(0, "Price must be positive"),
-    })
-  ),
-  agentsSection: Yup.object().shape({
-    title: Yup.string().required("Agents Section Title is required"),
-    agents: Yup.array().of(
-        Yup.object().shape({
-            name: Yup.string().required("Agent name is required"),
-            designation: Yup.string().required("Designation is required"),
-        })
-    )
-  }),
-  seo: Yup.object().shape({
-    metaTitle: Yup.string().max(60, "Max 60 characters").required("Meta Title is required"),
   }),
 });
 
-
-// ----------------------------------------------------------------------------------
-// ADMIN PANEL COMPONENT
-// ----------------------------------------------------------------------------------
-
 const EditHomePage = () => {
-  const [initialData, setInitialData] = useState(INITIAL_VALUES);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { sections, loading, successMessage, error } = useSelector(
+    (state) => state.homepage
+  );
+  const [isHeroEditing, setIsHeroEditing] = useState(false);
+  const [isBannerEditing, setIsBannerEditing] = useState(false);
+  const [isCardsEditing, setIsCardsEditing] = useState(false);
+  const [heroFile, setHeroFile] = useState(null);
+  const [heroPreview, setHeroPreview] = useState("");
 
-  // 💡 SIMULATE FETCHING EXISTING HOMEPAGE DATA
   useEffect(() => {
-    // In a real application, you'd fetch the existing homepage configuration here
-    // const res = await fetch('/api/admin/homepage');
-    // setInitialData(await res.json());
+    dispatch(getHomepageSection("heroSection"));
+    dispatch(getHomepageSection("bannerSection1"));
+    dispatch(getHomepageSection("bannerSection2"));
+    dispatch(getHomepageSection("bannerSectionCards1"));
+    dispatch(getHomepageSection("bannerSectionCards2"));
+  }, [dispatch]);
 
-    // Using a mock to demonstrate functionality:
-    const MOCK_EXISTING_DATA = { 
-        ...INITIAL_VALUES, 
-        heroSection: { title: "Current Hero Title", subtitle: "Current Subtitle", backgroundImage: "https://via.placeholder.com/1500x500", buttonText: "Click Me", ctaLink: "/link" },
-        howItWorks: [{ _id: "p1", title: "Existing Property", image: "https://via.placeholder.com/300", price: 100000, location: "Test Loc" }]
-    };
-    
-    setTimeout(() => {
-      setInitialData(MOCK_EXISTING_DATA);
-      setLoading(false);
-    }, 500);
-  }, []);
+  const heroSection = sections?.heroSection || {};
+  const bannerSection1 = sections?.bannerSection1 || {};
+  const bannerSection2 = sections?.bannerSection2 || {};
+  const bannerSectionCards1 = sections?.bannerSectionCards1 || {};
+  const bannerSectionCards2 = sections?.bannerSectionCards2 || {};
 
   const formik = useFormik({
-    initialValues: initialData,
-    validationSchema: validationSchema,
-    enableReinitialize: true, // Crucial to load fetched data into the form
-    onSubmit: (values) => {
-      console.log("Submitting Homepage Data:", values);
-      // 💡 Replace with your API call to update the homepage data:
-      // dispatch(updateHomePage(values)); 
-      alert("Homepage data submitted! Check console for values.");
+    initialValues: {
+      heroSection,
+    },
+    enableReinitialize: true,
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append("title", values.heroSection.title);
+        formData.append("subtitle", values.heroSection.subtitle);
+        formData.append("buttonText", values.heroSection.buttonText);
+        formData.append("ctaLink", values.heroSection.ctaLink);
+        if (heroFile) formData.append("backgroundImage", heroFile);
+
+        await dispatch(
+          updateHomepageSection({
+            sectionName: "heroSection",
+            formData,
+          })
+        ).unwrap();
+
+        setIsHeroEditing(false);
+        setHeroFile(null);
+        setHeroPreview("");
+        dispatch(getHomepageSection("heroSection"));
+        alert("Hero section updated successfully!");
+      } catch (err) {
+        console.error(err);
+        alert("Error updating hero section");
+      }
     },
   });
 
-  if (loading) {
-    return <div className="p-8 text-center text-xl">Loading Homepage Configuration...</div>;
-  }
+  useEffect(() => {
+    return () => dispatch(clearMessages());
+  }, [dispatch]);
 
   return (
     <FormikProvider value={formik}>
       <div className="p-8 bg-gray-50 min-h-screen">
         <h1 className="text-3xl font-bold mb-6">Edit Homepage Content</h1>
+
+        {loading && (
+          <div className="text-blue-500 font-medium mb-4">Loading...</div>
+        )}
+        {successMessage && (
+          <div className="text-green-600 font-medium mb-4">
+            {successMessage}
+          </div>
+        )}
+        {error && <div className="text-red-600 font-medium mb-4">{error}</div>}
+
         <form onSubmit={formik.handleSubmit} className="space-y-8">
+          <div className="bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h2 className="text-2xl font-semibold">Hero Section</h2>
 
-          {/* ---------------------------------------------------- */}
-          {/* 1. HERO SECTION */}
-          {/* ---------------------------------------------------- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Hero Section</h2>
-            <InputField label="Title" name="heroSection.title" />
-            <InputField label="Subtitle" name="heroSection.subtitle" as="textarea" />
-            <InputField label="Background Image URL" name="heroSection.backgroundImage" />
-            <InputField label="Button Text" name="heroSection.buttonText" />
-            <InputField label="CTA Link" name="heroSection.ctaLink" />
-          </div>
-
-          {/* ---------------------------------------------------- */}
-          {/* 2. HOW IT WORKS / FEATURED PROPERTIES (Dynamic Array) */}
-          {/* ---------------------------------------------------- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Featured Properties (How It Works)</h2>
-            <FieldArray name="howItWorks">
-              {({ push, remove }) => (
-                <div>
-                  {formik.values.howItWorks.map((item, index) => (
-                    <div key={index} className="border p-4 mb-4 rounded-md bg-gray-50 relative">
-                      <h3 className="font-medium mb-3">Property #{index + 1}</h3>
-                      <button 
-                        type="button" 
-                        onClick={() => remove(index)} 
-                        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                      >
-                        Remove
-                      </button>
-                      <InputField label="Title" name={`howItWorks.${index}.title`} />
-                      <InputField label="Image URL" name={`howItWorks.${index}.image`} />
-                      <InputField label="Price" name={`howItWorks.${index}.price`} type="number" />
-                      <InputField label="Location" name={`howItWorks.${index}.location`} />
-                    </div>
-                  ))}
-                  <button 
-                    type="button" 
-                    onClick={() => push({ title: "", image: "", price: 0, location: "" })}
-                    className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              {!isHeroEditing ? (
+                <button
+                  type="button"
+                  onClick={() => setIsHeroEditing(true)}
+                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Edit
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    disabled={loading}
                   >
-                    + Add New Property
+                    {loading ? "Saving..." : "Save"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      formik.resetForm();
+                      setIsHeroEditing(false);
+                      setHeroPreview("");
+                    }}
+                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                  >
+                    Cancel
                   </button>
                 </div>
               )}
-            </FieldArray>
-          </div>
-
-          {/* ---------------------------------------------------- */}
-          {/* 3. AGENTS SECTION (Dynamic Nested Array) */}
-          {/* ---------------------------------------------------- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Agents Section</h2>
-            <InputField label="Section Title" name="agentsSection.title" />
-
-            <FieldArray name="agentsSection.agents">
-              {({ push, remove }) => (
-                <div className="mt-4">
-                  {formik.values.agentsSection.agents.map((agent, index) => (
-                    <div key={index} className="border p-4 mb-4 rounded-md bg-gray-50 relative">
-                      <h3 className="font-medium mb-3">Agent #{index + 1}</h3>
-                      <button 
-                        type="button" 
-                        onClick={() => remove(index)} 
-                        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                      >
-                        Remove
-                      </button>
-                      <InputField label="Name" name={`agentsSection.agents.${index}.name`} />
-                      <InputField label="Image URL" name={`agentsSection.agents.${index}.image`} />
-                      <InputField label="Designation" name={`agentsSection.agents.${index}.designation`} />
-                      <InputField label="Contact Link" name={`agentsSection.agents.${index}.contactLink`} />
-                    </div>
-                  ))}
-                  <button 
-                    type="button" 
-                    onClick={() => push({ name: "", image: "", designation: "", contactLink: "" })}
-                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  >
-                    + Add New Agent
-                  </button>
-                </div>
-              )}
-            </FieldArray>
-          </div>
-
-          {/* ---------------------------------------------------- */}
-          {/* 4. TESTIMONIALS (Dynamic Array) */}
-          {/* ---------------------------------------------------- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Testimonials</h2>
-            <FieldArray name="testimonials">
-              {({ push, remove }) => (
-                <div>
-                  {formik.values.testimonials.map((test, index) => (
-                    <div key={index} className="border p-4 mb-4 rounded-md bg-gray-50 relative">
-                      <h3 className="font-medium mb-3">Testimonial #{index + 1}</h3>
-                      <button 
-                        type="button" 
-                        onClick={() => remove(index)} 
-                        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                      >
-                        Remove
-                      </button>
-                      <InputField label="Name" name={`testimonials.${index}.name`} />
-                      <InputField label="Review Text" name={`testimonials.${index}.review`} as="textarea" />
-                      <InputField label="Rating (1-5)" name={`testimonials.${index}.rating`} type="number" min="1" max="5" />
-                    </div>
-                  ))}
-                  <button 
-                    type="button" 
-                    onClick={() => push({ name: "", image: "", review: "", rating: 5 })}
-                    className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                  >
-                    + Add New Testimonial
-                  </button>
-                </div>
-              )}
-            </FieldArray>
-          </div>
-
-          {/* ---------------------------------------------------- */}
-          {/* 5. BLOG SECTION (Dynamic Nested Array) */}
-          {/* ---------------------------------------------------- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Blog Section</h2>
-            <InputField label="Section Title" name="blogSection.title" />
-
-            <FieldArray name="blogSection.blogs">
-              {({ push, remove }) => (
-                <div className="mt-4">
-                  {formik.values.blogSection.blogs.map((blog, index) => (
-                    <div key={index} className="border p-4 mb-4 rounded-md bg-gray-50 relative">
-                      <h3 className="font-medium mb-3">Blog Post #{index + 1}</h3>
-                      <button 
-                        type="button" 
-                        onClick={() => remove(index)} 
-                        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                      >
-                        Remove
-                      </button>
-                      <InputField label="Title" name={`blogSection.blogs.${index}.title`} />
-                      <InputField label="Image URL" name={`blogSection.blogs.${index}.image`} />
-                      <InputField label="Short Description" name={`blogSection.blogs.${index}.shortDescription`} as="textarea" />
-                    </div>
-                  ))}
-                  <button 
-                    type="button" 
-                    onClick={() => push({ title: "", image: "", shortDescription: "" })}
-                    className="mt-2 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-                  >
-                    + Add New Blog Feature
-                  </button>
-                </div>
-              )}
-            </FieldArray>
-          </div>
-
-          {/* ---------------------------------------------------- */}
-          {/* 6. ABOUT SECTION */}
-          {/* ---------------------------------------------------- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">About Section</h2>
-            <InputField label="Heading" name="aboutSection.heading" />
-            <InputField label="Description" name="aboutSection.description" as="textarea" rows="4" />
-            <InputField label="Image URL" name="aboutSection.image" />
-          </div>
-
-          {/* ---------------------------------------------------- */}
-          {/* 7. SEO SECTION */}
-          {/* ---------------------------------------------------- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">SEO Settings</h2>
-            <InputField label="Meta Title" name="seo.metaTitle" maxLength="60" />
-            <InputField label="Meta Description" name="seo.metaDescription" as="textarea" rows="3" maxLength="160" />
-            {/* Note: Keywords requires a custom "Tags Input" component for a good UX */}
+            </div>
+            <InputField
+              label="Title"
+              name="heroSection.title"
+              disabled={!isHeroEditing}
+            />
+            <InputField
+              label="Subtitle"
+              name="heroSection.subtitle"
+              as="textarea"
+              disabled={!isHeroEditing}
+            />
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Keywords (Enter as comma-separated)</label>
-              <Field 
-                name="seo.keywords" 
-                placeholder="tag1, tag2, tag3"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                // This converts a string input into the array expected by the schema
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Background Image
+              </label>
+              {heroPreview || heroSection.backgroundImage ? (
+                <img
+                  src={heroPreview || heroSection.backgroundImage}
+                  alt="Preview"
+                  className="mt-2 mb-3 w-full max-h-64 object-cover rounded-md"
+                />
+              ) : (
+                <div className="text-gray-400 text-sm mb-3 italic">
+                  No image selected
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                disabled={!isHeroEditing}
                 onChange={(e) => {
-                    const value = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-                    formik.setFieldValue("seo.keywords", value);
+                  const file = e.target.files[0];
+                  if (file) {
+                    setHeroFile(file);
+                    const url = URL.createObjectURL(file);
+                    setHeroPreview(url);
+                  }
                 }}
-                value={formik.values.seo.keywords.join(', ')}
               />
             </div>
+            <InputField
+              label="Button Text"
+              name="heroSection.buttonText"
+              disabled={!isHeroEditing}
+            />
           </div>
-          
-          {/* ---------------------------------------------------- */}
-          {/* SUBMIT BUTTON */}
-          {/* ---------------------------------------------------- */}
-          <button 
-            type="submit"
-            className="w-full py-3 bg-indigo-600 text-white font-bold text-lg rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition duration-150"
-            disabled={formik.isSubmitting}
-          >
-            {formik.isSubmitting ? "Saving..." : "Save Homepage Configuration"}
-          </button>
+          <div className="bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h2 className="text-2xl font-semibold">Banner Section 1</h2>
+              {!isBannerEditing ? (
+                <button
+                  type="button"
+                  onClick={() => setIsBannerEditing(true)}
+                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Edit
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    disabled={loading}
+                    onClick={async () => {
+                      const formData = new FormData();
+                      formData.append("title", bannerSection1.title || "");
+
+                      await dispatch(
+                        updateHomepageSection({
+                          sectionName: "bannerSection1",
+                          formData,
+                        })
+                      );
+                      setIsBannerEditing(false);
+                      dispatch(getHomepageSection("bannerSection1"));
+                    }}
+                  >
+                    {loading ? "Saving..." : "Save"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsBannerEditing(false)}
+                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+            <InputField
+              label="Heading"
+              name="bannerSection1.heading"
+              disabled={!isBannerEditing}
+              value={bannerSection1.heading || ""}
+              onChange={(e) => (bannerSection1.heading = e.target.value)}
+            />
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h2 className="text-2xl font-semibold">Banner Section Cards 1</h2>
+              {!isCardsEditing ? (
+                <button
+                  type="button"
+                  onClick={() => setIsCardsEditing(true)}
+                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Edit
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    disabled={loading}
+                    onClick={async () => {
+                      const formData = new FormData();
+                      formData.append(
+                        "cards",
+                        JSON.stringify(bannerSectionCards1 || [])
+                      );
+
+                      await dispatch(
+                        updateHomepageSection({
+                          sectionName: "bannerSectionCards1",
+                          formData,
+                        })
+                      );
+                      setIsCardsEditing(false);
+                      dispatch(getHomepageSection("bannerSectionCards1"));
+                    }}
+                  >
+                    {loading ? "Saving..." : "Save"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsCardsEditing(false)}
+                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+            {Array.isArray(bannerSectionCards1) &&
+            bannerSectionCards1.length > 0 ? (
+              bannerSectionCards1.map((card, index) => (
+                <div
+                  key={index}
+                  className="border rounded-lg p-4 mb-4 bg-gray-50 shadow-sm"
+                >
+                  <h3 className="font-semibold mb-2">Card {index + 1}</h3>
+
+                  <InputField
+                    label="Title"
+                    name={`bannerSectionCards1.${index}.title`}
+                    disabled={!isCardsEditing}
+                    value={card.title || ""}
+                    onChange={(e) =>
+                      (bannerSectionCards1[index].title = e.target.value)
+                    }
+                  />
+
+                  <InputField
+                    label="Icon"
+                    name={`bannerSectionCards1.${index}.icon`}
+                    disabled={!isCardsEditing}
+                    value={card.icon || ""}
+                    onChange={(e) =>
+                      (bannerSectionCards1[index].icon = e.target.value)
+                    }
+                  />
+
+                  <InputField
+                    label="Description"
+                    name={`bannerSectionCards1.${index}.description`}
+                    disabled={!isCardsEditing}
+                    value={card.description || ""}
+                    onChange={(e) =>
+                      (bannerSectionCards1[index].description = e.target.value)
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 italic">No cards available.</p>
+            )}
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h2 className="text-2xl font-semibold">Banner Section 2</h2>
+              {!isBannerEditing ? (
+                <button
+                  type="button"
+                  onClick={() => setIsBannerEditing(true)}
+                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Edit
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    disabled={loading}
+                    onClick={async () => {
+                      const formData = new FormData();
+                      formData.append("title", bannerSection1.title || "");
+
+                      await dispatch(
+                        updateHomepageSection({
+                          sectionName: "bannerSection2",
+                          formData,
+                        })
+                      );
+                      setIsBannerEditing(false);
+                      dispatch(getHomepageSection("bannerSection2"));
+                    }}
+                  >
+                    {loading ? "Saving..." : "Save"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsBannerEditing(false)}
+                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+            <InputField
+              label="Heading"
+              name="bannerSection2.heading"
+              disabled={!isBannerEditing}
+              value={bannerSection2.heading || ""}
+              onChange={(e) => (bannerSection2.heading = e.target.value)}
+            />
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h2 className="text-2xl font-semibold">Banner Section Cards 2</h2>
+              {!isCardsEditing ? (
+                <button
+                  type="button"
+                  onClick={() => setIsCardsEditing(true)}
+                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Edit
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    disabled={loading}
+                    onClick={async () => {
+                      const formData = new FormData();
+                      formData.append(
+                        "cards",
+                        JSON.stringify(bannerSectionCards2 || [])
+                      );
+
+                      await dispatch(
+                        updateHomepageSection({
+                          sectionName: "bannerSectionCards2",
+                          formData,
+                        })
+                      );
+                      setIsCardsEditing(false);
+                      dispatch(getHomepageSection("bannerSectionCards2"));
+                    }}
+                  >
+                    {loading ? "Saving..." : "Save"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsCardsEditing(false)}
+                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {Array.isArray(bannerSectionCards2) &&
+            bannerSectionCards2.length > 0 ? (
+              bannerSectionCards2.map((card, index) => (
+                <div
+                  key={index}
+                  className="border rounded-lg p-4 mb-4 bg-gray-50 shadow-sm"
+                >
+                  <h3 className="font-semibold mb-2">Card {index + 1}</h3>
+
+                  <InputField
+                    label="Title"
+                    name={`bannerSectionCards2.${index}.title`}
+                    disabled={!isCardsEditing}
+                    value={card.title || ""}
+                    onChange={(e) =>
+                      (bannerSectionCards2[index].title = e.target.value)
+                    }
+                  />
+
+                  <InputField
+                    label="Icon"
+                    name={`bannerSectionCards2.${index}.icon`}
+                    disabled={!isCardsEditing}
+                    value={card.icon || ""}
+                    onChange={(e) =>
+                      (bannerSectionCards2[index].icon = e.target.value)
+                    }
+                  />
+                  <InputField
+                    label="Description"
+                    name={`bannerSectionCards2.${index}.description`}
+                    disabled={!isCardsEditing}
+                    value={card.description || ""}
+                    onChange={(e) =>
+                      (bannerSectionCards1[index].description = e.target.value)
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 italic">No cards available.</p>
+            )}
+          </div>
         </form>
       </div>
     </FormikProvider>

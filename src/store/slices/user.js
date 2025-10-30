@@ -31,11 +31,9 @@ export const signIn = (body) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const data = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/admin/login`,
+      `${import.meta.env.VITE_API_URL}/admin/login`,
       body
     );
-
-    console.log("auth_user", data.admin);
 
     dispatch(setAuthUser(data.admin));
     dispatch(setToken(data.token));
@@ -61,8 +59,8 @@ export const updateUserInfo = (id, body) => async (dispatch, getState) => {
   try {
     const token = getState()?.auth?.token;
 
-    const data  = await axios.put(
-      `${import.meta.env.VITE_API_URL}/api/admin/update-profile?id=${id}`,
+    const data = await axios.put(
+      `${import.meta.env.VITE_API_URL}/admin/update-profile?id=${id}`,
       body,
       {
         headers: {
@@ -70,7 +68,7 @@ export const updateUserInfo = (id, body) => async (dispatch, getState) => {
         },
       }
     );
-console.log(data ,"safbjafq")
+    console.log(data, "safbjafq");
     dispatch(setAuthUser(data?.admin));
     toast.success(data?.message);
   } catch (error) {
@@ -87,8 +85,8 @@ export const changePassword = (id, body) => async (dispatch, getState) => {
   try {
     const token = getState()?.auth?.token;
 
-    const data  = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/admin/change-password?id=${id}`,
+    const data = await axios.post(
+      `${import.meta.env.VITE_API_URL}/admin/change-password?id=${id}`,
       body,
       {
         headers: {
@@ -96,7 +94,6 @@ export const changePassword = (id, body) => async (dispatch, getState) => {
         },
       }
     );
-console.log(data ,"safbjafq")
     // dispatch(setAuthUser(data?.admin));
     toast.success(data?.message);
   } catch (error) {

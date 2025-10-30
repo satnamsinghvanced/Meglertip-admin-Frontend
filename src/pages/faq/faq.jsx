@@ -5,7 +5,7 @@ const API = process.env.REACT_APP_API_URL;
 
 export default function FAQForm() {
   const navigate = useNavigate();
-  const { id } = useParams(); // If exists => Edit mode
+  const { id } = useParams(); 
   const [faq, setFaq] = useState({
     question: "",
     answer: "",
