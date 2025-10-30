@@ -5,9 +5,8 @@ import {
   MenuItem,
   MenuButton,
 } from "@headlessui/react";
-import logo from "../svgs/vanced.svg";
-import logoLight from "../svgs/vanced-light.svg";
 import { Link, useLocation, useNavigate } from "react-router";
+import logo from "../../public/images/boligtip.png"
 import ThemeSwitch from "../UI/ThemeSwitch";
 import { IoChevronUp } from "react-icons/io5";
 import { HiChevronDoubleLeft } from "react-icons/hi";
@@ -35,34 +34,34 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     {
       name: "Homepage",
       icon: HiOutlineHome,
-      href: ROUTES.HOME,
+      href: ROUTES.HOMEPAGE,
     },
-{
-      name: "Banner Section",
-      icon: LuGrid2X2Check,
-      href: ROUTES.PROJECTS,
-    },
-    {
-      name: "Hero Section",
-      icon: LuCalendarClock,
-      href: ROUTES.LEAVES,
-    },
+// {
+//       name: "Banner Section",
+//       icon: LuGrid2X2Check,
+//       href: ROUTES.PROJECTS,
+//     },
+//     {
+//       name: "Hero Section",
+//       icon: LuCalendarClock,
+//       href: ROUTES.LEAVES,
+//     },
     {
       name: "Forms",
       icon: LuUsers,
-      href: ROUTES.EMPLOYEES,
+      href: ROUTES.FORMS,
     },
     {
       name: "Blogs",
       icon: TbUsersPlus,
-      href: ROUTES.CLIENTS,
+      href: ROUTES.BLOGS,
     },
     
-    // {
-    //   name: "Team Leaders (TL)",
-    //   icon: RiUserStarLine,
-    //   href: ROUTES.TEAM_LEADERS,
-    // },
+    {
+      name: "FAQ",
+      icon: RiUserStarLine,
+      href: ROUTES.FAQ,
+    },
     // {
     //   name: "Performance",
     //   icon: BsFileEarmarkBarGraph,
@@ -133,7 +132,14 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                   alt="logo"
                   className="object-contain darkModelogo"
                 /> */}
-                <p className="font-bold text-2xl text-gray-900 dark:bg-gray-100 px-4">Meglertip</p>
+                {/* <p className="font-bold text-2xl text-gray-900 dark:bg-gray-100 px-4">Boligtip</p> */}
+                <img
+                  src={logo}
+                  width={150}
+                  height={32}
+                  alt="logo"
+                  className="object-contain ml-2"
+                />
               </figure>
             </Link>
           )}
@@ -260,7 +266,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                                       <div
                                         className={`${
                                           location.pathname === navigation.href
-                                            ? "bg-primary text-white"
+                                            ? "bg-[#161925] text-white"
                                             : "hover:bg-gray-100 dark:hover:bg-gray-900"
                                         } ${
                                           isMiniSidebarOpen
@@ -294,7 +300,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                       <div
                         className={`${
                           location.pathname === item.href
-                            ? "bg-primary text-white px-4"
+                            ? "bg-[#161925] text-white px-4"
                             : "hover:bg-gray-100 hover:px-4 dark:hover:text-gray-900"
                         } rounded-lg sm:text-base text-sm font-bold py-3.5 flex items-center dark:text-white ${
                           isMiniSidebarOpen ? "" : "px-4 justify-center"
@@ -337,7 +343,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                     <div
                       className={`${
                         location.pathname === item.href
-                          ? "bg-primary text-white px-4"
+                          ? "bg-[#161925] text-white px-4"
                           : "hover:bg-gray-100 hover:px-4 dark:hover:text-gray-900"
                       } rounded-lg sm:text-base text-sm font-bold py-3.5 flex items-center dark:text-white ${
                         isMiniSidebarOpen ? "" : "px-4 justify-center"

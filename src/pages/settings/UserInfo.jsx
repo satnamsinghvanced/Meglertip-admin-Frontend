@@ -19,90 +19,25 @@ const UserInfo = () => {
   const [profile, setProfile] = useState("");
 
   useEffect(() => {
-    setProfile(auth_user?.profileImage);
+    setProfile(auth_user?.avatar);
   }, [auth_user]);
 
   const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required("First name is required."),
-    lastName: Yup.string(),
-    telephones: Yup.number().required("Phone number is required."),
-    address: Yup.string().required("Address is required."),
-    nationality: Yup.string().required("Nationality is required."),
-    primaryContactName: Yup.string().required("Name is required."),
-    primaryContactRelationship: Yup.string().required(
-      "Relationship is required."
-    ),
-    primaryContactPhone: Yup.number().required("Phone number is required."),
-    employeeSalary: Yup.number().positive("Salary must be a positive number.").integer()
+    username: Yup.string().required("User name is required."),
   });
-
+  console.log(auth_user?._id ," User id")
   const formik = useFormik({
+    enableReinitialize: true, 
     initialValues: {
       id: auth_user?._id,
-      firstName: auth_user?.firstName,
-      lastName: auth_user?.lastName,
-      telephones: auth_user?.personalInformation?.telephones[0],
-      address: auth_user?.address,
-      birthday: formatDateForDateInput(new Date(auth_user?.birthday)),
-      gender: auth_user?.gender,
-      maritalStatus: auth_user?.personalInformation?.maritalStatus,
-      bloodGroup: auth_user?.personalInformation?.bloodGroup,
-      nationality: auth_user?.personalInformation?.nationality,
-      employeeId: auth_user?.employeeId,
-      dateOfJoining: formatDateForDateInput(new Date(auth_user?.dateOfJoining)),
-      designation: auth_user?.designation,
-      // employeeSalary: new Intl.NumberFormat("en-IN").format(
-      //   Number(auth_user?.employeeSalary)
-      // ),
-      employeeSalary: auth_user?.employeeSalary,
-      appraisalDate: formatDateForDateInput(new Date(auth_user?.appraisalDate)),
-      primaryContactName: auth_user?.emergencyContact?.primary?.name,
-      primaryContactRelationship:
-        auth_user?.emergencyContact?.primary?.relationship,
-      primaryContactPhone: auth_user?.emergencyContact?.primary?.phone[0],
-      secondaryContactName: auth_user?.emergencyContact?.secondary?.name,
-      secondaryContactRelationship:
-        auth_user?.emergencyContact?.secondary?.relationship,
-      secondaryContactPhone: auth_user?.emergencyContact?.secondary?.phone[0],
-      bankName: auth_user?.bankInformation?.bankName,
-      bankAccountName: auth_user?.bankInformation?.bankAccountName,
-      bankAccountNumber: auth_user?.bankInformation?.bankAccountNumber,
-      ifscCode: auth_user?.bankInformation?.ifscCode,
-      panName: auth_user?.identityInformation?.panName,
-      panNo: auth_user?.identityInformation?.panNo,
-      panAddress: auth_user?.identityInformation?.panAddress,
-      fatherName: auth_user?.identityInformation?.fatherName,
+      username: auth_user?.username,
+     
     },
     validationSchema,
     onSubmit: (values) => {
       dispatch(
         updateUserInfo(values.id, {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          address: values.address,
-          birthday: values.birthday,
-          gender: values.gender,
-          personalInformation: {
-            telephones: [values.telephones],
-            nationality: values.nationality,
-            maritalStatus: values.maritalStatus,
-            bloodGroup: values.bloodGroup,
-          },
-          emergencyContact: {
-            primary: {
-              name: values.primaryContactName,
-              relationship: values.primaryContactRelationship,
-              phone: [values.primaryContactPhone],
-            },
-            secondary: {
-              name: values.secondaryContactName,
-              relationship: values.secondaryContactRelationship,
-              phone: [values.secondaryContactPhone],
-            },
-          },
-          identityInformation: {
-            fatherName: values.fatherName,
-          },
+          username: values.username,
         })
       );
       setEditable(false);
@@ -110,187 +45,7 @@ const UserInfo = () => {
   });
 
   const userInfoLowerList = [
-    {
-      label: "Phone Number",
-      type: "tel",
-      placeholder: "Phone Number",
-      name: "telephones",
-    },
-    {
-      label: "Address",
-      type: "text",
-      placeholder: "Address",
-      name: "address",
-    },
-    {
-      label: "Date of Birth",
-      type: "date",
-      placeholder: "Date of Birth",
-      name: "birthday",
-      maxDate: new Date(),
-    },
-    {
-      label: "Gender",
-      type: "select",
-      placeholder: "Gender",
-      name: "gender",
-      options: GENDERS,
-    },
-    {
-      label: "Marital Status",
-      type: "select",
-      placeholder: "Select Marital Status",
-      name: "maritalStatus",
-      options: MARITAL_STATUSES,
-    },
-    {
-      label: "Blood Group",
-      type: "select",
-      placeholder: "Select Blood Group",
-      name: "bloodGroup",
-      options: BLOOD_GROUPS,
-    },
-    {
-      label: "Nationality",
-      type: "text",
-      placeholder: "Nationality",
-      name: "nationality",
-    },
-    {
-      type: "heading",
-      label: "Job Information",
-    },
-    {
-      label: "Employee ID",
-      type: "number",
-      placeholder: "Employee ID",
-      name: "employeeId",
-    },
-    {
-      label: "Date Of Joining",
-      type: "date",
-      placeholder: "Date Of Joining",
-      name: "dateOfJoining",
-      maxDate: new Date(),
-    },
-    {
-      label: "Designation",
-      type: "text",
-      placeholder: "Designation",
-      name: "designation",
-    },
-    {
-      label: "Salary (In Rs.)",
-      type: "number",
-      placeholder: "Salary",
-      name: "employeeSalary",
-    },
-    {
-      label: "Appraisal Date",
-      type: "date",
-      placeholder: "Appraisal Date",
-      name: "appraisalDate",
-    },
-    {
-      type: "heading",
-      label: "Emergency Contact - Primary",
-    },
-    {
-      label: "Name",
-      type: "text",
-      placeholder: "Name",
-      name: "primaryContactName",
-    },
-    {
-      label: "Relationship",
-      type: "text",
-      placeholder: "Relationship",
-      name: "primaryContactRelationship",
-    },
-    {
-      label: "Phone Number",
-      type: "tel",
-      placeholder: "Phone Number",
-      name: "primaryContactPhone",
-    },
-    {
-      type: "heading",
-      label: "Emergency Contact - Secondary",
-    },
-    {
-      label: "Name",
-      type: "text",
-      placeholder: "Name",
-      name: "secondaryContactName",
-    },
-    {
-      label: "Relationship",
-      type: "text",
-      placeholder: "Relationship",
-      name: "secondaryContactRelationship",
-    },
-    {
-      label: "Phone Number",
-      type: "tel",
-      placeholder: "Phone Number",
-      name: "secondaryContactPhone",
-    },
-    {
-      type: "heading",
-      label: "Bank Information",
-    },
-    {
-      label: "Bank Name",
-      type: "text",
-      placeholder: "Bank Name",
-      name: "bankName",
-    },
-    {
-      label: "Account Holder Name",
-      type: "text",
-      placeholder: "Account Holder Name",
-      name: "bankAccountName",
-    },
-    {
-      label: "Account Number",
-      type: "text",
-      placeholder: "Account Number",
-      name: "bankAccountNumber",
-    },
-    {
-      label: "IFSC Code",
-      type: "text",
-      placeholder: "IFSC Code",
-      name: "ifscCode",
-    },
-    {
-      type: "heading",
-      label: "Identity Information",
-    },
-    {
-      label: "PAN Name",
-      type: "text",
-      placeholder: "PAN Name",
-      name: "panName",
-    },
-    {
-      label: "PAN Number",
-      type: "text",
-      placeholder: "PAN Number",
-      name: "panNo",
-    },
-    {
-      label: "PAN Address",
-      type: "text",
-      placeholder: "PAN Address",
-      name: "panAddress",
-    },
-    {
-      label: "Father Name",
-      type: "text",
-      placeholder: "Father Name",
-      name: "fatherName",
-    },
+
   ];
 
   return (
@@ -301,7 +56,7 @@ const UserInfo = () => {
         ) : (
           <h4 className="font-bold dark:text-white">Edit User Info</h4>
         )}
-        {!editable && auth_user.role !== "employee" && (
+        {!editable  && (
           <button
             className="cursor-pointer"
             type="button"
@@ -326,7 +81,7 @@ const UserInfo = () => {
               variant="white"
               onClick={() => {
                 formik.resetForm();
-                setProfile(auth_user.profileImage);
+                setProfile(auth_user.avatar);
                 setEditable(false);
               }}
             />
@@ -340,15 +95,15 @@ const UserInfo = () => {
               <InputField
                 size="sm"
                 type="text"
-                label="First Name"
-                name="firstName"
-                value={formik.values.firstName}
+                label="Username"
+                name="username"
+                value={formik.values.username}
                 formik={formik}
                 disabled={!editable}
-                placeholder="First Name"
+                placeholder="Username"
               />
             </div>
-            <div className="w-full">
+            {/* <div className="w-full">
               <InputField
                 size="sm"
                 type="text"
@@ -359,7 +114,7 @@ const UserInfo = () => {
                 disabled={!editable}
                 placeholder="Last Name"
               />
-            </div>
+            </div> */}
             <div className="w-full">
               <InputField
                 size="sm"
@@ -401,11 +156,11 @@ const UserInfo = () => {
                   subheading="Only images are allowed like png, jpeg etc."
                   accept={["image"]}
                   hideUpload={!editable}
-                  onUpload={(profileImage) => {
-                    if (profileImage) {
+                  onUpload={(avatar) => {
+                    if (avatar) {
                       dispatch(
                         updateUserInfo(auth_user?._id, {
-                          profileImage: profileImage,
+                          avatar: avatar,
                         })
                       );
                       setEditable(false);

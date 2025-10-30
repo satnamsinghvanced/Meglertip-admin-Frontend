@@ -34,7 +34,7 @@ const Tabs = ({
                   <button
                     className={`${
                       selected
-                        ? `whitespace-nowrap bg-primary focus-visible:outline-none border-b-2 border-darkBlue lg:border-0 dark:border-white dark:lg:border-0 text-white transition-all px-4 ${selectedClass}`
+                        ? `whitespace-nowrap bg-[#161925] focus-visible:outline-none border-b-2 border-darkBlue lg:border-0 dark:border-white dark:lg:border-0 text-white transition-all px-4 ${selectedClass}`
                         : unSelectedClass
                         ? unSelectedClass
                         : "hover:bg-gray-100 hover:px-4 dark:hover:text-gray-900 whitespace-nowrap bg-white text-gray-900 dark:bg-blue-950 dark:text-white transition-all"

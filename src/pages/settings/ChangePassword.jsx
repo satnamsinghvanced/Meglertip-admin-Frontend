@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import InputField from "../../UI/InputField";
 import Button from "../../UI/Button";
-import { updateUserInfo } from "../../store/slices/user";
+import { changePassword, updateUserInfo } from "../../store/slices/user";
 
 const ChangePassword = () => {
   const { auth_user, is_loading } = useSelector((state) => state.user);
@@ -12,13 +12,13 @@ const ChangePassword = () => {
   const formik = useFormik({
     initialValues: {
       id: auth_user?._id,
-      old_password: "",
-      password: "",
+      oldPassword: "",
+      newPassword: "",
       confirm_password: "",
     },
     validationSchema: Yup.object().shape({
-      old_password: Yup.string().required("Current password is required"),
-      password: Yup.string()
+      oldPassword: Yup.string().required("Current password is required"),
+      newPassword: Yup.string()
         .min(8)
         .required("New password is required")
         .matches(
@@ -28,13 +28,14 @@ const ChangePassword = () => {
       confirm_password: Yup.string()
         .required("Confirm password is required")
         .oneOf(
-          [Yup.ref("password"), ""],
+          [Yup.ref("newPassword"), ""],
           "Confirm password must match new password"
         ),
     }),
+      initialErrors: {},
     onSubmit: (values) => {
       // @ts-ignore
-      dispatch(updateUserInfo(auth_user?._id, values, "Your password has been changed"));
+      dispatch(changePassword(auth_user?._id, values, "Your password has been changed"));
       formik.resetForm();
     },
   });
@@ -50,10 +51,10 @@ const ChangePassword = () => {
             size="sm"
             type="password"
             label="Old Password"
-            name="old_password"
+            name="oldPassword"
             placeholder="Old Password"
             formik={formik}
-            value={formik.values.old_password}
+            value={formik.values.oldPassword}
           />
         </div>
         <div className="mb-5">
@@ -61,10 +62,10 @@ const ChangePassword = () => {
             size="sm"
             type="password"
             label="New Password"
-            name="password"
+            name="newPassword"
             placeholder="New Password"
             formik={formik}
-            value={formik.values.password}
+            value={formik.values.newPassword}
           />
         </div>
         <div className="mb-5">

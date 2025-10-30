@@ -61,7 +61,7 @@ const InputField = ({
                 : "text"
             }
             className={`${inputClass} block border border-gray-300 rounded-lg w-full dark:border-gray-600 dark:placeholder-gray-600 outline-none placeholder:text-gray-500 success:border-primary-600 disabled:cursor-not-allowed dark:text-gray-300 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:border-gray-200 dark:disabled:border-gray-900
-            ${!disabled && formik?.errors[name] ? "!border-red-600" : ""} 
+            ${!disabled && formik?.errors[name] && formik?.touched[name] ? "!border-red-600" : ""} 
             ${sizeStyles[size] && sizeStyles[size]}`}
             title={title}
             name={name}
@@ -104,11 +104,9 @@ const InputField = ({
             </span>
           )}
         </div>
-        <>
-          {!disabled && !hideErrors && formik && formik?.errors[name] && (
-            <InputError>{formik?.errors[name]}</InputError>
-          )}
-        </>
+        {formik?.touched[name] && formik.errors[name] ? (
+          <InputError>{formik?.errors[name]}</InputError>
+        ) : null}
         {icon && icon}
         {type === "password" ? (
           !showPassword ? (

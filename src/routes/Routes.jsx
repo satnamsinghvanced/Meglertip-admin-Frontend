@@ -10,6 +10,7 @@ import HelpCenter from "../pages/helpcenter/HelpCenter";
 import Faq from "../pages/helpcenter/Faq";
 import Employees from "../pages/employees";
 import EmployeeDetails from "../pages/employees/details";
+import HomePage from "../pages/homepage/homepage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -27,20 +28,20 @@ const Routes = () => {
          :
           <AuthLayout/>
         }>
-        <Route path={ROUTES.HOME} element={<p>HOME</p>} />
+        <Route path={ROUTES.HOMEPAGE} element={<HomePage/>} />
         <Route path={ROUTES.ME} element={<p>ME</p>} />
-        <Route path={ROUTES.INBOX} element={<p>INBOX</p>} />
-        <Route path={ROUTES.MY_TEAM} element={<p>MY TEAM</p>} />
-        <Route path={ROUTES.MY_FINANCES} element={<p>MY FINANCES</p>} />
+        <Route path={ROUTES.FORMS} element={<p>FORMS</p>} />
+        <Route path={ROUTES.BLOGS} element={<p>BLOGS</p>} />
+        <Route path={ROUTES.FAQ} element={<Faq/>} />
         <Route path={ROUTES.PROJECTS} element={<p>PROJECTS</p>} />
-        <Route path={ROUTES.EMPLOYEES}>
+        <Route path={ROUTES.HOME} element={<p>Dashboard</p>} >
           <Route index element={<Employees />} />
           <Route path=":id" element={<EmployeeDetails />} />
         </Route>
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
         <Route path={ROUTES.HELPCENTER} element={<HelpCenter />} />
-        <Route path={ROUTES.FAQ} element={<Faq />} />
+        {/* <Route path={ROUTES.FAQ} element={<Faq />} /> */}
         <Route path={ROUTES.COMPANY_POLICY} element={<HelpCenter />} />
         <Route path={ROUTES.EMPLOYEE_POLICY} element={<HelpCenter />} />
         <Route path={ROUTES.CONTACT_SUPPORT} element={<HelpCenter />} />

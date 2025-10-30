@@ -85,20 +85,21 @@ const DropZone = ({
       const formData = new FormData();
 
       filesArray.forEach((file) => {
-        formData.append("image", file);
+        formData.append("avatar", file);
       });
 
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/image/upload`,
+          `${import.meta.env.VITE_API_URL}/api/image/upload-profile`,
           {
             method: "POST",
             body: formData,
           }
         );
         const data = await response.json();
-        onUpload(data?.imagePath);
-        toast.success(data?.message);
+        onUpload(data?.fileUrl);
+        console.log(data?.fileUrl, "adjfaslkfsjdklf")
+        // toast.success(data?.message);
       } catch (error) {
         toast.error(error);
       }

@@ -26,7 +26,7 @@ const Header = ({ setIsSidebarOpen }) => {
             >
               <div className="px-4 py-3">
                 <span className="block text-sm dark:text-white font-bold">
-                  {auth_user?.firstName} {auth_user?.lastName ?? ""}
+                  {auth_user?.username ??  ""} 
                 </span>
                 <span className="block text-sm text-gray-500 truncate dark:text-gray-200 font-medium">
                   {auth_user?.email}
@@ -36,7 +36,7 @@ const Header = ({ setIsSidebarOpen }) => {
                 <MenuItem as="li">
                   <button
                     onClick={() => {
-                      navigate("/");
+                      navigate("/homepage");
                     }}
                     className="block w-full text-left cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >

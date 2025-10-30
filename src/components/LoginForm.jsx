@@ -35,7 +35,7 @@ const LoginForm = () => {
   return (
     <div className="flex flex-col md:justify-center md:pb-0 px-5 max-w-[480px] w-full mx-auto gap-6 flex-auto">
       <h3 className="text-24 md:text-center mb-2">
-        Login first to your account
+        Admin Login
       </h3>
       <div>
         <InputField

@@ -55,17 +55,55 @@ export const logOut = () => async (dispatch) => {
   redirect("/login");
 };
 
-export const updateUserInfo = (id, body) => async (dispatch) => {
+export const updateUserInfo = (id, body) => async (dispatch, getState) => {
   dispatch(setLoading(true));
+
   try {
-    const data = await axios.put(
-      `${import.meta.env.VITE_API_URL}/api/employee/update-employee?id=${id}`,
-      body
+    const token = getState()?.auth?.token;
+
+    const data  = await axios.put(
+      `${import.meta.env.VITE_API_URL}/api/admin/update-profile?id=${id}`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
-    dispatch(setAuthUser(data?.user));
+console.log(data ,"safbjafq")
+    dispatch(setAuthUser(data?.admin));
     toast.success(data?.message);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error?.response?.data);
+    toast.error(error?.response?.data?.message || "Unauthorized");
+  }
+
   dispatch(setLoading(false));
 };
 
+export const changePassword = (id, body) => async (dispatch, getState) => {
+  dispatch(setLoading(true));
+
+  try {
+    const token = getState()?.auth?.token;
+
+    const data  = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/admin/change-password?id=${id}`,
+      body,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+console.log(data ,"safbjafq")
+    // dispatch(setAuthUser(data?.admin));
+    toast.success(data?.message);
+  } catch (error) {
+    console.log(error?.response?.data);
+    toast.error(error?.response?.data?.message || "Unauthorized");
+  }
+
+  dispatch(setLoading(false));
+};
 export default userSlice.reducer;

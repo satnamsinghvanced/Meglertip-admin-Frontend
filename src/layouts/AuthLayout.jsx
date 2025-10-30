@@ -13,7 +13,7 @@ const AuthLayout = () => {
       <div className="grid grid-cols-[1fr_1.5fr] h-screen overflow-hidden">
         <figure className="h-full">
           <div className="bg-[#161925] w-full h-full flex items-center justify-center">
-            <img src={logo} alt="Vanced Solutions" className="w-80 h-18" />
+            <img src={logo} alt="Boligtip" className="w-80 h-18" />
           </div>
         </figure>
         <div className="flex items-center justify-center">
