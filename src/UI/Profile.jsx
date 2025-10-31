@@ -16,7 +16,7 @@ const Profile = ({
           className={`${className} flex justify-center items-center flex-shrink-0 rounded-full overflow-hidden`}
         >
           <img
-            src={`${import.meta.env.VITE_API_URL}/${user?.avatar}`}
+            src={`${import.meta.env.VITE_API_URL_IMAGE}/${user?.avatar}`}
             width={50}
             height={50}
             alt="logo"

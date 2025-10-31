@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
+const IMAGE_BASE_URL = import.meta.env.VITE_API_URL_IMAGE
 const HOMEPAGE_ID = "69020242fdba2d751a7830d2";
 
 export const getHomepageSection = createAsyncThunk(

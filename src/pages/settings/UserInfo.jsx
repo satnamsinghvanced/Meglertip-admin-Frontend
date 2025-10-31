@@ -15,7 +15,7 @@ const UserInfo = () => {
   const { auth_user, is_loading } = useSelector((state) => state.user);
   const [editable, setEditable] = useState(false);
   const [profile, setProfile] = useState("");
-
+console.log(profile,"ahfakwjfaksfs  ")
   useEffect(() => {
     setProfile(auth_user?.avatar);
   }, [auth_user]);
@@ -137,7 +137,7 @@ const UserInfo = () => {
 
               {profile && (
                 <img
-                  src={`${import.meta.env.VITE_API_URL}/${profile}`}
+                  src={`${import.meta.env.VITE_API_URL_IMAGE}/${profile}`}
                   alt="User Profile"
                   width={400}
                   height={400}

@@ -75,6 +75,7 @@ const EditHomePage = () => {
   const formik = useFormik({
     initialValues: {
       heroSection,
+      
     },
     enableReinitialize: true,
     validationSchema,
@@ -109,14 +110,14 @@ const EditHomePage = () => {
   useEffect(() => {
     return () => dispatch(clearMessages());
   }, [dispatch]);
-
+console.log(heroSection.backgroundImage,"wffhdasjfhj")
   return (
     <FormikProvider value={formik}>
       <div className="min-h-screen space-y-10">
-        <h1 className="text-2xl font-bold">Edit Homepage Content</h1>
-        {loading && (
+        {/* <h1 className="text-2xl font-bold">Edit Homepage Content</h1> */}
+        {/* {loading && (
           <div className="text-blue-500 font-medium mb-4">Loading...</div>
-        )}
+        )} */}
         {successMessage && (
           <div className="text-green-600 font-medium mb-4">
             {successMessage}
@@ -176,7 +177,7 @@ const EditHomePage = () => {
               </label>
               {heroPreview || heroSection.backgroundImage ? (
                 <img
-                  src={heroPreview || heroSection.backgroundImage}
+                  src={`${import.meta.env.VITE_API_URL_IMAGE}/${heroSection.backgroundImage}`}
                   alt="Preview"
                   className="mt-2 mb-3 w-full max-h-64 object-cover rounded-md"
                 />
