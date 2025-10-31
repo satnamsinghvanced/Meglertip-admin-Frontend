@@ -25,7 +25,7 @@ export const ROUTES = {
   TEAM_LEADERS: "/team-leaders",
   FAQ:"/faq",
   SHIFT_SCHEDULE: "/shift-schedule",
-  BLOGS: "/blogs",
+  ARTICLE: "/articles",
   HOMEPAGE:"/homepage",
   PROJECTS: "/banner-section",
   EMPLOYEE_SALARY: "/employee-salary",

@@ -8,6 +8,7 @@ import {
   getArticleById,
   createArticle,
   clearSelectedArticle,
+  deleteArticle,
 } from "../../store/slices/articleSlice";
 import { getCategories } from "../../store/slices/articleCategoriesSlice";
 
@@ -34,6 +35,10 @@ const ArticlePage = () => {
     originalSlug: "",
     image: null,
   });
+
+  // Add state for delete modal and the article to delete
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [articleToDelete, setArticleToDelete] = useState(null);
 
   useEffect(() => {
     dispatch(getArticles());
@@ -84,6 +89,21 @@ const ArticlePage = () => {
   const closeModal = () => {
     setShowModal(false);
     dispatch(clearSelectedArticle());
+  };
+
+  const handleDeleteClick = (article) => {
+    setArticleToDelete(article); // Set the article to be deleted
+    setShowDeleteModal(true); // Show the delete modal
+  };
+
+  const handleDeleteArticle = async () => {
+    if (!articleToDelete) return;
+    try {
+      await dispatch(deleteArticle(articleToDelete._id)); // Dispatch delete action
+      setShowDeleteModal(false); // Close modal after successful delete
+    } catch (err) {
+      console.error("Error deleting article:", err);
+    }
   };
 
   return (
@@ -154,7 +174,7 @@ const ArticlePage = () => {
                   </button>
                   <button
                     className="text-red-600 px-2"
-                    onClick={() => alert("Delete API call here")}
+                    onClick={() => handleDeleteClick(article)}
                   >
                     <RiDeleteBin5Line className="text-xl" />
                   </button>
@@ -165,6 +185,33 @@ const ArticlePage = () => {
         </table>
       </div>
 
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 dark:bg-blue-950 rounded-lg w-[350px] shadow-lg">
+            <p className="mb-6 font-bold text-center dark:text-white">
+              Are you sure you want to delete this article?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                className="border px-4 py-2 rounded-md"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md"
+                onClick={handleDeleteArticle}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Article Modal */}
       {showModal && selectedArticle && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative overflow-y-auto max-h-[90vh]">
@@ -199,6 +246,7 @@ const ArticlePage = () => {
         </div>
       )}
 
+      {/* Add New Article Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative overflow-y-auto max-h-[90vh]">

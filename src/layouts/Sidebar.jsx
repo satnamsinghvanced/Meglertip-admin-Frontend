@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Transition,
   Menu,
@@ -7,23 +8,13 @@ import {
 } from "@headlessui/react";
 import { Link, useLocation, useNavigate } from "react-router";
 import logo from "../../public/images/boligtip.png"
-import ThemeSwitch from "../UI/ThemeSwitch";
 import { IoChevronUp } from "react-icons/io5";
 import { HiChevronDoubleLeft } from "react-icons/hi";
 import { HiOutlineHome } from "react-icons/hi";
-import { FaRegUser } from "react-icons/fa";
-import { RiInbox2Line } from "react-icons/ri";
 import { LuUsers } from "react-icons/lu";
-import { BsCurrencyDollar } from "react-icons/bs";
-import { LuGrid2X2Check } from "react-icons/lu";
-import { GrCircleQuestion } from "react-icons/gr";
 import { TbSettings } from "react-icons/tb";
 import { TbUsersPlus } from "react-icons/tb";
 import { RiUserStarLine } from "react-icons/ri";
-import { LuCalendarClock } from "react-icons/lu";
-import { BsFileEarmarkBarGraph } from "react-icons/bs";
-import { GrContactInfo } from "react-icons/gr";
-import { LuCalendarCheck } from "react-icons/lu";
 import { ROUTES } from "../consts/routes";
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
@@ -54,7 +45,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     {
       name: "Articles",
       icon: TbUsersPlus,
-      href: ROUTES.BLOGS,
+      href: ROUTES.ARTICLE,
     },
     
     {
@@ -118,21 +109,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
           {isMiniSidebarOpen && (
             <Link to="/">
               <figure className="justify-center pr-5 flex cursor-pointer">
-                {/* <img
-                  src={logo}
-                  width={150}
-                  height={32}
-                  alt="logo"
-                  className="object-contain lightModelogo"
-                /> */}
-                {/* <img
-                  src={logoLight}
-                  width={150}
-                  height={32}
-                  alt="logo"
-                  className="object-contain darkModelogo"
-                /> */}
-                {/* <p className="font-bold text-2xl text-gray-900 dark:bg-gray-100 px-4">Boligtip</p> */}
                 <img
                   src={logo}
                   width={150}
@@ -274,11 +250,9 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                                             : "text-sm"
                                         } font-bold py-3 px-2 flex items-center transition-all dark:text-white rounded-lg`}
                                       >
-                                        {/* {isMiniSidebarOpen && ( */}
                                         <span className="ml-2 whitespace-nowrap truncate max-w-[170px]">
                                           {navigation.name}
                                         </span>
-                                        {/* )} */}
                                       </div>
                                     </div>
                                   </div>
@@ -368,7 +342,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
             })}
           </ul>
         </div>
-        {/* <ThemeSwitch isMiniSidebarOpen={isMiniSidebarOpen} /> */}
       </div>
     </>
   );
