@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik, FormikProvider, Field } from "formik";
@@ -8,6 +9,7 @@ import {
   updateHomepageSection,
   clearMessages,
 } from "../../store/slices/homepageSlice";
+import { AiTwotoneEdit } from "react-icons/ai";
 
 const InputField = ({ label, name, type = "text", disabled, ...props }) => (
   <div className="mb-4">
@@ -19,9 +21,9 @@ const InputField = ({ label, name, type = "text", disabled, ...props }) => (
       type={type}
       id={name}
       disabled={disabled}
-      className={`mt-1 block w-full border ${
+      className={`p-4 w-full border border-gray-300 rounded-md mt-1 flex items-center justify-between gap-5 ${
         disabled ? "bg-gray-100" : "bg-white"
-      } border-gray-300 rounded-md shadow-sm p-2`}
+      } border-gray-300`}
       {...props}
     />
     <div className="text-red-500 text-sm mt-1">
@@ -110,9 +112,8 @@ const EditHomePage = () => {
 
   return (
     <FormikProvider value={formik}>
-      <div className="p-8 bg-gray-50 min-h-screen">
-        <h1 className="text-3xl font-bold mb-6">Edit Homepage Content</h1>
-
+      <div className="min-h-screen space-y-10">
+        <h1 className="text-2xl font-bold">Edit Homepage Content</h1>
         {loading && (
           <div className="text-blue-500 font-medium mb-4">Loading...</div>
         )}
@@ -124,28 +125,18 @@ const EditHomePage = () => {
         {error && <div className="text-red-600 font-medium mb-4">{error}</div>}
 
         <form onSubmit={formik.handleSubmit} className="space-y-8">
-          <div className="bg-white p-6 rounded-lg shadow-md relative">
-            <div className="flex justify-between items-center border-b pb-2 mb-4">
-              <h2 className="text-2xl font-semibold">Hero Section</h2>
+          <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold dark:text-white">
+                Hero Section
+              </h2>
 
               {!isHeroEditing ? (
-                <button
-                  type="button"
-                  onClick={() => setIsHeroEditing(true)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Edit
+                <button type="button" onClick={() => setIsHeroEditing(true)}>
+                  <AiTwotoneEdit className="text-[#161925] text-xl" />
                 </button>
               ) : (
                 <div className="flex gap-2">
-                  <button
-                    type="submit"
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-                    disabled={loading}
-                  >
-                    {loading ? "Saving..." : "Save"}
-                  </button>
-
                   <button
                     type="button"
                     onClick={() => {
@@ -153,9 +144,17 @@ const EditHomePage = () => {
                       setIsHeroEditing(false);
                       setHeroPreview("");
                     }}
-                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                    className="px-4 py-2 border rounded-md"
                   >
                     Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[#161925] hover:bg-[#161925]/85 text-white rounded-md"
+                    disabled={loading}
+                  >
+                    {loading ? "Saving..." : "Save"}
                   </button>
                 </div>
               )}
@@ -206,22 +205,27 @@ const EditHomePage = () => {
               disabled={!isHeroEditing}
             />
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md relative">
-            <div className="flex justify-between items-center border-b pb-2 mb-4">
-              <h2 className="text-2xl font-semibold">Banner Section 1</h2>
+          <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold dark:text-white">
+                Banner Section 1
+              </h2>
               {!isBannerEditing ? (
-                <button
-                  type="button"
-                  onClick={() => setIsBannerEditing(true)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Edit
+                <button type="button" onClick={() => setIsBannerEditing(true)}>
+                  <AiTwotoneEdit className="text-[#161925] text-xl" />
                 </button>
               ) : (
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    onClick={() => setIsBannerEditing(false)}
+                    className="px-4 py-2 border rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-[#161925] hover:bg-[#161925]/85 text-white rounded-md"
                     disabled={loading}
                     onClick={async () => {
                       const formData = new FormData();
@@ -239,14 +243,6 @@ const EditHomePage = () => {
                   >
                     {loading ? "Saving..." : "Save"}
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsBannerEditing(false)}
-                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
                 </div>
               )}
             </div>
@@ -258,22 +254,27 @@ const EditHomePage = () => {
               onChange={(e) => (bannerSection1.heading = e.target.value)}
             />
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md relative">
-            <div className="flex justify-between items-center border-b pb-2 mb-4">
-              <h2 className="text-2xl font-semibold">Banner Section Cards 1</h2>
+          <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold dark:text-white">
+                Banner Section Cards 1
+              </h2>
               {!isCardsEditing ? (
-                <button
-                  type="button"
-                  onClick={() => setIsCardsEditing(true)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Edit
+                <button type="button" onClick={() => setIsCardsEditing(true)}>
+                  <AiTwotoneEdit className="text-[#161925] text-xl" />
                 </button>
               ) : (
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    onClick={() => setIsCardsEditing(false)}
+                    className="px-4 py-2 border rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-[#161925] hover:bg-[#161925]/85 text-white rounded-md"
                     disabled={loading}
                     onClick={async () => {
                       const formData = new FormData();
@@ -294,25 +295,16 @@ const EditHomePage = () => {
                   >
                     {loading ? "Saving..." : "Save"}
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsCardsEditing(false)}
-                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
                 </div>
               )}
             </div>
             {Array.isArray(bannerSectionCards1) &&
             bannerSectionCards1.length > 0 ? (
               bannerSectionCards1.map((card, index) => (
-                <div
-                  key={index}
-                  className="border rounded-lg p-4 mb-4 bg-gray-50 shadow-sm"
-                >
-                  <h3 className="font-semibold mb-2">Card {index + 1}</h3>
+                <div key={index}>
+                  <h3 className="font-semibold mb-2 text-lg">
+                    Card {index + 1}
+                  </h3>
 
                   <InputField
                     label="Title"
@@ -349,22 +341,27 @@ const EditHomePage = () => {
               <p className="text-gray-500 italic">No cards available.</p>
             )}
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md relative">
-            <div className="flex justify-between items-center border-b pb-2 mb-4">
-              <h2 className="text-2xl font-semibold">Banner Section 2</h2>
+          <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold dark:text-white">
+                Banner Section 2
+              </h2>
               {!isBannerEditing ? (
-                <button
-                  type="button"
-                  onClick={() => setIsBannerEditing(true)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Edit
+                <button type="button" onClick={() => setIsBannerEditing(true)}>
+                  <AiTwotoneEdit className="text-[#161925] text-xl" />
                 </button>
               ) : (
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    onClick={() => setIsBannerEditing(false)}
+                    className="px-4 py-2 border rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-[#161925] hover:bg-[#161925]/85 text-white rounded-md"
                     disabled={loading}
                     onClick={async () => {
                       const formData = new FormData();
@@ -382,14 +379,6 @@ const EditHomePage = () => {
                   >
                     {loading ? "Saving..." : "Save"}
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsBannerEditing(false)}
-                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
                 </div>
               )}
             </div>
@@ -401,22 +390,27 @@ const EditHomePage = () => {
               onChange={(e) => (bannerSection2.heading = e.target.value)}
             />
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md relative">
-            <div className="flex justify-between items-center border-b pb-2 mb-4">
-              <h2 className="text-2xl font-semibold">Banner Section Cards 2</h2>
+          <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-md relative">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold dark:text-white">
+                Banner Section Cards 2
+              </h2>
               {!isCardsEditing ? (
-                <button
-                  type="button"
-                  onClick={() => setIsCardsEditing(true)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Edit
+                <button type="button" onClick={() => setIsCardsEditing(true)}>
+                  <AiTwotoneEdit className="text-[#161925] text-xl" />
                 </button>
               ) : (
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    onClick={() => setIsCardsEditing(false)}
+                    className="px-4 py-2 border rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-[#161925] hover:bg-[#161925]/85 text-white rounded-md"
                     disabled={loading}
                     onClick={async () => {
                       const formData = new FormData();
@@ -437,14 +431,6 @@ const EditHomePage = () => {
                   >
                     {loading ? "Saving..." : "Save"}
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsCardsEditing(false)}
-                    className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
                 </div>
               )}
             </div>
@@ -452,11 +438,10 @@ const EditHomePage = () => {
             {Array.isArray(bannerSectionCards2) &&
             bannerSectionCards2.length > 0 ? (
               bannerSectionCards2.map((card, index) => (
-                <div
-                  key={index}
-                  className="border rounded-lg p-4 mb-4 bg-gray-50 shadow-sm"
-                >
-                  <h3 className="font-semibold mb-2">Card {index + 1}</h3>
+                <div key={index}>
+                  <h3 className="font-semibold mb-2 text-lg">
+                    Card {index + 1}
+                  </h3>
 
                   <InputField
                     label="Title"

@@ -52,7 +52,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.FORMS,
     },
     {
-      name: "Blogs",
+      name: "Articles",
       icon: TbUsersPlus,
       href: ROUTES.BLOGS,
     },
