@@ -62,7 +62,7 @@ const UserInfo = () => {
             type="button"
             onClick={() => setEditable(true)}
           >
-            <BiEditAlt fontSize={24} color="#a0aec0" />
+            <BiEditAlt fontSize={24} color="#161925" />
           </button>
         )}
         {editable && (

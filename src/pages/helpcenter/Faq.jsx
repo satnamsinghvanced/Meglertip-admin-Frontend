@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { AiTwotoneEdit } from "react-icons/ai";
+import { RiDeleteBin5Line } from "react-icons/ri";
+
 
 const Faq = () => {
   const [faqs, setFaqs] = useState([]);
@@ -155,15 +157,15 @@ const Faq = () => {
       {faqs.map((cat) => (
         <div
           key={cat._id}
-          className="border rounded-lg p-6 bg-white dark:bg-blue-950 shadow-sm"
+          className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
         >
           <div className="flex gap-3 items-center">
             <h3 className="text-xl font-bold dark:text-white">
               {cat.categoryName}
             </h3>
-            <div className="gap-3">
+            <div className="gap-3  flex items-center">
               <button
-                className="text-white bg-gray-500 px-2 rounded-sm"
+                className="text-white px-2 rounded-sm"
                 onClick={() => {
                   setSelectedId(cat._id);
                   setIsEditCategoryMode(true);
@@ -173,7 +175,7 @@ const Faq = () => {
                   setShowCategoryModal(true);
                 }}
               >
-                Edit
+                <AiTwotoneEdit className="text-[#161925] text-xl"/>
               </button>
               {/* <button
                 className="text-red-600 bg-neutral-300 px-2 rounded-sm"
@@ -191,18 +193,20 @@ const Faq = () => {
             {cat.faqs.map((faq) => (
               <div
                 key={faq._id}
-                className="p-4 border rounded-md bg-gray-50 dark:bg-blue-900"
+                className="p-4 border border-gray-300 rounded-md bg-gray-50 flex items-center justify-between gap-5"
               >
+                <div>
                 <h6 className="font-semibold dark:text-gray-200">
                   {faq.question}
                 </h6>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   {faq.answer}
                 </p>
+                </div>
 
-                <div className="flex gap-4 mt-3">
+                <div className=" flex items-center gap-1 mt-3">
                   <button
-                    className="text-white bg-gray-500 px-2 rounded-sm"
+                    className="text-white px-2 rounded-sm"
                     onClick={() => {
                       setSelectedId(faq._id);
                       setIsEditMode(true);
@@ -214,17 +218,17 @@ const Faq = () => {
                       setShowFaqModal(true);
                     }}
                   >
-                    Edit
+                    <AiTwotoneEdit className="text-[#161925] text-xl"/>
                   </button>
 
                   <button
-                    className="text-red-600 bg-neutral-300 px-2 rounded-sm"
+                    className="text-red-600 px-2 rounded-sm"
                     onClick={() => {
                       setSelectedId(faq._id);
                       setShowDeleteModal(true);
                     }}
                   >
-                    Delete
+                    <RiDeleteBin5Line className="text-xl"/>
                   </button>
                 </div>
               </div>
@@ -241,7 +245,7 @@ const Faq = () => {
             </h3>
             <p className= "font-semibold">Select Category</p>
             <select
-              className="w-full border rounded-md p-2 mb-4"
+              className="w-full border border-gray-300 rounded-md p-2 mb-4"
               value={formData.categoryId}
               onChange={(e) =>
                 setFormData({ ...formData, categoryId: e.target.value })
@@ -258,7 +262,7 @@ const Faq = () => {
             <input
               type="text"
               placeholder="Question"
-              className="w-full border rounded-md p-2 mb-4 dark:bg-blue-900 dark:text-white"
+              className="w-full border border-gray-300 rounded-md p-2 mb-4 dark:bg-blue-900 dark:text-white"
               value={formData.question}
               onChange={(e) =>
                 setFormData({ ...formData, question: e.target.value })
@@ -268,7 +272,7 @@ const Faq = () => {
             <textarea
               placeholder="Answer"
               rows={4}
-              className="w-full border rounded-md p-2 mb-4 dark:bg-blue-900 dark:text-white"
+              className="w-full border border-gray-300 rounded-md p-2 mb-4 dark:bg-blue-900 dark:text-white"
               value={formData.answer}
               onChange={(e) =>
                 setFormData({ ...formData, answer: e.target.value })
@@ -283,7 +287,7 @@ const Faq = () => {
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-[#161925] text-white rounded-md"
+                className="px-4 py-2 bg-[#161925] hover:bg-[#161925]/85 text-white rounded-md"
                 onClick={handleCreateOrEditFAQ}
               >
                 Save
@@ -305,7 +309,7 @@ const Faq = () => {
             <input
               type="text"
               placeholder="Category Name"
-              className="w-full border rounded-md p-2 mb-4 dark:bg-blue-900 dark:text-white"
+              className="w-full border border-gray-300 rounded-md p-2 mb-4 dark:bg-blue-900 dark:text-white"
               value={formDataForCategory.categoryName}
               onChange={(e) =>
                 setFormDataForCategory({
@@ -323,7 +327,7 @@ const Faq = () => {
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-[#161925] text-white rounded-md"
+                className="px-4 py-2 bg-[#161925] hover:bg-[#161925]/85 text-white rounded-md"
                 onClick={handleCreateOrEditCategory}
               >
                 Save
@@ -336,7 +340,7 @@ const Faq = () => {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 dark:bg-blue-950 rounded-lg w-[350px] shadow-lg">
-            <p className="mb-6 text-center dark:text-white">
+            <p className="mb-6 font-bold text-center dark:text-white">
               Are you sure you want to delete this FAQ?
             </p>
 
@@ -348,7 +352,7 @@ const Faq = () => {
                 Cancel
               </button>
               <button
-                className="bg-red-600 text-white px-4 py-2 rounded-md"
+                className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md"
                 onClick={handleDeleteFAQ}
               >
                 Delete
