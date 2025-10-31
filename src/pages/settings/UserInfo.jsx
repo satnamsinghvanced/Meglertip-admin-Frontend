@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,9 +8,7 @@ import InputField from "../../UI/InputField";
 import DropZone from "../../UI/DropZone";
 import { TbPhoto } from "react-icons/tb";
 import { updateUserInfo } from "../../store/slices/user";
-import { BLOOD_GROUPS, GENDERS, MARITAL_STATUSES } from "../../consts/consts";
 import Select from "../../UI/Select";
-import { formatDateForDateInput } from "../../utils/formatDate";
 
 const UserInfo = () => {
   const dispatch = useDispatch();
@@ -25,13 +23,12 @@ const UserInfo = () => {
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("User name is required."),
   });
-  console.log(auth_user?._id ," User id")
+  console.log(auth_user?._id, " User id");
   const formik = useFormik({
-    enableReinitialize: true, 
+    enableReinitialize: true,
     initialValues: {
       id: auth_user?._id,
       username: auth_user?.username,
-     
     },
     validationSchema,
     onSubmit: (values) => {
@@ -44,9 +41,7 @@ const UserInfo = () => {
     },
   });
 
-  const userInfoLowerList = [
-
-  ];
+  const userInfoLowerList = [];
 
   return (
     <div className="bg-white dark:bg-blue-950 rounded-lg px-4 py-6 md:p-6">
@@ -56,7 +51,7 @@ const UserInfo = () => {
         ) : (
           <h4 className="font-bold dark:text-white">Edit User Info</h4>
         )}
-        {!editable  && (
+        {!editable && (
           <button
             className="cursor-pointer"
             type="button"

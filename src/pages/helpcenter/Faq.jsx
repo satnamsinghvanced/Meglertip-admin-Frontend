@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
 
 const Faq = () => {
   const [faqs, setFaqs] = useState([]);
@@ -86,7 +85,9 @@ const Faq = () => {
 
   const handleDeleteFAQ = async () => {
     try {
-      await axios.delete(`http://localhost:9090/api/faq/delete?id=${selectedId}`);
+      await axios.delete(
+        `http://localhost:9090/api/faq/delete?id=${selectedId}`
+      );
       setShowDeleteModal(false);
       getFAQs();
     } catch (err) {
@@ -175,7 +176,7 @@ const Faq = () => {
                   setShowCategoryModal(true);
                 }}
               >
-                <AiTwotoneEdit className="text-[#161925] text-xl"/>
+                <AiTwotoneEdit className="text-[#161925] text-xl" />
               </button>
               {/* <button
                 className="text-red-600 bg-neutral-300 px-2 rounded-sm"
@@ -196,12 +197,12 @@ const Faq = () => {
                 className="p-4 border border-gray-300 rounded-md bg-gray-50 flex items-center justify-between gap-5"
               >
                 <div>
-                <h6 className="font-semibold dark:text-gray-200">
-                  {faq.question}
-                </h6>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  {faq.answer}
-                </p>
+                  <h6 className="font-semibold dark:text-gray-200">
+                    {faq.question}
+                  </h6>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {faq.answer}
+                  </p>
                 </div>
 
                 <div className=" flex items-center gap-1 mt-3">
@@ -218,7 +219,7 @@ const Faq = () => {
                       setShowFaqModal(true);
                     }}
                   >
-                    <AiTwotoneEdit className="text-[#161925] text-xl"/>
+                    <AiTwotoneEdit className="text-[#161925] text-xl" />
                   </button>
 
                   <button
@@ -228,7 +229,7 @@ const Faq = () => {
                       setShowDeleteModal(true);
                     }}
                   >
-                    <RiDeleteBin5Line className="text-xl"/>
+                    <RiDeleteBin5Line className="text-xl" />
                   </button>
                 </div>
               </div>
@@ -243,7 +244,7 @@ const Faq = () => {
             <h3 className="text-xl font-bold mb-4 dark:text-white">
               {isEditMode ? "Edit FAQ" : "Add New FAQ"}
             </h3>
-            <p className= "font-semibold">Select Category</p>
+            <p className="font-semibold">Select Category</p>
             <select
               className="w-full border border-gray-300 rounded-md p-2 mb-4"
               value={formData.categoryId}
@@ -258,7 +259,9 @@ const Faq = () => {
                 </option>
               ))}
             </select>
-              <label htmlFor="question" className="font-semibold">Question</label>
+            <label htmlFor="question" className="font-semibold">
+              Question
+            </label>
             <input
               type="text"
               placeholder="Question"
@@ -268,7 +271,9 @@ const Faq = () => {
                 setFormData({ ...formData, question: e.target.value })
               }
             />
-      <label htmlFor="answer" className="font-semibold">Answer</label>
+            <label htmlFor="answer" className="font-semibold">
+              Answer
+            </label>
             <textarea
               placeholder="Answer"
               rows={4}

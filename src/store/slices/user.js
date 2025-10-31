@@ -68,7 +68,6 @@ export const updateUserInfo = (id, body) => async (dispatch, getState) => {
         },
       }
     );
-    console.log(data, "safbjafq");
     dispatch(setAuthUser(data?.admin));
     toast.success(data?.message);
   } catch (error) {
