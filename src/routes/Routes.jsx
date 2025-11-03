@@ -38,8 +38,8 @@ useEffect(() => {
         <Route path={ROUTES.FAQ} element={<Faq />} />
         <Route path={ROUTES.PROJECTS} element={<p>PROJECTS</p>} />
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>}>
-          <Route index element={<Employees />} />
-          <Route path=":id" element={<EmployeeDetails />} />
+          {/* <Route index element={<Employees />} />
+          <Route path=":id" element={<EmployeeDetails />} /> */}
         </Route>
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
