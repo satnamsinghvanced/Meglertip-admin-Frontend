@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "../../services/axios";
 import { redirect } from "react-router";
@@ -27,6 +28,7 @@ const userSlice = createSlice({
 
 export const { setLoading, setAuthUser, setToken } = userSlice.actions;
 
+
 export const signIn = (body) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
@@ -38,7 +40,7 @@ export const signIn = (body) => async (dispatch) => {
     dispatch(setAuthUser(data.admin));
     dispatch(setToken(data.token));
     toast.success(data.message);
-    redirect("/");
+       navigate("/", { replace: true });
   } catch (error) {
     console.log("error", error);
   }

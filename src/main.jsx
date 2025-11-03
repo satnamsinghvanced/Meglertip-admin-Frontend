@@ -9,7 +9,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <App />
     <ToastContainer
-      theme={localStorage.getItem("darkMode") === "true" ? "dark" : "light"}
+      // theme={localStorage.getItem("darkMode") === "true" ? "dark" : "light"}
       autoClose={3000}
       toastClassName="font-semibold"
     />

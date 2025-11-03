@@ -18,10 +18,15 @@ const Routes = () => {
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    !token ? navigate("/login") : navigate("/");
-  }, [token]);
+useEffect(() => {
+  if (!token && window.location.pathname !== "/login") {
+    navigate("/login");
+  }
 
+  if (token && window.location.pathname === "/login") {
+    navigate("/homepage", { replace: true });
+  }
+}, [token]);
   return (
     <RouteWrapper>
       <Route element={token ? <Layout /> : <AuthLayout />}>

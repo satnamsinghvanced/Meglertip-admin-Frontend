@@ -90,7 +90,7 @@ const DropZone = ({
 
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/image/upload-profile`,
+          `${import.meta.env.VITE_API_URL}/image/upload-profile`,
           {
             method: "POST",
             body: formData,

@@ -32,7 +32,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.HOMEPAGE,
     },
     {
-      name: "ABOUT",
+      name: "About Page",
       icon: RiInformationLine,
       href: ROUTES.ABOUT,
     },

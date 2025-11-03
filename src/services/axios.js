@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
       console.error(error.response);
       toast.error(error.response.data.message);
     } else {
-      toast.error("Network Error");
+      toast.error("Network Error, Please Re-try after sometime");
     }
 
     return Promise.reject(error.response);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -16,6 +17,7 @@ const Faq = () => {
   const [isEditCategoryMode, setIsEditCategoryMode] = useState(false);
 
   const [selectedId, setSelectedId] = useState(null);
+   const [loading, setLoading] = useState(true); 
 
   const [formData, setFormData] = useState({
     categoryId: "",
@@ -29,10 +31,13 @@ const Faq = () => {
 
   const getFAQs = async () => {
     try {
+       setLoading(true);
       const res = await axios.get("http://localhost:9090/api/faq");
       setFaqs(res.data.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,68 +50,82 @@ const Faq = () => {
     }
   };
 
-  const handleCreateOrEditFAQ = async () => {
-    try {
-      if (isEditMode) {
-        await axios.put(
-          `http://localhost:9090/api/faq/update?id=${selectedId}`,
-          formData
-        );
-      } else {
-        await axios.post("http://localhost:9090/api/faq/create", formData);
-      }
-      resetFaqForm();
-      getFAQs();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleCreateOrEditCategory = async () => {
-    try {
-      if (isEditCategoryMode) {
-        await axios.put(
-          `http://localhost:9090/api/category/update?id=${selectedId}`,
-          formDataForCategory
-        );
-      } else {
-        await axios.post(
-          "http://localhost:9090/api/category/create",
-          formDataForCategory
-        );
-      }
-      resetCategoryForm();
-      getCategories();
-      getFAQs();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDeleteFAQ = async () => {
-    try {
-      await axios.delete(
-        `http://localhost:9090/api/faq/delete?id=${selectedId}`
+const handleCreateOrEditFAQ = async () => {
+  try {
+    if (isEditMode) {
+      const { data } = await axios.put(
+        `http://localhost:9090/api/faq/update?id=${selectedId}`,
+        formData
       );
-      setShowDeleteModal(false);
-      getFAQs();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDeleteCategory = async () => {
-    try {
-      await axios.delete(
-        `http://localhost:9090/api/category/delete?id=${selectedId}`
+      toast.success(data.message || "FAQ updated successfully!");
+    } else {
+      const { data } = await axios.post(
+        "http://localhost:9090/api/faq/create",
+        formData
       );
-      setShowDeleteCategoryModal(false);
-      getFAQs();
-      getCategories();
-    } catch (err) {
-      console.error(err);
+      toast.success(data.message || "FAQ created successfully!");
     }
-  };
+    resetFaqForm();
+    getFAQs();
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || "Something went wrong while saving FAQ");
+  }
+};
+
+const handleCreateOrEditCategory = async () => {
+  try {
+    if (isEditCategoryMode) {
+      const { data } = await axios.put(
+        `http://localhost:9090/api/category/update?id=${selectedId}`,
+        formDataForCategory
+      );
+      toast.success(data.message || "Category updated successfully!");
+    } else {
+      const { data } = await axios.post(
+        "http://localhost:9090/api/category/create",
+        formDataForCategory
+      );
+      toast.success(data.message || "Category created successfully!");
+    }
+    resetCategoryForm();
+    getCategories();
+    getFAQs();
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || "Something went wrong while saving category");
+  }
+};
+
+const handleDeleteFAQ = async () => {
+  try {
+    const { data } = await axios.delete(
+      `http://localhost:9090/api/faq/delete?id=${selectedId}`
+    );
+    setShowDeleteModal(false);
+    toast.success(data.message || "FAQ deleted successfully!");
+    getFAQs();
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || "Failed to delete FAQ");
+  }
+};
+
+const handleDeleteCategory = async () => {
+  try {
+    const { data } = await axios.delete(
+      `http://localhost:9090/api/category/delete?id=${selectedId}`
+    );
+    setShowDeleteCategoryModal(false);
+    toast.success(data.message || "Category deleted successfully!");
+    getFAQs();
+    getCategories();
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || "Failed to delete category");
+  }
+};
+
 
   const resetFaqForm = () => {
     setShowFaqModal(false);
@@ -126,7 +145,26 @@ const Faq = () => {
     getFAQs();
     getCategories();
   }, []);
-
+const Skeleton = () => (
+    <div className="animate-pulse space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
+        >
+          <div className="h-5 bg-gray-300 rounded w-1/3 mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2].map((j) => (
+              <div key={j} className="p-4 border border-gray-200 rounded-md bg-gray-50">
+                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
   return (
     <div className="w-full space-y-10">
       <div className="flex justify-between items-center">
@@ -134,6 +172,15 @@ const Faq = () => {
           Frequently Asked Questions
         </h2>
         <div className="flex items-center gap-3 ml-auto">
+           <button
+            className="bg-[#161925] text-white px-4 py-2 rounded-md"
+            onClick={() => {
+              setShowCategoryModal(true);
+              setIsEditCategoryMode(false);
+            }}
+          >
+            + Add FAQ Category
+          </button>
           <button
             className="bg-[#161925] text-white px-4 py-2 rounded-md"
             onClick={() => {
@@ -143,100 +190,89 @@ const Faq = () => {
           >
             + Add FAQ
           </button>
-          <button
-            className="bg-[#161925] text-white px-4 py-2 rounded-md"
-            onClick={() => {
-              setShowCategoryModal(true);
-              setIsEditCategoryMode(false);
-            }}
-          >
-            + Add FAQ Category
-          </button>
+         
         </div>
       </div>
 
-      {faqs.map((cat) => (
-        <div
-          key={cat._id}
-          className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
-        >
-          <div className="flex gap-3 items-center">
-            <h3 className="text-xl font-bold dark:text-white">
-              {cat.categoryName}
-            </h3>
-            <div className="gap-3  flex items-center">
-              <button
-                className="text-white px-2 rounded-sm"
-                onClick={() => {
-                  setSelectedId(cat._id);
-                  setIsEditCategoryMode(true);
-                  setFormDataForCategory({
-                    categoryName: cat.categoryName,
-                  });
-                  setShowCategoryModal(true);
-                }}
-              >
-                <AiTwotoneEdit className="text-[#161925] text-xl" />
-              </button>
-              {/* <button
-                className="text-red-600 bg-neutral-300 px-2 rounded-sm"
-                onClick={() => {
-                  setSelectedId(cat._id);
-                  setShowDeleteCategoryModal(true);
-                }}
-              >
-                Delete
-              </button> */}
+     {loading ? (
+        <Skeleton />
+      ) : faqs.length === 0 ? (
+        <div className="text-gray-500 text-center py-10">No FAQs found.</div>
+      ) : (
+        faqs.map((cat) => (
+          <div
+            key={cat._id}
+            className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
+          >
+            <div className="flex gap-3 items-center">
+              <h3 className="text-xl font-bold dark:text-white">
+                {cat.categoryName}
+              </h3>
+              <div className="gap-3 flex items-center">
+                <button
+                  className="text-white px-2 rounded-sm"
+                  onClick={() => {
+                    setSelectedId(cat._id);
+                    setIsEditCategoryMode(true);
+                    setFormDataForCategory({
+                      categoryName: cat.categoryName,
+                    });
+                    setShowCategoryModal(true);
+                  }}
+                >
+                  <AiTwotoneEdit className="text-[#161925] text-xl" />
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4 mt-4">
+              {cat.faqs.map((faq) => (
+                <div
+                  key={faq._id}
+                  className="p-4 border border-gray-300 rounded-md bg-gray-50 flex items-center justify-between gap-5"
+                >
+                  <div>
+                    <h6 className="font-semibold dark:text-gray-200">
+                      {faq.question}
+                    </h6>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {faq.answer}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1 mt-3">
+                    <button
+                      className="text-white px-2 rounded-sm"
+                      onClick={() => {
+                        setSelectedId(faq._id);
+                        setIsEditMode(true);
+                        setFormData({
+                          question: faq.question,
+                          answer: faq.answer,
+                          categoryId: cat._id,
+                        });
+                        setShowFaqModal(true);
+                      }}
+                    >
+                      <AiTwotoneEdit className="text-[#161925] text-xl" />
+                    </button>
+
+                    <button
+                      className="text-red-600 px-2 rounded-sm"
+                      onClick={() => {
+                        setSelectedId(faq._id);
+                        setShowDeleteModal(true);
+                      }}
+                    >
+                      <RiDeleteBin5Line className="text-xl" />
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-
-          <div className="space-y-4 mt-4">
-            {cat.faqs.map((faq) => (
-              <div
-                key={faq._id}
-                className="p-4 border border-gray-300 rounded-md bg-gray-50 flex items-center justify-between gap-5"
-              >
-                <div>
-                  <h6 className="font-semibold dark:text-gray-200">
-                    {faq.question}
-                  </h6>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {faq.answer}
-                  </p>
-                </div>
-
-                <div className=" flex items-center gap-1 mt-3">
-                  <button
-                    className="text-white px-2 rounded-sm"
-                    onClick={() => {
-                      setSelectedId(faq._id);
-                      setIsEditMode(true);
-                      setFormData({
-                        question: faq.question,
-                        answer: faq.answer,
-                        categoryId: cat._id,
-                      });
-                      setShowFaqModal(true);
-                    }}
-                  >
-                    <AiTwotoneEdit className="text-[#161925] text-xl" />
-                  </button>
-
-                  <button
-                    className="text-red-600 px-2 rounded-sm"
-                    onClick={() => {
-                      setSelectedId(faq._id);
-                      setShowDeleteModal(true);
-                    }}
-                  >
-                    <RiDeleteBin5Line className="text-xl" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+        ))
+      )}
 
       {showFaqModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
@@ -252,7 +288,7 @@ const Faq = () => {
                 setFormData({ ...formData, categoryId: e.target.value })
               }
             >
-              {/* <option value="">Select Category</option> */}
+              <option value="" disabled>Select Category</option>
               {categories.map((cat) => (
                 <option key={cat._id} value={cat._id}>
                   {cat.categoryName}

@@ -1,98 +1,109 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import axios from "../../services/axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const initialState = {
+  is_loading: false,
+  errors: null,
+  sections: {
+    hero: null,
+    "how-it-works": null,
+    "articles-heading": null,
+    "why-choose": null,
+    city: null,
+    pros: null,
+  },
+};
 
-const IMAGE_BASE_URL = import.meta.env.VITE_API_URL_IMAGE;
-
-const HOMEPAGE_ID = "69020242fdba2d751a7830d2";
-
-export const getHomepageSection = createAsyncThunk(
-  "homepage/getHomepageSection",
-  async (sectionName, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.get(
-        `${BASE_URL}/homepage/${HOMEPAGE_ID}/${sectionName}`
-      );
-
-      if (!data.success)
-        throw new Error(data.message || "Failed to fetch section");
-
-      return { sectionName, sectionData: data.data };
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
-export const updateHomepageSection = createAsyncThunk(
-  "homepage/updateHomepageSection",
-  async ({ sectionName, formData }, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.put(
-        `${BASE_URL}/homepage/${HOMEPAGE_ID}/${sectionName}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (!data.success)
-        throw new Error(data.message || "Failed to update section");
-
-      return { sectionName, sectionData: data.data };
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
-
-const homepageSlice = createSlice({
+export const homepageSlice = createSlice({
   name: "homepage",
-  initialState: {
-    sections: {},
-    loading: false,
-    error: null,
-    successMessage: null,
-  },
+  initialState,
   reducers: {
-    clearMessages: (state) => {
-      state.error = null;
-      state.successMessage = null;
+    setLoading(state, action) {
+      state.is_loading = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(getHomepageSection.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getHomepageSection.fulfilled, (state, action) => {
-        state.loading = false;
-        const { sectionName, sectionData } = action.payload;
-        state.sections[sectionName] = sectionData;
-      })
-      .addCase(getHomepageSection.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(updateHomepageSection.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateHomepageSection.fulfilled, (state, action) => {
-        state.loading = false;
-        const { sectionName, sectionData } = action.payload;
-        state.sections[sectionName] = sectionData;
-        state.successMessage = `${sectionName} updated successfully!`;
-      })
-      .addCase(updateHomepageSection.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+    setErrors(state, action) {
+      state.errors = action.payload;
+    },
+    clearMessages(state) {
+      state.errors = null;
+    },
+    setSectionData(state, action) {
+      const { sectionName, data } = action.payload;
+      state.sections[sectionName] = data;
+    },
   },
 });
 
-export const { clearMessages } = homepageSlice.actions;
+export const { setLoading, setErrors, clearMessages, setSectionData } =
+  homepageSlice.actions;
+
+// -----------------------------------------------------------------------------
+// Fetch single homepage section
+// -----------------------------------------------------------------------------
+export const fetchHomepageSection = (sectionName) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/homepage/${sectionName}`
+    );
+
+    dispatch(
+      setSectionData({ sectionName, data: res?.data?.data || res?.data })
+    );
+  } catch (error) {
+    console.error("Fetch section error:", error);
+    dispatch(setErrors(error));
+    toast.error(error?.response?.data?.message || "Failed to fetch section");
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+// -----------------------------------------------------------------------------
+// Update single homepage section
+// -----------------------------------------------------------------------------
+export const updateHomepageSection = (sectionName, body) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const res = await axios.put(
+      `${import.meta.env.VITE_API_URL}/homepage/${sectionName}`,
+      body
+    );
+
+    toast.success(
+      res?.data?.message || `${sectionName} updated successfully`
+    );
+
+    // Refresh the section data after update
+    await dispatch(fetchHomepageSection(sectionName));
+  } catch (error) {
+    console.error("Update section error:", error);
+    dispatch(setErrors(error));
+    toast.error(
+      error?.response?.data?.message || `Failed to update ${sectionName}`
+    );
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+// -----------------------------------------------------------------------------
+// Fetch all homepage sections (for admin dashboard load)
+// -----------------------------------------------------------------------------
+export const fetchAllHomepageSections = () => async (dispatch) => {
+  const sections = [
+    "hero",
+    "how-it-works",
+    "articles-heading",
+    "why-choose",
+    "city",
+    "pros",
+  ];
+
+  for (const section of sections) {
+    await dispatch(fetchHomepageSection(section));
+  }
+};
+
 export default homepageSlice.reducer;
