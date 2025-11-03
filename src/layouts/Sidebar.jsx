@@ -7,14 +7,18 @@ import {
   MenuButton,
 } from "@headlessui/react";
 import { Link, useLocation, useNavigate } from "react-router";
-import logo from "../../public/images/boligtip.png"
+import logo from "../../public/images/boligtip.png";
 import { IoChevronUp } from "react-icons/io5";
 import { HiChevronDoubleLeft } from "react-icons/hi";
 import { HiOutlineHome } from "react-icons/hi";
-import { LuUsers } from "react-icons/lu";
-import { TbSettings } from "react-icons/tb";
-import { TbUsersPlus } from "react-icons/tb";
-import { RiUserStarLine } from "react-icons/ri";
+import { RiInformationLine } from "react-icons/ri";
+import {
+  FileText,
+  Newspaper,
+  MessageCircleQuestion,
+  Settings,
+} from "lucide-react";
+
 import { ROUTES } from "../consts/routes";
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
@@ -27,62 +31,36 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: HiOutlineHome,
       href: ROUTES.HOMEPAGE,
     },
-// {
-//       name: "Banner Section",
-//       icon: LuGrid2X2Check,
-//       href: ROUTES.PROJECTS,
-//     },
-//     {
-//       name: "Hero Section",
-//       icon: LuCalendarClock,
-//       href: ROUTES.LEAVES,
-//     },
+    {
+      name: "ABOUT",
+      icon: RiInformationLine,
+      href: ROUTES.ABOUT,
+    },
     {
       name: "Forms",
-      icon: LuUsers,
+      icon: FileText,
       href: ROUTES.FORMS,
     },
     {
       name: "Articles",
-      icon: TbUsersPlus,
+      icon: Newspaper,
       href: ROUTES.ARTICLE,
     },
-    
+
     {
       name: "FAQ",
-      icon: RiUserStarLine,
+      icon: MessageCircleQuestion,
       href: ROUTES.FAQ,
     },
-    // {
-    //   name: "Performance",
-    //   icon: BsFileEarmarkBarGraph,
-    //   href: ROUTES.PERFORMANCE,
-    // },
-    // {
-    //   name: "Employee Status",
-    //   icon: GrContactInfo,
-    //   href: ROUTES.EMPLOYEE_STATUS,
-    // },
-    // {
-    //   name: "Holidays",
-    //   icon: LuCalendarCheck,
-    //   href: ROUTES.HOLIDAYS,
-    // },
   ];
 
   const bottomRoutes = [
-    // {
-    //   name: "Help Center",
-    //   icon: GrCircleQuestion,
-    //   href: ROUTES.HELPCENTER,
-    // },
     {
       name: "Settings",
-      icon: TbSettings,
+      icon: Settings,
       href: ROUTES.SETTINGS,
     },
   ];
-
 
   let navigationRoutes = adminRoutes;
 

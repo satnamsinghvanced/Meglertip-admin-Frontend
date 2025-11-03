@@ -35,8 +35,6 @@ const ArticlePage = () => {
     originalSlug: "",
     image: null,
   });
-
-  // Add state for delete modal and the article to delete
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
 
@@ -92,15 +90,15 @@ const ArticlePage = () => {
   };
 
   const handleDeleteClick = (article) => {
-    setArticleToDelete(article); // Set the article to be deleted
-    setShowDeleteModal(true); // Show the delete modal
+    setArticleToDelete(article);
+    setShowDeleteModal(true); 
   };
 
   const handleDeleteArticle = async () => {
     if (!articleToDelete) return;
     try {
-      await dispatch(deleteArticle(articleToDelete._id)); // Dispatch delete action
-      setShowDeleteModal(false); // Close modal after successful delete
+      await dispatch(deleteArticle(articleToDelete._id));
+      setShowDeleteModal(false);
     } catch (err) {
       console.error("Error deleting article:", err);
     }
@@ -184,8 +182,6 @@ const ArticlePage = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 dark:bg-blue-950 rounded-lg w-[350px] shadow-lg">
@@ -211,7 +207,6 @@ const ArticlePage = () => {
         </div>
       )}
 
-      {/* View Article Modal */}
       {showModal && selectedArticle && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative overflow-y-auto max-h-[90vh]">
@@ -246,7 +241,6 @@ const ArticlePage = () => {
         </div>
       )}
 
-      {/* Add New Article Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative overflow-y-auto max-h-[90vh]">
