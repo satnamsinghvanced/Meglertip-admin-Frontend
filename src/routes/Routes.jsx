@@ -32,6 +32,7 @@ useEffect(() => {
         <Route path={ROUTES.ABOUT} element={<AboutPage/>} />
         <Route path={ROUTES.ARTICLE} element={<ArticlePage />} />
         <Route path={ROUTES.FAQ} element={<Faq />} />
+           <Route path={ROUTES.FORMS} element={<p>FORMS</p>} />
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>}>
           {/* <Route index element={<Employees />} />
           <Route path=":id" element={<EmployeeDetails />} /> */}
