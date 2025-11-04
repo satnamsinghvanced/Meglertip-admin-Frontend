@@ -9,10 +9,6 @@ const fixImageUrl = (url) => {
   return url.startsWith("http") ? url : `${IMAGE_URL}${url}`;
 };
 
-// --------------------
-// Async Thunks
-// --------------------
-
 export const getArticles = createAsyncThunk(
   "articles/getArticles",
   async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
@@ -83,9 +79,6 @@ export const deleteArticle = createAsyncThunk(
   }
 );
 
-// --------------------
-// Slice
-// --------------------
 
 const articleSlice = createSlice({
   name: "articles",
@@ -102,14 +95,12 @@ const articleSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    // ✅ Optional helper reducer for local state update
     setArticles: (state, action) => {
       state.articles = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Get all
       .addCase(getArticles.pending, (state) => {
         state.loading = true;
       })
@@ -122,23 +113,19 @@ const articleSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Get by ID
       .addCase(getArticleById.fulfilled, (state, action) => {
         state.selectedArticle = action.payload;
       })
 
-      // Create
       .addCase(createArticle.fulfilled, (state, action) => {
         state.articles.data.push(action.payload);
       })
 
-      // Update
       .addCase(updateArticle.fulfilled, (state, action) => {
         const i = state.articles.data.findIndex((a) => a._id === action.payload._id);
         if (i !== -1) state.articles.data[i] = action.payload;
       })
 
-      // ✅ Delete (Fixed)
       .addCase(deleteArticle.fulfilled, (state, action) => {
         state.articles.data = state.articles.data.filter(
           (a) => a._id !== action.payload.id

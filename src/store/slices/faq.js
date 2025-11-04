@@ -3,7 +3,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
 export const getFAQs = createAsyncThunk("faq/getFAQs", async (_, { rejectWithValue }) => {
   try {
     const res = await axios.get(`${API_URL}/faq`);
@@ -17,7 +16,7 @@ export const createFAQ = createAsyncThunk("faq/createFAQ", async (formData, { re
   try {
     const res = await axios.post(`${API_URL}/faq/create`, formData);
     toast.success(res.data.message || "FAQ created successfully!");
-    return res.data;
+    return res.data; 
   } catch (err) {
     toast.error(err.response?.data?.message || "Failed to create FAQ");
     return rejectWithValue(err.response?.data?.message);
@@ -28,7 +27,7 @@ export const updateFAQ = createAsyncThunk("faq/updateFAQ", async ({ id, formData
   try {
     const res = await axios.put(`${API_URL}/faq/update?id=${id}`, formData);
     toast.success(res.data.message || "FAQ updated successfully!");
-    return res.data;
+    return res.data; 
   } catch (err) {
     toast.error(err.response?.data?.message || "Failed to update FAQ");
     return rejectWithValue(err.response?.data?.message);
@@ -46,7 +45,6 @@ export const deleteFAQ = createAsyncThunk("faq/deleteFAQ", async (id, { rejectWi
   }
 });
 
-
 const faqSlice = createSlice({
   name: "faq",
   initialState: {
@@ -57,6 +55,7 @@ const faqSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+
       .addCase(getFAQs.pending, (state) => {
         state.loading = true;
       })
@@ -68,8 +67,38 @@ const faqSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      .addCase(createFAQ.fulfilled, (state, action) => {
+        const newFaq = action.payload?.data;
+        if (!newFaq) return;
+
+        const category = state.faqs.find((cat) => cat._id === newFaq.categoryId);
+        if (category) {
+          category.faqs.push(newFaq);
+        } else {
+          state.faqs.push({
+            _id: newFaq.categoryId,
+            categoryName: "Uncategorized",
+            faqs: [newFaq],
+          });
+        }
+      })
+
+      .addCase(updateFAQ.fulfilled, (state, action) => {
+        const updatedFaq = action.payload?.data;
+        if (!updatedFaq) return;
+
+        state.faqs.forEach((cat) => {
+          const index = cat.faqs.findIndex((faq) => faq._id === updatedFaq._id);
+          if (index !== -1) cat.faqs[index] = updatedFaq;
+        });
+      })
+
       .addCase(deleteFAQ.fulfilled, (state, action) => {
-        state.faqs = state.faqs.filter((cat) => !cat.faqs.some((f) => f._id === action.payload));
+        const deletedId = action.payload;
+        state.faqs.forEach((cat) => {
+          cat.faqs = cat.faqs.filter((faq) => faq._id !== deletedId);
+        });
       });
   },
 });

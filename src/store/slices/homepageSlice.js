@@ -38,9 +38,6 @@ export const homepageSlice = createSlice({
 export const { setLoading, setErrors, clearMessages, setSectionData } =
   homepageSlice.actions;
 
-// -----------------------------------------------------------------------------
-// Fetch single homepage section
-// -----------------------------------------------------------------------------
 export const fetchHomepageSection = (sectionName) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
@@ -60,9 +57,6 @@ export const fetchHomepageSection = (sectionName) => async (dispatch) => {
   }
 };
 
-// -----------------------------------------------------------------------------
-// Update single homepage section
-// -----------------------------------------------------------------------------
 export const updateHomepageSection = (sectionName, body) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
@@ -75,7 +69,6 @@ export const updateHomepageSection = (sectionName, body) => async (dispatch) => 
       res?.data?.message || `${sectionName} updated successfully`
     );
 
-    // Refresh the section data after update
     await dispatch(fetchHomepageSection(sectionName));
   } catch (error) {
     console.error("Update section error:", error);
@@ -88,9 +81,6 @@ export const updateHomepageSection = (sectionName, body) => async (dispatch) => 
   }
 };
 
-// -----------------------------------------------------------------------------
-// Fetch all homepage sections (for admin dashboard load)
-// -----------------------------------------------------------------------------
 export const fetchAllHomepageSections = () => async (dispatch) => {
   const sections = [
     "hero",
