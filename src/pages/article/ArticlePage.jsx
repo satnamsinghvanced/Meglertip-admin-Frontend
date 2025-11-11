@@ -531,9 +531,7 @@ const ArticlePage = () => {
             <h2 className="text-2xl font-bold mb-4">
               {isEditing ? "Edit Article" : "Add New Article"}
             </h2>
-
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Title */}
               <div>
                 <label htmlFor="title">Title</label>
                 <input
@@ -549,8 +547,6 @@ const ArticlePage = () => {
                   <p className="text-red-500 text-sm">{errors.title}</p>
                 )}
               </div>
-
-              {/* Slug */}
               <div>
                 <label htmlFor="slug">Slug</label>
                 <input
@@ -581,7 +577,6 @@ const ArticlePage = () => {
                   <p className="text-red-500 text-sm">{errors.originalSlug}</p>
                 )}
               </div>
-              {/* Category */}
               <div>
                 <label htmlFor="categoryId">Category</label>
                 <select
@@ -603,8 +598,6 @@ const ArticlePage = () => {
                   <p className="text-red-500 text-sm">{errors.categoryId}</p>
                 )}
               </div>
-
-              {/* Show Date */}
               <div>
                 <label htmlFor="showDate">Show Date</label>
                 <div className="flex items-center gap-4">
@@ -634,8 +627,6 @@ const ArticlePage = () => {
                   <p className="text-red-500 text-sm">{errors.showDate}</p>
                 )}
               </div>
-
-              {/* Excerpt */}
               <div>
                 <label htmlFor="excerpt">Excerpt</label>
                 <textarea
@@ -647,7 +638,6 @@ const ArticlePage = () => {
                 />
               </div>
 
-              {/* Description */}
               <div>
                 <label htmlFor="description">Description</label>
                 <ReactQuill
@@ -656,17 +646,13 @@ const ArticlePage = () => {
                   onChange={(value) =>
                     setNewArticle({ ...newArticle, description: value })
                   }
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2  rounded-lg"
                 />
               </div>
-
-              {/* Image */}
               <div>
                 <label htmlFor="image" className="block mb-1 font-medium">
                   Image
                 </label>
-
-                {/* Show image preview only if an image exists */}
                 {isEditing && newArticle.image ? (
                   <div className="mb-3">
                     <div className="relative w-full">
@@ -679,8 +665,6 @@ const ArticlePage = () => {
                         alt="Preview"
                         className="w-full h-48 object-none rounded-lg border"
                       />
-
-                      {/* Delete image button */}
                       <button
                         type="button"
                         onClick={() =>
@@ -707,7 +691,7 @@ const ArticlePage = () => {
                           image: e.target.files?.[0] || null,
                         })
                       }
-                      className="w-full p-2 border rounded-lg"
+                      className="w-full  border rounded-lg"
                     />
                   </div>
                 )}

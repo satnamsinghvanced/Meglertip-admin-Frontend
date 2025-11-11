@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+
 import { Link, useLocation } from "react-router";
 import Button from "../UI/Button";
 

@@ -11,5 +11,7 @@ export const ROUTES = {
   ABOUT: "/about",
   ARTICLE: "/articles",
   HOMEPAGE: "/homepage",
-  PARTNER: "/partner",
+  PARTNER:"/partner",
+  TERM_OF_SERVICE: "/term-of-service",
+  PRIVACY_POLICY:"/privacy-policy",
 };
