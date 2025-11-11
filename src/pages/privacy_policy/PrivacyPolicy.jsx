@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ReactQuill from "react-quill-new";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import {
   getAllPrivacyPolicies,
   updatePrivacyPolicy,
@@ -33,21 +34,36 @@ export const PrivacyPolicyPage = () => {
     }
   }, [items]);
 
-  const handleSave = () => {
-    if (!policyId) return;
-    dispatch(
-      updatePrivacyPolicy({
-        id: policyId,
-        data: { title, description: content },
-      })
-    );
-    setIsEditing(false);
-  };
+  const handleSave = useCallback(async () => {
+    if (!policyId) {
+      toast.error("No Privacy Policy found to update.");
+      return;
+    }
+
+    try {
+      const res = await dispatch(
+        updatePrivacyPolicy({
+          id: policyId,
+          data: { title, description: content },
+        })
+      ).unwrap();
+
+      toast.success(res?.message || "Privacy Policy updated successfully!");
+      setIsEditing(false);
+      dispatch(getAllPrivacyPolicies());
+    } catch (err) {
+      console.error("Error updating Privacy Policy:", err);
+      toast.error(
+        err?.message || "Failed to update Privacy Policy. Please try again."
+      );
+    }
+  }, [dispatch, policyId, title, content]);
 
   if (loading) return <p>Loading...</p>;
+
   return (
     <div className="h-full">
-      <div className="flex items-center justify-between mb-6 pb-4">
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
           {lastUpdated && (
@@ -59,7 +75,7 @@ export const PrivacyPolicyPage = () => {
 
         {!isEditing ? (
           <button onClick={() => setIsEditing(true)} className="px-2">
-            <AiTwotoneEdit size={20} className="text-[#161925] text-xl" />
+            <AiTwotoneEdit size={20} className="text-[#161925]" />
           </button>
         ) : (
           <div className="flex gap-3">
@@ -92,4 +108,3 @@ export const PrivacyPolicyPage = () => {
     </div>
   );
 };
-

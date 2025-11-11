@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ReactQuill from "react-quill-new";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 import {
   fetchPartners,
   updatePartner,
@@ -40,7 +40,7 @@ const DynamicField = ({
               type="text"
               value={placeholder}
               onChange={(e) => onPlaceholderChange(e, name)}
-              className="w-1/2 border border-gray-300 rounded-lg px-3 py-2 "
+              className="w-1/2 border border-gray-300 rounded-lg px-3 py-2"
               disabled={disabled}
             />
           </div>
@@ -145,6 +145,7 @@ const PartnerPage = () => {
       setFormData((prev) => ({ ...prev, image: file }));
       const previewUrl = URL.createObjectURL(file);
       setPreview(previewUrl);
+      toast.success("Image uploaded successfully!");
     }
   };
 
@@ -180,35 +181,35 @@ const PartnerPage = () => {
   };
 
   const handleSave = async () => {
-    if (!formData?._id) return;
+    if (!formData?._id) {
+      toast.error("No partner found to update.");
+      return;
+    }
     try {
       const response = await dispatch(
         updatePartner({ id: formData._id, formData })
       ).unwrap();
-      const successMessage =
-        response?.message || "Partner updated successfully!";
-      toast.success(successMessage);
+      toast.success(response?.message || "Partner updated successfully!");
       setIsEditing(false);
       dispatch(fetchPartners());
     } catch (err) {
-      const errorMessage = err?.message || "Failed to update partner.";
-      toast.error(errorMessage);
+      toast.error(err?.message || "Failed to update partner.");
     }
   };
 
   const handleDelete = async () => {
-    if (!formData?._id) return;
+    if (!formData?._id) {
+      toast.error("No partner found to delete.");
+      return;
+    }
     try {
       const response = await dispatch(deletePartner(formData._id)).unwrap();
-      const successMessage =
-        response?.message || "Partner deleted successfully!";
-      toast.success(successMessage);
+      toast.success(response?.message || "Partner deleted successfully!");
       setFormData(null);
       setShowDeleteModal(false);
       dispatch(fetchPartners());
     } catch (err) {
-      const errorMessage = err?.message || "Failed to delete partner.";
-      toast.error(errorMessage);
+      toast.error(err?.message || "Failed to delete partner.");
     }
   };
 
@@ -335,7 +336,6 @@ const PartnerPage = () => {
           />
         )}
 
-        {/* ✅ ReactQuill for description */}
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Description

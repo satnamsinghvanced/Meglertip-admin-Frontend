@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import ReactQuill from "react-quill-new";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import {
   getAllTermOfService,
   updateTermOfService,
@@ -12,6 +13,7 @@ import { addCustomStyling } from "../../utils/addCustomStyling";
 export const TermOfServicePage = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((state) => state.termOfService);
+
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState("");
   const [term, setTerm] = useState(null);
@@ -19,28 +21,43 @@ export const TermOfServicePage = () => {
   useEffect(() => {
     dispatch(getAllTermOfService());
   }, [dispatch]);
+
   useEffect(() => {
     if (items?.length > 0) {
       setTerm(items[0]);
       setContent(items[0].description || "");
     }
   }, [items]);
+  const handleSave = useCallback(async () => {
+    if (!term?._id) {
+      toast.error("No Terms of Service found to update.");
+      return;
+    }
 
-  const handleSave = useCallback(() => {
-    if (!term?._id) return;
-    dispatch(
-      updateTermOfService({
-        id: term._id,
-        data: { title: term.title, description: content },
-      })
-    );
-    setIsEditing(false);
+    try {
+      const res = await dispatch(
+        updateTermOfService({
+          id: term._id,
+          data: { title: term.title, description: content },
+        })
+      ).unwrap();
+
+      toast.success(res?.message || "Terms of Service updated successfully!");
+      setIsEditing(false);
+      dispatch(getAllTermOfService());
+    } catch (err) {
+      console.error("Error updating Terms of Service:", err);
+      toast.error(
+        err?.message || "Failed to update Terms of Service. Please try again."
+      );
+    }
   }, [dispatch, term, content]);
 
   const formattedDate = useMemo(() => {
     if (!term?.updatedAt) return null;
     return new Date(term.updatedAt).toLocaleDateString();
   }, [term]);
+
   if (loading) return <p>Loading...</p>;
   if (!term) return <p>No Terms of Service found.</p>;
 
@@ -79,6 +96,7 @@ export const TermOfServicePage = () => {
           )}
         </div>
       </div>
+
       <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
         {!isEditing ? (
           <div

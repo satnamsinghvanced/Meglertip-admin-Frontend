@@ -4,7 +4,6 @@ import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa";
 import { toast } from "react-toastify";
-
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import {
@@ -27,7 +26,6 @@ const ArticlePage = () => {
   const user = useSelector((state) => state.user.auth_user);
 
   const [showModal, setShowModal] = useState(false);
-  // const [showAddModal, setShowAddModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
@@ -61,8 +59,6 @@ const ArticlePage = () => {
     };
     fetchArticles();
   }, [dispatch, page, limit]);
-
-  // ✅ Fetch categories only once
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
@@ -165,11 +161,6 @@ const ArticlePage = () => {
     setShowModal(false);
     dispatch(clearSelectedArticle());
   };
-  // useEffect(() => {
-  //   dispatch(getArticles());
-  //   dispatch(getCategories());
-  // }, [dispatch]);
-
   const handleDeleteClick = (article) => {
     setArticleToDelete(article);
     setShowDeleteModal(true);
@@ -180,10 +171,10 @@ const ArticlePage = () => {
     try {
       let response;
       response = await dispatch(deleteArticle(articleToDelete._id));
-      console.log(response)
+      console.log(response);
       setShowDeleteModal(false);
       toast.success(response?.payload?.message);
-         dispatch(getArticles({ page, limit }));
+      dispatch(getArticles({ page, limit }));
     } catch (err) {
       console.error("Error deleting article:", err);
     }
@@ -260,10 +251,11 @@ const ArticlePage = () => {
                 </td>
               </tr>
             ) : articles?.data?.length > 0 ? (
-              // Articles list
               articles.data.map((article, index) => (
                 <tr key={article._id} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4">{(page - 1) * limit + index + 1}</td>
+                  <td className="px-6 py-4">
+                    {(page - 1) * limit + index + 1}
+                  </td>
                   <td className="px-6 py-4 font-semibold">{article.title}</td>
                   <td className="px-6 py-4">
                     {article.categoryId?.title || "N/A"}
@@ -300,7 +292,6 @@ const ArticlePage = () => {
                 </tr>
               ))
             ) : (
-              // No articles
               <tr>
                 <td colSpan="6" className="text-center py-6 text-gray-500">
                   No articles found
@@ -309,143 +300,10 @@ const ArticlePage = () => {
             )}
           </tbody>
         </table>
-     {articles?.data?.length > 0 && (
-   <Pagination totalPages={totalPages} page={page} setPage={setPage} />
-)}
-
+        {articles?.data?.length > 0 && (
+          <Pagination totalPages={totalPages} page={page} setPage={setPage} />
+        )}
       </div>
-
-      {/* {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative overflow-y-auto max-h-[90vh]">
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
-              onClick={() => setShowAddModal(false)}
-            >
-              ✕
-            </button>
-            <h2 className="text-2xl font-bold mb-4">Add New Article</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="title">Title</label>
-                <input
-                  id="title"
-                  type="text"
-                  name="title"
-                  value={newArticle.title}
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                />
-                {errors?.title && (
-                  <p className="text-red-500 text-sm">{errors.title}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="slug">Slug</label>
-                <input
-                  id="slug"
-                  type="text"
-                  name="slug"
-                  value={newArticle.slug}
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                />
-                {errors.slug && (
-                  <p className="text-red-500 text-sm">{errors.slug}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="categoryId">Category</label>
-                <select
-                  id="categoryId"
-                  name="categoryId"
-                  value={newArticle.categoryId}
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                >
-                  <option value="">Select a category</option>
-                  {categories &&
-                    categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.title}
-                      </option>
-                    ))}
-                </select>
-                {errors.categoryId && (
-                  <p className="text-red-500 text-sm">{errors.categoryId}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="showDate">Show Date</label>
-                <input
-                  id="showDate"
-                  type="date"
-                  name="showDate"
-                  value={newArticle.showDate}
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                />
-                {errors.showDate && (
-                  <p className="text-red-500 text-sm">{errors.showDate}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="excerpt">Excerpt</label>
-                <textarea
-                  id="excerpt"
-                  name="excerpt"
-                  value={newArticle.excerpt}
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="description">Description</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={newArticle.description}
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="image">Image</label>
-                <input
-                  id="image"
-                  type="file"
-                  name="image"
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                />
-                {errors.image && (
-                  <p className="text-red-500 text-sm">{errors.image}</p>
-                )}
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  className="w-full px-5 py-2 bg-[#161925] text-white rounded-lg hover:bg-[#161925]/85 transition"
-                >
-                  Add Article
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )} */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 dark:bg-blue-950 rounded-lg w-[350px] shadow-lg">
@@ -641,7 +499,6 @@ const ArticlePage = () => {
               <div>
                 <label htmlFor="description">Description</label>
                 <ReactQuill
-                  // theme="snow"
                   value={newArticle.description}
                   onChange={(value) =>
                     setNewArticle({ ...newArticle, description: value })
@@ -678,7 +535,6 @@ const ArticlePage = () => {
                     </div>
                   </div>
                 ) : (
-                  // Show upload input when no image
                   <div className="w-full mb-3">
                     <input
                       id="image"
@@ -700,8 +556,6 @@ const ArticlePage = () => {
                   <p className="text-red-500 text-sm">{errors.image}</p>
                 )}
               </div>
-
-              {/* Submit */}
               <div>
                 <button
                   type="submit"
