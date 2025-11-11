@@ -7,6 +7,7 @@ import categoriesSlice from "./slices/articleCategoriesSlice";
 import aboutReducer from "./slices/aboutPageSlice"
 import faqReducer from "./slices/faq"
 import categoryReducer from "./slices/category"
+import partnerReducer from "./slices/partnerSlice"
 
 export default configureStore({
   reducer: {
@@ -17,5 +18,6 @@ export default configureStore({
       about: aboutReducer,
         faq: faqReducer,
     category: categoryReducer,
+    partner  : partnerReducer,
   },
 });

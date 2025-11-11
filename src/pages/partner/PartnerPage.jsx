@@ -106,7 +106,7 @@ const PartnerPage = () => {
   const [formData, setFormData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [preview, setPreview] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     dispatch(fetchPartners());
@@ -202,7 +202,7 @@ const PartnerPage = () => {
         response?.message || "Partner deleted successfully!";
       toast.success(successMessage);
       setFormData(null);
-      setShowDeleteModal(false); // Close modal after delete
+      setShowDeleteModal(false); 
       dispatch(fetchPartners());
     } catch (err) {
       const errorMessage = err?.message || "Failed to delete partner.";
@@ -224,7 +224,7 @@ const PartnerPage = () => {
                 <AiTwotoneEdit size={20} className="text-[#161925] text-xl" />
               </button>
               <button
-                onClick={() => setShowDeleteModal(true)} // Show delete modal
+                onClick={() => setShowDeleteModal(true)} 
                 className="text-red-600 px-2"
               >
                 <RiDeleteBin5Line className="text-xl" />
@@ -249,7 +249,6 @@ const PartnerPage = () => {
         </div>
       </div>
 
-      {/* Section for Partner Info, Fields, etc. */}
       <Section title="Partner Information">
         <Input
           label="Heading"

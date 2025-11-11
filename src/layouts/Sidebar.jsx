@@ -17,6 +17,7 @@ import {
   Newspaper,
   MessageCircleQuestion,
   Settings,
+  Handshake,
 } from "lucide-react";
 
 import { ROUTES } from "../consts/routes";
@@ -51,6 +52,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "FAQ",
       icon: MessageCircleQuestion,
       href: ROUTES.FAQ,
+    },
+      {
+      name: "Partner",
+      icon: Handshake,
+      href: ROUTES.PARTNER,
     },
   ];
 

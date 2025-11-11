@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "../../services/axios";
 import { redirect } from "react-router";
