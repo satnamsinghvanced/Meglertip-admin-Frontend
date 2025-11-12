@@ -1,14 +1,13 @@
-// src/components/Pagination.jsx
+
 import React from "react";
 
 const Pagination = ({ totalPages, page, setPage }) => {
-  if (totalPages <= 1) return null; // No need to render if only 1 page
+  if (totalPages <= 1) return null; 
 
   const handlePageChange = (num) => {
     if (num >= 1 && num <= totalPages) setPage(num);
   };
 
-  // Generate visible page numbers (with "..." collapsing)
   const getVisiblePages = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -27,7 +26,6 @@ const Pagination = ({ totalPages, page, setPage }) => {
 
   return (
     <div className="flex justify-center items-center gap-2 mt-6 mb-3 ">
-      {/* Previous */}
       <button
         onClick={() => handlePageChange(page - 1)}
         disabled={page === 1}
@@ -40,7 +38,6 @@ const Pagination = ({ totalPages, page, setPage }) => {
         Prev
       </button>
 
-      {/* Page Numbers */}
       <div className="flex items-center gap-1">
         {visiblePages.map((num, idx) => {
           const prev = visiblePages[idx - 1];
@@ -63,7 +60,6 @@ const Pagination = ({ totalPages, page, setPage }) => {
         })}
       </div>
 
-      {/* Next */}
       <button
         onClick={() => handlePageChange(page + 1)}
         disabled={page === totalPages}

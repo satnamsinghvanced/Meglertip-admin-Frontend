@@ -8,6 +8,7 @@ import aboutReducer from "./slices/aboutPageSlice"
 import faqReducer from "./slices/faq"
 import categoryReducer from "./slices/category"
 import partnerReducer from "./slices/partnerSlice"
+import formReducer from "./slices/formSlice"
 
 export default configureStore({
   reducer: {
@@ -19,5 +20,6 @@ export default configureStore({
         faq: faqReducer,
     category: categoryReducer,
     partner  : partnerReducer,
+    form  : formReducer,
   },
 });

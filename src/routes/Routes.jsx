@@ -12,6 +12,7 @@ import HomePage from "../pages/homepage/homepage";
 import ArticlePage from "../pages/article/ArticlePage";
 import AboutPage from "../pages/about/AboutPage";
 import PartnerPage from "../pages/partner/PartnerPage";
+import FormPage from "../pages/forms/forms";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Routes = () => {
         <Route path={ROUTES.FAQ} element={<Faq />} />
         <Route path={ROUTES.PARTNER} element={<PartnerPage/>} />
 
-        <Route path={ROUTES.FORMS} element={<p>FORMS</p>} />
+        <Route path={ROUTES.FORMS} element={<FormPage />} />
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>}>
         </Route>
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />

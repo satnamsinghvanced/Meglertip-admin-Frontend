@@ -8,7 +8,6 @@ export const getCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}/article-categories/`);
-      console.log(response,'from slice')
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

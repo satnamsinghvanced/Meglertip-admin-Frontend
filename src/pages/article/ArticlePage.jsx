@@ -188,7 +188,6 @@ const ArticlePage = () => {
       console.error("Error deleting article:", err);
     }
   };
-  console.log(articles, "dsafdsaf");
 
   return (
     <div className="min-h-screen bg-gray-100 space-y-10">
