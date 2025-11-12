@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./slices/user";
-
 import homePageReducer from "./slices/homepageSlice";
 import articleReducer from "./slices/articleSlice";
 import categoriesSlice from "./slices/articleCategoriesSlice";
@@ -16,8 +15,8 @@ export default configureStore({
     homepage: homePageReducer,
     articles: articleReducer,
     categories: categoriesSlice,
-      about: aboutReducer,
-        faq: faqReducer,
+    about: aboutReducer,
+    faq: faqReducer,
     category: categoryReducer,
     partner  : partnerReducer,
     form  : formReducer,

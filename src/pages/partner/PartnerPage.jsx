@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 import {
   fetchPartners,
   updatePartner,
@@ -38,7 +40,7 @@ const DynamicField = ({
               type="text"
               value={placeholder}
               onChange={(e) => onPlaceholderChange(e, name)}
-              className="w-1/2 border border-gray-300 rounded-lg px-3 py-2 "
+              className="w-1/2 border border-gray-300 rounded-lg px-3 py-2"
               disabled={disabled}
             />
           </div>
@@ -143,6 +145,7 @@ const PartnerPage = () => {
       setFormData((prev) => ({ ...prev, image: file }));
       const previewUrl = URL.createObjectURL(file);
       setPreview(previewUrl);
+      toast.success("Image uploaded successfully!");
     }
   };
 
@@ -178,35 +181,35 @@ const PartnerPage = () => {
   };
 
   const handleSave = async () => {
-    if (!formData?._id) return;
+    if (!formData?._id) {
+      toast.error("No partner found to update.");
+      return;
+    }
     try {
       const response = await dispatch(
         updatePartner({ id: formData._id, formData })
       ).unwrap();
-      const successMessage =
-        response?.message || "Partner updated successfully!";
-      toast.success(successMessage);
+      toast.success(response?.message || "Partner updated successfully!");
       setIsEditing(false);
       dispatch(fetchPartners());
     } catch (err) {
-      const errorMessage = err?.message || "Failed to update partner.";
-      toast.error(errorMessage);
+      toast.error(err?.message || "Failed to update partner.");
     }
   };
 
   const handleDelete = async () => {
-    if (!formData?._id) return;
+    if (!formData?._id) {
+      toast.error("No partner found to delete.");
+      return;
+    }
     try {
       const response = await dispatch(deletePartner(formData._id)).unwrap();
-      const successMessage =
-        response?.message || "Partner deleted successfully!";
-      toast.success(successMessage);
+      toast.success(response?.message || "Partner deleted successfully!");
       setFormData(null);
-      setShowDeleteModal(false); 
+      setShowDeleteModal(false);
       dispatch(fetchPartners());
     } catch (err) {
-      const errorMessage = err?.message || "Failed to delete partner.";
-      toast.error(errorMessage);
+      toast.error(err?.message || "Failed to delete partner.");
     }
   };
 
@@ -214,7 +217,7 @@ const PartnerPage = () => {
     return <p className="p-6 text-gray-600">Loading partner data...</p>;
 
   return (
-    <div className="min-h-screen space-y-10 p-6 bg-gray-50">
+    <div className="space-y-10">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Partner Page</h1>
         <div className="flex gap-3">
@@ -224,7 +227,7 @@ const PartnerPage = () => {
                 <AiTwotoneEdit size={20} className="text-[#161925] text-xl" />
               </button>
               <button
-                onClick={() => setShowDeleteModal(true)} 
+                onClick={() => setShowDeleteModal(true)}
                 className="text-red-600 px-2"
               >
                 <RiDeleteBin5Line className="text-xl" />
@@ -265,6 +268,7 @@ const PartnerPage = () => {
           disabled={!isEditing}
         />
       </Section>
+
       <Section title="Contact Form Fields">
         <Input
           label="Contact Form Title"
@@ -300,6 +304,7 @@ const PartnerPage = () => {
           />
         ))}
       </Section>
+
       <Section title="Details Section">
         <Input
           label="Title"
@@ -308,6 +313,7 @@ const PartnerPage = () => {
           name="title"
           disabled={!isEditing}
         />
+
         {isEditing && (
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -321,6 +327,7 @@ const PartnerPage = () => {
             />
           </div>
         )}
+
         {(preview || formData.image) && (
           <img
             src={preview ? preview : `${IMAGE_URL}${formData.image}`}
@@ -328,14 +335,29 @@ const PartnerPage = () => {
             className="mt-3 rounded-lg border h-40 w-auto object-cover"
           />
         )}
-        <Textarea
-          label="Description"
-          value={formData.description}
-          onChange={(e) => handleChange(e, "description")}
-          name="description"
-          disabled={!isEditing}
-        />
+
+        <div>
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            Description
+          </label>
+          {isEditing ? (
+            <ReactQuill
+              theme="snow"
+              value={formData.description || ""}
+              onChange={(value) =>
+                setFormData((prev) => ({ ...prev, description: value }))
+              }
+              className="bg-white rounded-lg"
+            />
+          ) : (
+            <div
+              className="border border-gray-300 rounded-lg px-3 py-2 bg-white prose prose-gray max-w-none leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: formData.description || "" }}
+            />
+          )}
+        </div>
       </Section>
+
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 dark:bg-blue-950 rounded-lg w-[350px] shadow-lg">
@@ -379,26 +401,6 @@ const Input = ({ label, value, onChange, name, disabled }) => (
     <input
       type="text"
       name={name}
-      value={value || ""}
-      onChange={onChange}
-      disabled={disabled}
-      className={`w-full border border-gray-300 rounded-lg px-3 py-2 outline-none bg-white ${
-        disabled
-          ? "bg-gray-100 cursor-not-allowed"
-          : "focus:ring-2 focus:ring-blue-400"
-      }`}
-    />
-  </div>
-);
-
-const Textarea = ({ label, value, onChange, name, disabled }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-600 mb-1">
-      {label}
-    </label>
-    <textarea
-      name={name}
-      rows={4}
       value={value || ""}
       onChange={onChange}
       disabled={disabled}
