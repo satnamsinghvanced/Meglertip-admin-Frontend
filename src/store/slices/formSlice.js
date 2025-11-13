@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
+import toast from "react-hot-toast";
 
 // ✅ Fetch all forms
 export const fetchForms = createAsyncThunk(
@@ -53,6 +54,7 @@ export const updateForm = createAsyncThunk(
   async ({ id, formData }, { rejectWithValue }) => {
     try {
       const { data } = await api.put(`/forms/update?id=${id}`, formData);
+ toast.success("Form updated successfully!");
       return data.form;
     } catch (err) {
       return rejectWithValue(

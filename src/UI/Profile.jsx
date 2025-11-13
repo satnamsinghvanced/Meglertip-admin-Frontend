@@ -1,4 +1,4 @@
-import image from "../../public/images/vector2.png"
+
 const Profile = ({
   className = "md:h-10 h-8 md:w-10 w-8 text-sm md:text-base",
   user,
@@ -6,7 +6,7 @@ const Profile = ({
   let display =
     user?.username
       ? `${user?.username?.slice(0, 1)}`
-      : {image}
+      : "/images/vector2.png"
 
 
   return (

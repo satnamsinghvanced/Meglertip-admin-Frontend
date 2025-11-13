@@ -4,6 +4,7 @@ import Input from "../../UI/Input";
 import ImageUploader from "../../UI/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
 import { getAboutPage, updateAboutPage } from "../../store/slices/aboutPageSlice";
+import { toast } from "react-toastify";
 
 const AboutPage = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const AboutPage = () => {
 
   const handleSave = () => {
     dispatch(updateAboutPage(form));
+      toast.success(res.data.message )
   };
 
   return (

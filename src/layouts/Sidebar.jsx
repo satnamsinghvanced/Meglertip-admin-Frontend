@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 
 import { Link, useLocation, useNavigate } from "react-router";
-import logo from "../../public/images/boligtip.png";
 import { HiChevronDoubleLeft } from "react-icons/hi";
 
 import {
@@ -107,7 +106,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
             <Link to="/">
               <figure className="justify-center pr-5 flex cursor-pointer">
                 <img
-                  src={logo}
+                  src="/images/boligtip.png"
                   width={150}
                   height={32}
                   alt="logo"

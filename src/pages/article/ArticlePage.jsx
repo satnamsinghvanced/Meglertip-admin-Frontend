@@ -14,7 +14,10 @@ import {
   clearSelectedArticle,
   deleteArticle,
 } from "../../store/slices/articleSlice";
-import { getCategories } from "../../store/slices/articleCategoriesSlice";
+import {
+  createCategory,
+  getCategories,
+} from "../../store/slices/articleCategoriesSlice";
 import Pagination from "../../UI/pagination";
 
 const ArticlePage = () => {
@@ -80,6 +83,12 @@ const ArticlePage = () => {
     });
     setShowFormModal(true);
   };
+  const [newCategory, setNewCategory] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    language: "",
+  });
   const openEditModal = (article) => {
     setIsEditing(true);
     setNewArticle({
@@ -179,17 +188,49 @@ const ArticlePage = () => {
       console.error("Error deleting article:", err);
     }
   };
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [newCategoryTitle, setNewCategoryTitle] = useState("");
 
+  const handleAddCategory = async () => {
+    if (
+      !newCategory.title ||
+      !newCategory.slug ||
+      !newCategory.description ||
+      !newCategory.language
+    ) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    try {
+      await dispatch(createCategory(newCategory));
+      setShowAddCategoryModal(false);
+      setNewCategory({ title: "", slug: "", description: "", language: "" });
+    } catch (err) {
+      console.error("Error adding category:", err);
+      toast.error(err?.message || "Failed to add category");
+      setNewCategory({ title: "", slug: "", description: "", language: "" });
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-100 space-y-10">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex md:flex-row flex-col justify-between items-center mb-8">
         <h1 className="text-2xl font-bold dark:text-white">Articles</h1>
+        <div className="flex gap-3 flex-wrap max-md:justify-center">
+         <button
+          type="button"
+          onClick={() => setShowAddCategoryModal(true)}
+          className="bg-[#161925] text-white px-3 py-2 rounded-lg hover:bg-[#161925]/85 transition"
+        >
+         + Add Article Category
+        </button>
         <button
           className="px-5 py-2 bg-[#161925] text-white rounded-lg hover:bg-[#161925]/85 transition"
           onClick={openAddModal}
         >
           + Add New Article
         </button>
+       </div>
       </div>
 
       <div className="overflow-x-auto shadow-lg rounded-lg bg-white">
@@ -374,6 +415,65 @@ const ArticlePage = () => {
           </div>
         </div>
       )}
+      {/* Add Category Modal */}
+{showAddCategoryModal && (
+  <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div className="bg-white dark:bg-blue-950 p-6 rounded-xl shadow-lg w-[350px]">
+      <h3 className="text-lg font-semibold mb-4 text-center dark:text-white">
+        Add New Category
+      </h3>
+    <label className="text-sm text-gray-600 dark:text-gray-300">Title</label>
+      <input
+        type="text"
+        placeholder="Enter category title"
+        value={newCategory.title}
+        onChange={(e) => setNewCategory({ ...newCategory, title: e.target.value })}
+        className="w-full border p-2 rounded-lg mb-3"
+      />
+
+      <label className="text-sm text-gray-600 dark:text-gray-300">Slug</label>
+      <input
+        type="text"
+        placeholder="Enter slug"
+        value={newCategory.slug}
+        onChange={(e) => setNewCategory({ ...newCategory, slug: e.target.value })}
+        className="w-full border p-2 rounded-lg mb-3"
+      />
+
+      <label className="text-sm text-gray-600 dark:text-gray-300">Description</label>
+      <textarea
+        placeholder="Enter description"
+        value={newCategory.description}
+        onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
+        className="w-full border p-2 rounded-lg mb-3"
+      />
+
+      <label className="text-sm text-gray-600 dark:text-gray-300">Language</label>
+      <input
+        type="text"
+        placeholder="Enter language (e.g., English)"
+        value={newCategory.language}
+        onChange={(e) => setNewCategory({ ...newCategory, language: e.target.value })}
+        className="w-full border p-2 rounded-lg mb-4"
+      />
+
+      <div className="flex justify-end gap-3">
+        <button
+          className="border px-4 py-2 rounded-md"
+          onClick={() => setShowAddCategoryModal(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-[#161925] hover:bg-[#161925]/85 text-white px-4 py-2 rounded-md"
+          onClick={handleAddCategory}
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {showFormModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
@@ -435,26 +535,31 @@ const ArticlePage = () => {
                 )}
               </div>
               <div>
-                <label htmlFor="categoryId">Category</label>
-                <select
-                  id="categoryId"
-                  name="categoryId"
-                  value={newArticle.categoryId}
-                  onChange={handleAddChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.title}
-                    </option>
-                  ))}
-                </select>
+                <label htmlFor="categoryId" className="block font-medium mb-1">
+                  Category
+                </label>
+                <div className="flex gap-2 items-center">
+                  <select
+                    id="categoryId"
+                    name="categoryId"
+                    value={newArticle.categoryId}
+                    onChange={handleAddChange}
+                    className="w-full p-2 border rounded-lg"
+                    required
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 {errors.categoryId && (
                   <p className="text-red-500 text-sm">{errors.categoryId}</p>
                 )}
               </div>
+
               <div>
                 <label htmlFor="showDate">Show Date</label>
                 <div className="flex items-center gap-4">

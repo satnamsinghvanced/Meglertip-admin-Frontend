@@ -4,6 +4,7 @@ import { fetchForms, updateForm } from "../../store/slices/formSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 const AdminFormBuilder = () => {
   const dispatch = useDispatch();
@@ -155,6 +156,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
     const dataToSave = { ...formData };
     delete dataToSave.isChanged;
     dispatch(updateForm({ id: formId, formData: dataToSave }));
+     toast.success("Form updated successfully!");
   };
 
   return (
