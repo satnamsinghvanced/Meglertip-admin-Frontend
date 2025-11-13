@@ -126,7 +126,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
         <div
           className={`${
             isMiniSidebarOpen && "overflow-y-auto overflow-x-hidden"
-          } flex sideBar flex-col justify-between h-[calc(100vh_-_165px)]`}
+          } flex sideBar flex-col justify-between h-[calc(100vh_-_100px)]`}
         >
           <ul
             className={`flex flex-col justify-between space-y-2 ${
