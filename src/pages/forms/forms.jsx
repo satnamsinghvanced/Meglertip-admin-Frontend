@@ -40,25 +40,35 @@ const AdminFormBuilder = () => {
     });
   };
 
-  const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
-    setEditableForms((prev) => {
-      const form = prev[formId] || {};
-      const steps = [...(form.steps || [])];
-      const fields = [...(steps[stepIndex]?.fields || [])];
+const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
+  setEditableForms((prev) => {
+    const form = prev[formId] || {};
+    const steps = [...(form.steps || [])];
+    const fields = [...(steps[stepIndex]?.fields || [])];
+    let updatedField = { ...fields[fieldIndex] };
 
-      if (fieldName === "options") {
-        fields[fieldIndex] = {
-          ...fields[fieldIndex],
-          [fieldName]: value.split(",").map((opt) => opt.trim()),
-        };
+    if (fieldName === "options") {
+      updatedField[fieldName] = value.split(",").map((opt) => opt.trim());
+    } 
+    else if (fieldName === "label") {
+      // Detect pattern like "Sell (Property Sell)"
+      const match = value.match(/^(.*?)\s*\((.*?)\)$/);
+      if (match) {
+        updatedField.label = match[1].trim();          // Sell
+        updatedField.description = match[2].trim();    // Property Sell
       } else {
-        fields[fieldIndex] = { ...fields[fieldIndex], [fieldName]: value };
+        updatedField.label = value; // Normal case (no brackets)
       }
+    } 
+    else {
+      updatedField[fieldName] = value;
+    }
 
-      steps[stepIndex] = { ...steps[stepIndex], fields };
-      return { ...prev, [formId]: { ...form, steps, isChanged: true } };
-    });
-  };
+    fields[fieldIndex] = updatedField;
+    steps[stepIndex] = { ...steps[stepIndex], fields };
+    return { ...prev, [formId]: { ...form, steps, isChanged: true } };
+  });
+};
 
   const handleAddStep = (formId) => {
     setEditableForms((prev) => {

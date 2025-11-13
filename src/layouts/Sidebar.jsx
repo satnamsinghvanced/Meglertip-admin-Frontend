@@ -53,6 +53,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: UsersRound,
       href: ROUTES.PARTNER,
     },
+     {
+      name: "Cities",
+      icon: ShieldCheck,
+      href: ROUTES.CITIES,
+    },
     {
       name: "Term of Service",
       icon: FileCheck2,

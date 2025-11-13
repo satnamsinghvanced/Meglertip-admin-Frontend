@@ -15,6 +15,7 @@ import PartnerPage from "../pages/partner/PartnerPage";
 import FormPage from "../pages/forms/forms";
 import { TermOfServicePage } from "../pages/term_of_service/TermOfService";
 import { PrivacyPolicyPage } from "../pages/privacy_policy/PrivacyPolicy";
+import { CityPage } from "../pages/cities/CityPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -39,13 +40,11 @@ const Routes = () => {
         <Route path={ROUTES.PARTNER} element={<PartnerPage/>} />
 
         <Route path={ROUTES.FORMS} element={<FormPage />} />
-        <Route path={ROUTES.HOME} element={<p>Dashboard</p>}>
-        </Route>
-        <Route path={ROUTES.PARTNER} element={<PartnerPage />} />
+         <Route path={ROUTES.CITIES} element={<CityPage />} />
+        <Route path={ROUTES.HOME} element={<p>Dashboard</p>}/>
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
-        <Route path={ROUTES.FORMS} element={<p>FORMS</p>} />
-        <Route path={ROUTES.HOME} element={<p>Dashboard</p>}></Route>
+
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />

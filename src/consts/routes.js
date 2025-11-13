@@ -14,4 +14,6 @@ export const ROUTES = {
   PARTNER:"/partner",
   TERM_OF_SERVICE: "/term-of-service",
   PRIVACY_POLICY:"/privacy-policy",
+  CITIES:"/cities",
+  COUNTIES:"/counties"
 };
