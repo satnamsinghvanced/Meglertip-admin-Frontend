@@ -2,12 +2,19 @@ import { useState } from "react";
 import  {uploadImage}  from "../store/slices/imageUpload";
 import { AiOutlineCloudUpload, AiOutlineDelete } from "react-icons/ai";
 import { RxCrossCircled } from "react-icons/rx";
+import { toast } from "react-toastify";
 const ImageUploader = ({ label, value, onChange , disabled }) => {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+  const allowedExtensions = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml", "image/x-icon"];
+  
+  if (!allowedExtensions.includes(file.type)) {
+   toast.error("Invalid file type. Please upload an image or icon (jpeg, png, gif, webp, svg, ico).");
+    return;
+    }
 
     setIsUploading(true);
     const imageUrl = await uploadImage(file);
