@@ -5,12 +5,14 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../UI/ConfirmDeleteModal";
 
 const AdminFormBuilder = () => {
   const dispatch = useDispatch();
   const { forms, loading } = useSelector((state) => state.form);
 
   const [editableForms, setEditableForms] = useState({});
+  const [isModalOpen , setIsModalOpen] = useState(false)
 
   useEffect(() => {
     dispatch(fetchForms());
@@ -42,35 +44,39 @@ const AdminFormBuilder = () => {
     });
   };
 
-const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
-  setEditableForms((prev) => {
-    const form = prev[formId] || {};
-    const steps = [...(form.steps || [])];
-    const fields = [...(steps[stepIndex]?.fields || [])];
-    let updatedField = { ...fields[fieldIndex] };
+  const handleFieldChange = (
+    formId,
+    stepIndex,
+    fieldIndex,
+    fieldName,
+    value
+  ) => {
+    setEditableForms((prev) => {
+      const form = prev[formId] || {};
+      const steps = [...(form.steps || [])];
+      const fields = [...(steps[stepIndex]?.fields || [])];
+      let updatedField = { ...fields[fieldIndex] };
 
-    if (fieldName === "options") {
-      updatedField[fieldName] = value.split(",").map((opt) => opt.trim());
-    } 
-    else if (fieldName === "label") {
-      // Detect pattern like "Sell (Property Sell)"
-      const match = value.match(/^(.*?)\s*\((.*?)\)$/);
-      if (match) {
-        updatedField.label = match[1].trim();          // Sell
-        updatedField.description = match[2].trim();    // Property Sell
+      if (fieldName === "options") {
+        updatedField[fieldName] = value.split(",").map((opt) => opt.trim());
+      } else if (fieldName === "label") {
+        // Detect pattern like "Sell (Property Sell)"
+        const match = value.match(/^(.*?)\s*\((.*?)\)$/);
+        if (match) {
+          updatedField.label = match[1].trim(); // Sell
+          updatedField.description = match[2].trim(); // Property Sell
+        } else {
+          updatedField.label = value; // Normal case (no brackets)
+        }
       } else {
-        updatedField.label = value; // Normal case (no brackets)
+        updatedField[fieldName] = value;
       }
-    } 
-    else {
-      updatedField[fieldName] = value;
-    }
 
-    fields[fieldIndex] = updatedField;
-    steps[stepIndex] = { ...steps[stepIndex], fields };
-    return { ...prev, [formId]: { ...form, steps, isChanged: true } };
-  });
-};
+      fields[fieldIndex] = updatedField;
+      steps[stepIndex] = { ...steps[stepIndex], fields };
+      return { ...prev, [formId]: { ...form, steps, isChanged: true } };
+    });
+  };
 
   const handleAddStep = (formId) => {
     setEditableForms((prev) => {
@@ -156,14 +162,13 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
     const dataToSave = { ...formData };
     delete dataToSave.isChanged;
     dispatch(updateForm({ id: formId, formData: dataToSave }));
-     toast.success("Form updated successfully!");
+    toast.success("Form updated successfully!");
   };
 
   return (
     <>
       <div className="min-h-screen bg-gray-100 space-y-10">
         <h2 className="text-2xl font-bold dark:text-white mb-8">Form</h2>
-
         <div>
           {loading ? (
             <div className="space-y-5  animate-pulse">
@@ -244,6 +249,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                   toggleStepVisibility(form._id, stepIndex)
                                 }
                                 className="text-gray-700 hover:text-gray-900"
+                                
                               >
                                 {step.visible ? (
                                   <FaEye className="text-xl" />
@@ -252,17 +258,25 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                 )}
                               </button>
                               <button
-                                onClick={() =>
-                                  handleDeleteStep(form._id, stepIndex)
-                                }
+                                // onClick={() =>
+                                //   handleDeleteStep(form._id, stepIndex)
+                                // }
                                 className="text-red-600 hover:text-red-700"
                               >
                                 <RiDeleteBin5Line className="text-xl" />
                               </button>
+                              {/* <ConfirmModal
+                                isOpen={isModalOpen}
+                                title="Confirm Delete"
+                                message={`Are you sure you want to delete step?`}
+                                onConfirm={handleDeleteStep(form._id)}
+                                onCancel={() => setIsModalOpen(false)}
+                              /> */}
                               <button
                                 onClick={() =>
                                   handleAddField(form._id, stepIndex)
                                 }
+                                disabled={!step.visible}
                                 className="flex items-center gap-1 text-sm bg-[#161925] text-white px-2 py-1 rounded hover:bg-[#161925]/85 transition"
                               >
                                 <AiOutlinePlus size={14} /> Add Field
@@ -276,6 +290,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                           <input
                             type="text"
                             value={step.stepTitle}
+                             disabled={!step.visible}
                             onChange={(e) =>
                               handleStepChange(
                                 form._id,
@@ -303,6 +318,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                     <input
                                       type="text"
                                       value={field.label}
+                                       disabled={!step.visible}
                                       onChange={(e) =>
                                         handleFieldChange(
                                           form._id,
@@ -323,6 +339,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                     <input
                                       type="text"
                                       value={field.name}
+                                       disabled={!step.visible}
                                       onChange={(e) =>
                                         handleFieldChange(
                                           form._id,
@@ -342,6 +359,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                     <input
                                       type="text"
                                       value={field.placeholder}
+                                       disabled={!step.visible}
                                       onChange={(e) =>
                                         handleFieldChange(
                                           form._id,
@@ -361,6 +379,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                     </label>
                                     <select
                                       value={field.type}
+                                       disabled={!step.visible}
                                       onChange={(e) =>
                                         handleFieldChange(
                                           form._id,
@@ -394,6 +413,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                       </label>
                                       <input
                                         type="text"
+                                         disabled={!step.visible}
                                         value={
                                           field.options
                                             ? field.options.join(", ")
@@ -428,6 +448,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                           !field.required
                                         )
                                       }
+                                     
                                       className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition ${
                                         field.required
                                           ? "bg-[#161925]"
@@ -436,7 +457,9 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                     >
                                       <div
                                         className={`bg-white w-5 h-5 rounded-full shadow-md transform transition ${
-                                          field.required ? "translate-x-[21px]" : ""
+                                          field.required
+                                            ? "translate-x-[21px]"
+                                            : ""
                                         }`}
                                       ></div>
                                     </div>
@@ -470,6 +493,7 @@ const handleFieldChange = (formId, stepIndex, fieldIndex, fieldName, value) => {
                                               fieldIndex
                                             )
                                           }
+                                            disabled={!step.visible}
                                           className="text-red-600 hover:text-red-700 "
                                         >
                                           <RiDeleteBin5Line className="text-xl" />

@@ -16,6 +16,10 @@ import FormPage from "../pages/forms/forms";
 import { TermOfServicePage } from "../pages/term_of_service/TermOfService";
 import { PrivacyPolicyPage } from "../pages/privacy_policy/PrivacyPolicy";
 import { CityPage } from "../pages/cities/CityPage";
+import ArticleFormPage from "../pages/article/ArticleFormPage";
+import ArticleDetailPage from "../pages/article/ArticleDetailPage";
+import EmailTemplateList from "../pages/email-template/templates";
+import CreateEmailTemplate from "../pages/email-template/email-templates";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -35,8 +39,11 @@ const Routes = () => {
       <Route element={token ? <Layout /> : <AuthLayout />}>
         <Route path={ROUTES.HOMEPAGE} element={<HomePage />} />
         <Route path={ROUTES.ABOUT} element={<AboutPage />} />
-        <Route path={ROUTES.ARTICLE} element={<ArticlePage />} />
         <Route path={ROUTES.FAQ} element={<Faq />} />
+        <Route path={ROUTES.ARTICLE} element={<ArticlePage />} />
+        <Route path={ROUTES.ARTICLE_CREATE} element={<ArticleFormPage />} />
+        <Route path={ROUTES.ARTICLE_EDIT} element={<ArticleFormPage />} />
+        <Route path={ROUTES.ARTICLE_VIEW} element={<ArticleDetailPage />} />
         <Route path={ROUTES.PARTNER} element={<PartnerPage/>} />
 
         <Route path={ROUTES.FORMS} element={<FormPage />} />
@@ -46,6 +53,9 @@ const Routes = () => {
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
 
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
+        <Route path={ROUTES.EMAIL} element={<EmailTemplateList />} />
+        <Route path="/email/create" element={<CreateEmailTemplate />} />
+        <Route path="/email/edit/:templateId" element={<CreateEmailTemplate />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />

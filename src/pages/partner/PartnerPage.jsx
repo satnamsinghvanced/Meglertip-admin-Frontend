@@ -12,7 +12,32 @@ import {
   updatePartner,
   deletePartner,
 } from "../../store/slices/partnerSlice";
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],  // Block headers
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["blockquote", "code-block"],   // Block options
+    [{ align: [] }],
+    ["link", "image"],
+    ["clean"],
+  ],
+};
 
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "list",
+  "bullet",
+  "blockquote",
+  "code-block",
+  "align",
+  "link",
+  "image",
+];
 const DynamicField = ({
   field,
   onChange,
@@ -348,6 +373,8 @@ const PartnerPage = () => {
                 setFormData((prev) => ({ ...prev, description: value }))
               }
               className="bg-white rounded-lg"
+               modules={modules}
+                   formats={formats}
             />
           ) : (
             <div

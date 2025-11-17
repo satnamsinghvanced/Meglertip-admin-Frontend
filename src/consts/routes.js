@@ -10,10 +10,14 @@ export const ROUTES = {
   FAQ: "/faq",
   ABOUT: "/about",
   ARTICLE: "/articles",
+  ARTICLE_CREATE: "/articles/create",
+  ARTICLE_VIEW: "/articles/:articleId",
+  ARTICLE_EDIT: "/articles/:articleId/edit",
   HOMEPAGE: "/homepage",
   PARTNER:"/partner",
   TERM_OF_SERVICE: "/term-of-service",
   PRIVACY_POLICY:"/privacy-policy",
+  EMAIL:"email-templates",
   CITIES:"/cities",
   COUNTIES:"/counties"
 };

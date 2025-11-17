@@ -9,7 +9,32 @@ import {
   updateTermOfService,
 } from "../../store/slices/termOfService";
 import { addCustomStyling } from "../../utils/addCustomStyling";
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],  // Block headers
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["blockquote", "code-block"],   // Block options
+    [{ align: [] }],
+    ["link", "image"],
+    ["clean"],
+  ],
+};
 
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "list",
+  "bullet",
+  "blockquote",
+  "code-block",
+  "align",
+  "link",
+  "image",
+];
 export const TermOfServicePage = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((state) => state.termOfService);
@@ -104,7 +129,8 @@ export const TermOfServicePage = () => {
             dangerouslySetInnerHTML={{ __html: addCustomStyling(content) }}
           />
         ) : (
-          <ReactQuill theme="snow" value={content} onChange={setContent} />
+          <ReactQuill theme="snow" value={content} onChange={setContent}  modules={modules}
+                   formats={formats} />
         )}
       </div>
     </div>

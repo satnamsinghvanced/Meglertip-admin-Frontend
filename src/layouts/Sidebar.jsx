@@ -2,6 +2,7 @@
 
 import { Link, useLocation, useNavigate } from "react-router";
 import { HiChevronDoubleLeft } from "react-icons/hi";
+import { Fragment } from "react";
 
 import {
   Home,
@@ -13,7 +14,7 @@ import {
   FileCheck2,
   ShieldCheck,
   Settings,
-  
+  Mail,
 } from "lucide-react";
 
 import { ROUTES } from "../consts/routes";
@@ -53,7 +54,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: UsersRound,
       href: ROUTES.PARTNER,
     },
-     {
+    {
       name: "Cities",
       icon: ShieldCheck,
       href: ROUTES.CITIES,
@@ -67,6 +68,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Privacy Policy",
       icon: ShieldCheck,
       href: ROUTES.PRIVACY_POLICY,
+    },
+    {
+      name: "Email Templates",
+      icon: Mail,
+      href: ROUTES.EMAIL,
     },
   ];
 
@@ -82,139 +88,118 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
 
   return (
     <>
-      {/* Overlay for mobile */}
       <div
         className={`${
-          isMiniSidebarOpen
-            ? "bg-black/40 w-full h-full fixed inset-0 z-30"
-            : ""
+          isMiniSidebarOpen ? "bg-black/40 w-full h-full fixed inset-0 z-30" : ""
         } md:hidden`}
+        onClick={onCloseSidebar}
       />
 
-      {/* Sidebar */}
       <div
-        className={`fixed top-0 sideBar lg:z-20 pt-6 z-40 bg-white dark:bg-blue-950 dark:text-white left-0 sm:top-0 border-r border-solid border-gray-200 dark:border-gray-800 transition-all duration-300 h-screen ${
-          isMiniSidebarOpen ? "md:w-[280px] w-[90%] md:px-5 px-2" : "w-22 px-2"
+        className={`fixed inset-y-0 left-0 z-40 flex h-screen flex-col border-r border-slate-100 bg-white/95 backdrop-blur-md transition-all duration-300 dark:border-blue-900 dark:bg-blue-950/95 ${
+          isMiniSidebarOpen ? "w-[280px]" : "w-[88px]"
         }`}
       >
-        {/* Logo & Toggle */}
-        <div
-          className={`${
-            isMiniSidebarOpen ? "justify-between" : "justify-center mb-14"
-          } hidden md:flex items-center mb-8 w-full`}
-        >
+        <div className="flex items-center justify-between px-4 py-5">
           {isMiniSidebarOpen && (
-            <Link to="/">
-              <figure className="justify-center pr-5 flex cursor-pointer">
-                <img
-                  src="/images/boligtip.png"
-                  width={150}
-                  height={32}
-                  alt="logo"
-                  className="object-contain ml-2"
-                />
-              </figure>
+            <Link to="/" className="flex items-center gap-2">
+              <img
+                src="/images/boligtip.png"
+                alt="logo"
+                className="h-8 w-auto object-contain"
+              />
             </Link>
           )}
-          <div className="" onClick={toggleSidebar}>
-            <span className="cursor-pointer">
-              <HiChevronDoubleLeft
-                className={`${
-                  isMiniSidebarOpen ? "" : "rotate-180"
-                } transition-all text-xl`}
-              />
-            </span>
-          </div>
+          <button
+            onClick={toggleSidebar}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
+          >
+            <HiChevronDoubleLeft
+              className={`text-xl transition ${isMiniSidebarOpen ? "" : "rotate-180"}`}
+            />
+          </button>
         </div>
 
-        {/* Main navigation */}
-        <div
-          className={`${
-            isMiniSidebarOpen && "overflow-y-auto overflow-x-hidden"
-          } flex sideBar flex-col justify-between h-[calc(100vh_-_100px)]`}
-        >
-          <ul
-            className={`flex flex-col justify-between space-y-2 ${
-              !isMiniSidebarOpen ? "mx-2" : ""
-            }`}
-          >
-            {navigationRoutes.map((item, index) => (
-              <li key={index}>
-                <div
-                  onClick={() => {
-                    navigate(item.href);
-                    onCloseSidebar();
-                  }}
-                  className="cursor-pointer"
-                >
-                  <div
-                    className={`${
-                      location.pathname === item.href
-                        ? "bg-[#161925] text-white px-4"
-                        : "hover:bg-gray-100 hover:px-4 dark:hover:text-gray-900"
-                    } rounded-lg sm:text-base text-sm font-bold py-3.5 flex items-center dark:text-white ${
-                      isMiniSidebarOpen ? "" : "px-4 justify-center"
-                    } transition-all group`}
-                  >
-                    <span
-                      className={`${
-                        location.pathname === item.href
-                          ? "text-white"
-                          : "dark:text-white dark:group-hover:text-gray-900"
-                      } sm:w-7 w-6 flex items-center justify-center`}
+        <div className="mt-2 flex flex-1 flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-3">
+            <p
+              className={`mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 ${
+                isMiniSidebarOpen ? "pl-2" : "text-center"
+              }`}
+            >
+              {/* Navigation */}
+            </p>
+            <ul className="space-y-1">
+              {navigationRoutes.map((item, index) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <li key={index}>
+                    <button
+                      onClick={() => {
+                        navigate(item.href);
+                        onCloseSidebar();
+                      }}
+                      className={`relative flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
+                        isActive
+                          ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10"
+                          : "text-slate-600 hover:bg-slate-100"
+                      } ${isMiniSidebarOpen ? "" : "justify-center"}`}
                     >
-                      <item.icon fontSize={20} />
-                    </span>
-                    {isMiniSidebarOpen && (
-                      <span className="ml-1">{item.name}</span>
-                    )}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                      <span
+                        className={`flex h-6 w-6 items-center justify-center ${
+                          isActive ? "text-white" : "text-slate-500"
+                        }`}
+                      >
+                        <item.icon size={18} />
+                      </span>
+                      {isMiniSidebarOpen && (
+                        <span className="truncate">{item.name}</span>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
 
-          {/* Bottom settings section */}
-          <ul
-            className={`flex flex-col justify-between gap-2 ${
-              !isMiniSidebarOpen ? "mx-2" : ""
-            }`}
-          >
-            {bottomRoutes.map((item, index) => (
-              <li key={index}>
-                <div
-                  onClick={() => {
-                    navigate(item.href);
-                    onCloseSidebar();
-                  }}
-                  className="cursor-pointer"
-                >
-                  <div
-                    className={`${
-                      location.pathname === item.href
-                        ? "bg-[#161925] text-white px-4"
-                        : "hover:bg-gray-100 hover:px-4 dark:hover:text-gray-900"
-                    } rounded-lg sm:text-base text-sm font-bold py-3.5 flex items-center dark:text-white ${
-                      isMiniSidebarOpen ? "" : "px-4 justify-center"
-                    } transition-all group`}
+          <div className="px-3 pb-4 pt-2">
+            <p
+              className={`mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 ${
+                isMiniSidebarOpen ? "pl-2" : "text-center"
+              }`}
+            >
+              Other
+            </p>
+            {bottomRoutes.map((item, index) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Fragment key={index}>
+                  <button
+                    onClick={() => {
+                      navigate(item.href);
+                      onCloseSidebar();
+                    }}
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
+                      isActive
+                        ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10"
+                        : "text-slate-600 hover:bg-slate-100"
+                    } ${isMiniSidebarOpen ? "" : "justify-center"}`}
                   >
                     <span
-                      className={`${
-                        location.pathname === item.href
-                          ? "text-white"
-                          : "dark:text-white dark:group-hover:text-gray-900"
-                      } sm:w-7 w-6 flex items-center justify-center`}
+                      className={`flex h-6 w-6 items-center justify-center ${
+                        isActive ? "text-white" : "text-slate-500"
+                      }`}
                     >
-                      <item.icon fontSize={20} />
+                      <item.icon size={18} />
                     </span>
                     {isMiniSidebarOpen && (
-                      <span className="ml-1">{item.name}</span>
+                      <span className="truncate">{item.name}</span>
                     )}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  </button>
+                </Fragment>
+              );
+            })}
+          </div>
         </div>
       </div>
     </>

@@ -8,6 +8,7 @@ import {
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import ImageUploader from "../../UI/ImageUpload";
+import ConfirmModal from "../../UI/ConfirmDeleteModal";
 
 const HomePageEditor = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const HomePageEditor = () => {
     cards: [{ title: "", icon: "", description: "" }],
   });
 
+  const [category, setCategory] = useState({ heading: "" });
   const [articles, setArticles] = useState({ heading: "" });
   const [whyChoose, setWhyChoose] = useState({
     heading: "",
@@ -62,6 +64,8 @@ const HomePageEditor = () => {
       });
     if (sections["articles-heading"])
       setArticles({ heading: sections["articles-heading"].heading || "" });
+    if (sections["category-heading"])
+      setCategory({ heading: sections["category-heading"].heading || "" });
     if (sections["why-choose"])
       setWhyChoose({
         heading: sections["why-choose"].heading || "",
@@ -92,18 +96,18 @@ const HomePageEditor = () => {
   }, [sections]);
 
   const saveHero = () => dispatch(updateHomepageSection("hero", hero));
- const saveHowItWorks = () => {
-  dispatch(updateHomepageSection("how-it-works", howItWorks));
-};
-
-
+  const saveHowItWorks = () => {
+    dispatch(updateHomepageSection("how-it-works", howItWorks));
+  };
 
   const saveArticles = () =>
+    dispatch(updateHomepageSection("category-heading", category));
+  const saveArticlesHeading = () =>
     dispatch(updateHomepageSection("articles-heading", articles));
 
-const saveWhyChoose = () => {
-  dispatch(updateHomepageSection("why-choose", whyChoose));
-};
+  const saveWhyChoose = () => {
+    dispatch(updateHomepageSection("why-choose", whyChoose));
+  };
   const saveCity = () => dispatch(updateHomepageSection("city", city));
   const savePros = () =>
     dispatch(updateHomepageSection("pros", { prosSection: pros }));
@@ -188,11 +192,11 @@ const saveWhyChoose = () => {
             />
           </Section>
 
-          <Section title="Articles Heading" onSave={saveArticles}>
+          <Section title="Category Heading" onSave={saveArticles}>
             <Input
               label="Heading"
-              value={articles.heading}
-              onChange={(e) => setArticles({ heading: e.target.value })}
+              value={category.heading}
+              onChange={(e) => setCategory({ heading: e.target.value })}
             />
           </Section>
 
@@ -220,7 +224,6 @@ const saveWhyChoose = () => {
                     const arr = whyChoose.cards.filter((_, idx) => idx !== i);
                     setWhyChoose({ ...whyChoose, cards: arr });
                   }}
-                
                 />
               ))}
             </div>
@@ -252,7 +255,13 @@ const saveWhyChoose = () => {
               }
             />
           </Section>
-
+          <Section title="Articles Heading" onSave={saveArticlesHeading}>
+            <Input
+              label="Heading"
+              value={articles.heading}
+              onChange={(e) => setArticles({ heading: e.target.value })}
+            />
+          </Section>
           <Section title="Pros Section" onSave={savePros}>
             {pros.map((item, i) => (
               <div
@@ -280,12 +289,13 @@ const saveWhyChoose = () => {
                       setPros(arr);
                     }}
                   />
-                  <Input
+
+                  <ImageUploader
                     label="Image URL"
                     value={item.image}
-                    onChange={(e) => {
+                    onChange={(imageUrl) => {
                       const arr = [...pros];
-                      arr[i] = { ...arr[i], image: e.target.value };
+                      arr[i] = { ...arr[i], image: imageUrl };
                       setPros(arr);
                     }}
                   />
@@ -478,6 +488,13 @@ const Textarea = ({ label, value, onChange, disabled }) => (
 );
 
 const CardBlock = ({ data, index, setData, onDelete }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDelete = () => {
+    onDelete();
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 mt-3 shadow-sm">
       <div className="flex justify-between items-center mb-2">
@@ -485,7 +502,7 @@ const CardBlock = ({ data, index, setData, onDelete }) => {
 
         <button
           type="button"
-          onClick={onDelete}
+          onClick={() => setIsModalOpen(true)}
           className="p-2 rounded-md hover:bg-red-100 transition-colors"
         >
           <RiDeleteBin5Line className="text-red-600 text-xl" />
@@ -509,6 +526,13 @@ const CardBlock = ({ data, index, setData, onDelete }) => {
           onChange={(e) => setData({ ...data, description: e.target.value })}
         />
       </div>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Confirm Delete"
+        message={`Are you sure you want to delete Card #${index + 1}?`}
+        onConfirm={handleDelete}
+        onCancel={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
