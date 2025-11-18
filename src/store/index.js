@@ -3,13 +3,14 @@ import user from "./slices/user";
 import homePageReducer from "./slices/homepageSlice";
 import articleReducer from "./slices/articleSlice";
 import categoriesSlice from "./slices/articleCategoriesSlice";
-import aboutReducer from "./slices/aboutPageSlice"
-import faqReducer from "./slices/faq"
-import categoryReducer from "./slices/category"
-import partnerReducer from "./slices/partnerSlice"
-import formReducer from "./slices/formSlice"
+import aboutReducer from "./slices/aboutPageSlice";
+import faqReducer from "./slices/faq";
+import categoryReducer from "./slices/category";
+import partnerReducer from "./slices/partnerSlice";
+import formReducer from "./slices/formSlice";
 import privacyPolicyReducer from "./slices/privacyPolicySlice";
 import termOfServiceReducer from "./slices/termOfService";
+import themeReducer from "./slices/themeSlice";
 
 export default configureStore({
   reducer: {
@@ -20,9 +21,10 @@ export default configureStore({
     about: aboutReducer,
     faq: faqReducer,
     category: categoryReducer,
-    partner  : partnerReducer,
-    form  : formReducer,
+    partner: partnerReducer,
+    form: formReducer,
     privacyPolicy: privacyPolicyReducer,
     termOfService: termOfServiceReducer,
+    theme: themeReducer,
   },
 });
