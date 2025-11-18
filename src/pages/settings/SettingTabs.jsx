@@ -3,6 +3,9 @@ import ChangePassword from "./ChangePassword";
 import UserInfo from "./UserInfo";
 import { FiAlertCircle } from "react-icons/fi";
 import { MdOutlineLock } from "react-icons/md";
+import { Palette } from "lucide-react";
+import ThemeSettings from "./ThemeSettings";
+
 
 const SettingTabs = () => {
   const list = [
@@ -15,6 +18,11 @@ const SettingTabs = () => {
       icon: MdOutlineLock,
       title: "Password",
       content: <ChangePassword />,
+    },
+    {
+      icon: Palette,
+      title: "Theme",
+      content: <ThemeSettings/>,
     },
   ];
 

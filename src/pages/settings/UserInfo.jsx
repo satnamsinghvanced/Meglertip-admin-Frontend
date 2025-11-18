@@ -15,7 +15,6 @@ const UserInfo = () => {
   const { auth_user, is_loading } = useSelector((state) => state.user);
   const [editable, setEditable] = useState(false);
   const [profile, setProfile] = useState("");
-console.log(profile,"ahfakwjfaksfs  ")
   useEffect(() => {
     setProfile(auth_user?.avatar);
   }, [auth_user]);
@@ -23,7 +22,6 @@ console.log(profile,"ahfakwjfaksfs  ")
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("User name is required."),
   });
-  console.log(auth_user?._id, " User id");
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
