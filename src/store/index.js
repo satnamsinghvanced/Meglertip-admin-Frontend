@@ -10,6 +10,8 @@ import partnerReducer from "./slices/partnerSlice"
 import formReducer from "./slices/formSlice"
 import privacyPolicyReducer from "./slices/privacyPolicySlice";
 import termOfServiceReducer from "./slices/termOfService";
+import cityReducer from "./slices/citySlice"
+import companySlice from "./slices/companySlice"
 
 export default configureStore({
   reducer: {
@@ -24,5 +26,8 @@ export default configureStore({
     form  : formReducer,
     privacyPolicy: privacyPolicyReducer,
     termOfService: termOfServiceReducer,
+    cities: cityReducer,
+    companies:companySlice,
+
   },
 });

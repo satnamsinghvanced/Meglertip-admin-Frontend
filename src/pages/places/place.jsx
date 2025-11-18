@@ -11,7 +11,7 @@ import Pagination from "../../UI/pagination";
 
 import { getCities, deleteCity, createCity, importCities } from "../../store/slices/citySlice";
 
-export const CityPage = () => {
+export const Places = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -115,7 +115,7 @@ export const CityPage = () => {
       onClick: () => document.getElementById("city-import-input").click(),
     },
     {
-      value: "Add City",
+      value: "Add Place",
       variant: "primary",
       icon: <LuPlus size={18} />,
       className:
@@ -129,7 +129,7 @@ export const CityPage = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Cities"
+        title="Places"
         description="Manage places, counties, and related information."
         buttonsList={headerButtons}
       />
@@ -151,7 +151,7 @@ export const CityPage = () => {
         <div className="flex items-center justify-between border-b px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-slate-900">
-              Cities overview
+              Place overview
             </p>
             <p className="text-xs text-slate-500">
               {loading ? "Loading..." : `${totalCities} items`}
@@ -336,4 +336,4 @@ export const CityPage = () => {
   );
 };
 
-export default CityPage;
+export default Places;

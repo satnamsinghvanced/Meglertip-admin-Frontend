@@ -20,6 +20,10 @@ import ArticleFormPage from "../pages/article/ArticleFormPage";
 import ArticleDetailPage from "../pages/article/ArticleDetailPage";
 import EmailTemplateList from "../pages/email-template/templates";
 import CreateEmailTemplate from "../pages/email-template/email-templates";
+import Places from "../pages/places/place";
+import Company from "../pages/companies/CompanyPage";
+import CompanyDetailPage from "../pages/companies/CompanyDetailPage";
+import CompanyFormPage from "../pages/companies/CompanyFormPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -48,6 +52,12 @@ const Routes = () => {
 
         <Route path={ROUTES.FORMS} element={<FormPage />} />
          <Route path={ROUTES.CITIES} element={<CityPage />} />
+         <Route path={ROUTES.PLACES} element={<Places />} />
+         <Route path={ROUTES.COMPANIES} element={<Company />} />
+         <Route path={ROUTES.COMPANIES_CREATE} element={<CompanyFormPage />} />
+         <Route path={ROUTES.COMPANIES_VIEW} element={<CompanyDetailPage />} />
+         <Route path={ROUTES.COMPANIES_EDIT} element={<CompanyFormPage />} />
+
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>}/>
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />

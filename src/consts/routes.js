@@ -19,5 +19,9 @@ export const ROUTES = {
   PRIVACY_POLICY:"/privacy-policy",
   EMAIL:"email-templates",
   CITIES:"/cities",
-  COUNTIES:"/counties"
+  PLACES:"/places",
+  COMPANIES:"/companies",
+  COMPANIES_CREATE:"/companies/create",
+  COMPANIES_VIEW :"/company/:companyId",
+  COMPANIES_EDIT :"/company/:companyId/Edit"
 };
