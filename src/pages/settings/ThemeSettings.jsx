@@ -7,6 +7,7 @@ import { fetchTheme, updateTheme } from "../../store/slices/themeSlice";
 import { toast } from "react-toastify";
 import { AiOutlineUndo } from "react-icons/ai";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 const defaultTheme = {
   primary: "#2A4165",
@@ -131,7 +132,22 @@ const ThemeSettings = () => {
       <div className="bg-white rounded-2xl p-8 shadow-md relative">
         <div className="w-full flex justify-end mb-4">
           <button
-            onClick={restoreTheme}
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "This will restore the default theme.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, restore",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "#161925",
+                cancelButtonColor: "#d33",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  restoreTheme();
+                }
+              });
+            }}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#161925] hover:bg-[#0d0f18] text-white transition"
           >
             <AiOutlineUndo className="w-5 h-5" />
