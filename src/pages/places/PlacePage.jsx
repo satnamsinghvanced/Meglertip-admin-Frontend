@@ -10,21 +10,19 @@ import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 
 import { getCities, deleteCity, createCity, importCities } from "../../store/slices/citySlice";
+import { ROUTES } from "../../consts/routes";
+import { getPlaces } from "../../store/slices/placeSlice";
 
 export const Places = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { cities, loading, error } = useSelector((state) => state.cities);
-
+  const { places, loading, error } = useSelector((state) => state.places);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [cityToDelete, setCityToDelete] = useState(null);
-
-  const [showAddModal, setShowAddModal] = useState(false);
   const [manualCity, setManualCity] = useState({
     name: "",
     slug: "",
@@ -36,12 +34,12 @@ export const Places = () => {
 
   const [uploadFile, setUploadFile] = useState(null);
 
-  // Fetch Cities
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await dispatch(getCities({ page, limit })).unwrap();
-        setTotalPages(res.pagination.pages || 1);
+        const res = await dispatch(getPlaces({ page, limit })).unwrap();
+        console.log(res,"fsdfaf")
+        setTotalPages(res.totalPages || 1);
       } catch (err) {
         console.error(err);
       }
@@ -49,7 +47,6 @@ export const Places = () => {
     fetchCities();
   }, [dispatch, page, limit]);
 
-  // ------------------ Delete City ------------------
   const handleDeleteCity = async () => {
     if (!cityToDelete) return;
 
@@ -63,7 +60,6 @@ export const Places = () => {
     }
   };
 
-  // ------------------ Add Manual City ------------------
   const handleAddCity = async () => {
     if (!manualCity.name || !manualCity.slug || !manualCity.countyId) {
       return toast.error("Fill required fields");
@@ -87,7 +83,6 @@ export const Places = () => {
     }
   };
 
-  // ------------------ Import Cities ------------------
   const handleImportCities = async () => {
     if (!uploadFile) return toast.error("Select a file first");
 
@@ -104,7 +99,6 @@ export const Places = () => {
     }
   };
 
-  // ------------------ Header Buttons ------------------
   const headerButtons = [
     {
       value: "Import",
@@ -120,21 +114,20 @@ export const Places = () => {
       icon: <LuPlus size={18} />,
       className:
         "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
-      onClick: () => setShowAddModal(true),
+       onClick: () => navigate(ROUTES.PLACES_CREATE),
     },
   ];
 
-  const totalCities = cities?.data?.length || 0;
+  const totalCities = places?.data?.length || 0;
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Places"
-        description="Manage places, counties, and related information."
+        description="Manage places and related information."
         buttonsList={headerButtons}
       />
 
-      {/* Hidden File Input for Import */}
       <input
         id="city-import-input"
         type="file"
@@ -146,7 +139,6 @@ export const Places = () => {
         }}
       />
 
-      {/* Table */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b px-6 py-4">
           <div>
@@ -164,9 +156,10 @@ export const Places = () => {
             <thead className="bg-slate-50 text-left text-[11px] font-semibold uppercase text-slate-500">
               <tr>
                 <th className="px-6 py-3">#</th>
-                <th className="px-6 py-3">County Name</th>
-                
+                <th className="px-6 py-3">Place Name</th>
                 <th className="px-6 py-3">Slug</th>
+                <th className="px-6 py-3">Title</th>
+                <th className="px-6 py-3">Description</th>
                 <th className="px-6 py-3">Actions</th>
               </tr>
             </thead>
@@ -189,7 +182,7 @@ export const Places = () => {
                   </td>
                 </tr>
               ) : totalCities > 0 ? (
-                cities.data.map((city, index) => (
+                places.data.map((city, index) => (
                   <tr key={city._id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 text-slate-500">
                       {(page - 1) * limit + index + 1}
@@ -199,6 +192,8 @@ export const Places = () => {
                     </td>
                  
                     <td className="px-6 py-4">{city.slug}</td>
+                    <td className="px-6 py-4">{city.title}</td>
+                    <td className="px-6 py-4 line-clamp-2">{city.description}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -238,7 +233,6 @@ export const Places = () => {
         )}
       </div>
 
-      {/* Delete Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl">
@@ -257,76 +251,6 @@ export const Places = () => {
                 onClick={handleDeleteCity}
               >
                 Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Add Manual City Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-3xl shadow-xl w-full max-w-lg relative">
-
-            <button
-              className="absolute top-4 right-4 border p-2 rounded-full"
-              onClick={() => setShowAddModal(false)}
-            >
-              ✕
-            </button>
-
-            <h3 className="text-xl font-semibold text-center mb-6">
-              Add New City
-            </h3>
-
-            {[
-              { key: "name", label: "City Name" },
-              { key: "slug", label: "Slug" },
-              { key: "countyId", label: "County ID" },
-            ].map((field) => (
-              <div key={field.key} className="mb-4">
-                <label className="block text-sm font-semibold text-slate-600">
-                  {field.label}
-                </label>
-                <input
-                  className="w-full px-3 py-2 border rounded-xl"
-                  value={manualCity[field.key]}
-                  onChange={(e) =>
-                    setManualCity({ ...manualCity, [field.key]: e.target.value })
-                  }
-                />
-              </div>
-            ))}
-
-            {/* Description fields */}
-            {["title", "excerpt", "description"].map((field) => (
-              <div key={field} className="mb-4">
-                <label className="block text-sm font-semibold text-slate-600">
-                  {field.toUpperCase()}
-                </label>
-                <textarea
-                  className="w-full px-3 py-2 border rounded-xl"
-                  rows={field === "description" ? 5 : 2}
-                  value={manualCity[field]}
-                  onChange={(e) =>
-                    setManualCity({ ...manualCity, [field]: e.target.value })
-                  }
-                />
-              </div>
-            ))}
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                className="px-4 py-2 border rounded-full"
-                onClick={() => setShowAddModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-primary text-white rounded-full"
-                onClick={handleAddCity}
-              >
-                Add City
               </button>
             </div>
           </div>

@@ -55,7 +55,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.PARTNER,
     },
     {
-      name: "Cities",
+      name: "Counties",
       icon: ShieldCheck,
       href: ROUTES.CITIES,
     },

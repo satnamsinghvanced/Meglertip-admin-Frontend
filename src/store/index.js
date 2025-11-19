@@ -13,6 +13,7 @@ import termOfServiceReducer from "./slices/termOfService";
 import cityReducer from "./slices/citySlice"
 import companySlice from "./slices/companySlice"
 import themeReducer from "./slices/themeSlice";
+import placeSlice from "./slices/placeSlice"
 
 export default configureStore({
   reducer: {
@@ -29,7 +30,7 @@ export default configureStore({
     termOfService: termOfServiceReducer,
     cities: cityReducer,
     companies:companySlice,
-
+    places: placeSlice,
     theme: themeReducer,
   },
 });

@@ -7,7 +7,7 @@ import {
   getCompanyById,
 } from "../../store/slices/companySlice";
 
-const CompanyDetailPage = () => {
+const PlaceDetailPage = () => {
   const { companyId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -169,4 +169,4 @@ return (
 
 };
 
-export default CompanyDetailPage;
+export default PlaceDetailPage;

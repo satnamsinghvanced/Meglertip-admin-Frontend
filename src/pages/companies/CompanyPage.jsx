@@ -16,12 +16,12 @@ import {
   importCompanies,
 } from "../../store/slices/companySlice";
 import { ROUTES } from "../../consts/routes";
+import { FaRegEye } from "react-icons/fa";
 
 export const Company = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // 👈 Create a ref for the hidden file input
-  const fileInputRef = useRef(null); 
+  const fileInputRef = useRef(null);
 
   const { companies, loading, error } = useSelector((state) => state.companies);
 
@@ -30,8 +30,7 @@ export const Company = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [companyToDelete, setCompanyToDelete] = useState(null);
-
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showUploadingFileLoader, setShowUploadingFileLoader] = useState(false);
   const [manualCompany, setManualCompany] = useState({
     name: "",
     slug: "",
@@ -43,9 +42,8 @@ export const Company = () => {
 
   const [uploadFile, setUploadFile] = useState(null);
 
-  // ------------------ Fetch Companies ------------------
   useEffect(() => {
-    const fetchCompanies = async () => { // Renamed from fetchCities
+    const fetchCompanies = async () => {
       try {
         const res = await dispatch(getCompanies({ page, limit })).unwrap();
         setTotalPages(res.totalPages || 1);
@@ -56,8 +54,7 @@ export const Company = () => {
     fetchCompanies();
   }, [dispatch, page, limit]);
 
-  // ------------------ Delete Company ------------------
-  const handleDeleteCompany = async () => { // Renamed from handleDeleteCity
+  const handleDeleteCompany = async () => {
     if (!companyToDelete) return;
 
     try {
@@ -70,8 +67,7 @@ export const Company = () => {
     }
   };
 
-  // ------------------ Add Manual Company ------------------
-  const handleAddCompany = async () => { // Renamed from handleAddCity
+  const handleAddCompany = async () => {
     if (!manualCompany.name || !manualCompany.slug || !manualCompany.countyId) {
       return toast.error("Fill required fields");
     }
@@ -90,58 +86,79 @@ export const Company = () => {
       });
       dispatch(getCompanies({ page, limit }));
     } catch (err) {
-      toast.error("Failed to add company"); // Changed toast message
+      toast.error("Failed to add company");
     }
   };
   const isValidFileExtension = (file) => {
     if (!file) return false;
-    
+
     const fileName = file.name.toLowerCase();
-    // Check if the filename ends with .csv or .xlsx
     if (fileName.endsWith(".csv") || fileName.endsWith(".xlsx")) {
       return true;
     }
     return false;
   };
   const handleImportCompanies = async () => {
- 
-    
+    if (!uploadFile) {
+      toast.error("Please upload a file first");
+      return;
+    }
+    setShowUploadingFileLoader(true);
     const formData = new FormData();
     formData.append("csv", uploadFile);
 
     try {
-      await dispatch(importCompanies(formData)).unwrap();
-      toast.success("Companies imported successfully");
-      setUploadFile(null); // Clear file state on success
+      const result = await dispatch(importCompanies(formData)).unwrap();
+      console.log(result);
 
-      if (fileInputRef.current) fileInputRef.current.value = ""; 
-      
+      const { inserted = 0, skipped = 0 } = result;
+
+      let message = "Companies imported successfully";
+
+      if (inserted > 0 && skipped > 0) {
+        message = `${inserted} inserted, ${skipped} skipped (duplicates)`;
+      } else if (inserted > 0) {
+        message = `${inserted} companies inserted successfully`;
+      } else if (skipped > 0) {
+        message = `${skipped} companies skipped (already exist)`;
+      } else {
+        message = "No companies inserted";
+      }
+
+      toast.success(message);
+
+      setUploadFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
       dispatch(getCompanies({ page, limit }));
     } catch (err) {
+      console.error(err);
       toast.error("Import failed");
+    } finally {
+      setShowUploadingFileLoader(false);
     }
   };
 
-  // ------------------ New Effect to Trigger Import ------------------
-  // This runs whenever uploadFile changes (i.e., when a file is selected)
   useEffect(() => {
     if (uploadFile) {
       handleImportCompanies();
     }
   }, [uploadFile, dispatch, page, limit]);
-  // ------------------------------------------------------------------
 
-  // ------------------ Header Buttons ------------------
   const headerButtons = [
     {
-      value: "Import",
+      value: showUploadingFileLoader ? "Uploading..." : "Import",
       variant: "white",
-      icon: <LuFileUp size={18} />,
+      icon: showUploadingFileLoader ? (
+        <div className="h-4 w-4 animate-spin border-2 border-slate-400 border-t-transparent rounded-full" />
+      ) : (
+        <LuFileUp size={18} />
+      ),
+      disabled: showUploadingFileLoader,
       className:
-        "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
-      // 👈 MODIFIED: Click the hidden file input instead of running logic
+        "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed",
       onClick: () => {
-        fileInputRef.current.click(); 
+        if (!showUploadingFileLoader) fileInputRef.current.click();
       },
     },
     {
@@ -160,39 +177,37 @@ export const Company = () => {
     <div className="space-y-6">
       <PageHeader
         title="Companies"
-        description="Manage places, counties, and related information."
+        description="Manage companies and related information."
         buttonsList={headerButtons}
       />
 
-      {/* Hidden File Input for Import */}
       <input
-        ref={fileInputRef} // 👈 Reference added
+        ref={fileInputRef}
         id="company-import-input"
         type="file"
         className="hidden"
         accept=".csv, .xlsx"
         onChange={(e) => {
           const selectedFile = e.target.files[0];
-          
+
           if (selectedFile) {
             if (isValidFileExtension(selectedFile)) {
-              // 1. Validation SUCCESS: Set the file state
               setUploadFile(selectedFile);
             } else {
-              // 2. Validation FAILURE: Show error and clear input
-              toast.error("Invalid file type. Only CSV (.csv) and Excel (.xlsx) files are allowed.");
-              // IMPORTANT: Clear the input value so the same file can be selected again
-              e.target.value = ""; 
-              setUploadFile(null); // Ensure state is null
+              toast.error(
+                "Invalid file type. Only CSV (.csv) and Excel (.xlsx) files are allowed."
+              );
+
+              e.target.value = "";
+              setUploadFile(null);
             }
           }
         }}
       />
 
-      {/* Table */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex items-center justify-between  px-6 py-4">
-          <div>
+          <div className="ml-4">
             <p className="text-sm font-semibold text-slate-900">
               Companies overview
             </p>
@@ -216,7 +231,6 @@ export const Company = () => {
             </thead>
 
             <tbody className="divide-y divide-slate-100 text-slate-600">
-              {/* ... Loading and Error states remain the same ... */}
               {loading ? (
                 [...Array(10)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
@@ -231,7 +245,7 @@ export const Company = () => {
                 <tr>
                   <td
                     className="px-6 py-6 text-center text-red-500"
-                    colSpan="6" // Changed colspan to 6 for 6 columns
+                    colSpan="6"
                   >
                     {error}
                   </td>
@@ -247,19 +261,31 @@ export const Company = () => {
                     </td>
 
                     <td className="px-6 py-4">{company.address}</td>
-                    <td className="px-6 py-4">
-                      {/* Assuming description is a string with newlines */}
-                      {company.description.split("\n")[2]}
+                    <td className="px-6 py-4 align-top">
+                      <div
+                        className="line-clamp-2 text-slate-700 text-sm break-words"
+                        dangerouslySetInnerHTML={{
+                          __html: company.description,
+                        }}
+                      ></div>
                     </td>
                     <td className="px-6 py-4">
-                      {/* Assuming extractor is an array of strings */}
-                      {company.extractor.map((item, idx) => (
-                        <div key={idx}>{item}</div>
-                      ))}
+                      <div className="line-clamp-2 space-y-1 text-sm text-slate-700 break-words">
+                        {company.extractor.map((item, idx) => (
+                          <div key={idx}>{item}</div>
+                        ))}
+                      </div>
                     </td>
 
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
+                        <button
+                          className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
+                          onClick={() => navigate(`/company/${company._id}`)}
+                          title="Preview"
+                        >
+                          <FaRegEye size={16} />
+                        </button>
                         <button
                           className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
                           onClick={() =>
@@ -284,7 +310,7 @@ export const Company = () => {
               ) : (
                 <tr>
                   <td
-                    colSpan="6" // Changed colspan to 6
+                    colSpan="6"
                     className="px-6 py-6 text-center text-slate-500"
                   >
                     No companies found
@@ -302,7 +328,6 @@ export const Company = () => {
         )}
       </div>
 
-      {/* Delete Modal (Removed handleAddCity/handleDeleteCity renamings in JSX for brevity, assuming you will rename them) */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60">
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
@@ -318,84 +343,9 @@ export const Company = () => {
               </button>
               <button
                 className="rounded-full bg-red-600 px-4 py-2 text-white"
-                onClick={handleDeleteCompany} // 👈 Used renamed function
+                onClick={handleDeleteCompany}
               >
                 Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Add Manual Company Modal (Removed handleAddCity/handleDeleteCity renamings in JSX for brevity, assuming you will rename them) */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60">
-          <div className="relative w-full max-w-lg rounded-3xl bg-white p-6 shadow-xl">
-            <button
-              className="absolute right-4 top-4 rounded-full border p-2"
-              onClick={() => setShowAddModal(false)}
-            >
-              ✕
-            </button>
-
-            <h3 className="mb-6 text-center text-xl font-semibold">
-              Add New Company
-            </h3>
-
-            {[
-              { key: "name", label: "Company Name" },
-              { key: "slug", label: "Slug" },
-              { key: "countyId", label: "County ID" }, // Changed from email/zipCode
-            ].map((field) => (
-              <div key={field.key} className="mb-4">
-                <label className="block text-sm font-semibold text-slate-600">
-                  {field.label}
-                </label>
-                <input
-                  className="w-full rounded-xl border px-3 py-2"
-                  value={manualCompany[field.key]}
-                  onChange={(e) =>
-                    setManualCompany({
-                      ...manualCompany,
-                      [field.key]: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            ))}
-
-            {/* Description fields */}
-            {["title", "excerpt", "description"].map((field) => (
-              <div key={field} className="mb-4">
-                <label className="block text-sm font-semibold text-slate-600">
-                  {field.toUpperCase()}
-                </label>
-                <textarea
-                  className="w-full rounded-xl border px-3 py-2"
-                  rows={field === "description" ? 5 : 2}
-                  value={manualCompany[field]}
-                  onChange={(e) =>
-                    setManualCompany({
-                      ...manualCompany,
-                      [field]: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            ))}
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                className="rounded-full border px-4 py-2"
-                onClick={() => setShowAddModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="rounded-full bg-primary px-4 py-2 text-white"
-                onClick={handleAddCompany} // 👈 Used renamed function
-              >
-                Add Company
               </button>
             </div>
           </div>
