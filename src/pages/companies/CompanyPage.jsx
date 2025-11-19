@@ -109,7 +109,7 @@ export const Company = () => {
 
     try {
       const result = await dispatch(importCompanies(formData)).unwrap();
-      console.log(result);
+      // console.log(result);
 
       const { inserted = 0, skipped = 0 } = result;
 

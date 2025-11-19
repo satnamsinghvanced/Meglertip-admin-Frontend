@@ -18,7 +18,7 @@ export const ROUTES = {
   TERM_OF_SERVICE: "/term-of-service",
   PRIVACY_POLICY:"/privacy-policy",
   EMAIL:"email-templates",
-  CITIES:"/cities",
+  CITIES:"/counties",
   PLACES:"/places",
   PLACES_CREATE:"/places/create",
   PLACES_VIEW :"/place/:placeId",

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector ,shallowEqual} from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-
+import { getCounties } from "../../store/slices/countySlice";
 import {
   clearSelectedPlace,
   createPlace,
@@ -61,7 +61,10 @@ const PlaceFormPage = () => {
   const navigate = useNavigate();
 
   const { selectedPlace } = useSelector((state) => state.places || {});
-  const { counties } = useSelector((state) => state.counties || {});
+  const { counties, loading: citiesLoading } = useSelector(
+  (state) => state.counties || {}
+);
+  console.log(counties, "DFsafsadfsadfasdf");
 
   const [form, setForm] = useState({
     name: "",
@@ -70,7 +73,7 @@ const PlaceFormPage = () => {
     excerpt: "",
     title: "",
     description: "",
-    isRecommended: false, // Re-added isRecommended
+    isRecommended: false,
     rank: 0,
     companiesId: [],
   });
@@ -83,7 +86,9 @@ const PlaceFormPage = () => {
     else dispatch(clearSelectedPlace());
     return () => dispatch(clearSelectedPlace());
   }, [dispatch, isEditMode, placeId]);
-
+  useEffect(() => {
+    dispatch(getCounties());
+  }, [dispatch]);
   useEffect(() => {
     if (isEditMode && selectedPlace) {
       setForm({
@@ -93,7 +98,7 @@ const PlaceFormPage = () => {
         excerpt: selectedPlace.excerpt || "",
         title: selectedPlace.title || "",
         description: selectedPlace.description || "",
-        isRecommended: selectedPlace.isRecommended || false, // Load existing value
+        isRecommended: selectedPlace.isRecommended || false,
         rank: selectedPlace.rank || 0,
         companiesId: Array.isArray(selectedPlace.companiesId)
           ? selectedPlace.companiesId
@@ -125,7 +130,6 @@ const PlaceFormPage = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    // Handle checkbox for isRecommended
     const newValue = type === "checkbox" ? checked : value;
     setForm((prev) => ({ ...prev, [name]: newValue }));
     if (type !== "checkbox") {
@@ -140,7 +144,7 @@ const PlaceFormPage = () => {
     excerpt: form.excerpt || "",
     title: form.title || "",
     description: form.description || "",
-    isRecommended: form.isRecommended, // Included in payload
+    isRecommended: form.isRecommended, 
     rank: Number(form.rank) || 0,
     companiesId: form.companiesId,
   });
@@ -257,7 +261,7 @@ const PlaceFormPage = () => {
                     }`}
               >
                 <option value="">Select County</option>
-                {counties?.map((c) => (
+                {counties?.data?.map((c) => (
                   <option key={c._id} value={c._id}>
                     {c.name}
                   </option>

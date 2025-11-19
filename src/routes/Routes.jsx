@@ -15,7 +15,7 @@ import PartnerPage from "../pages/partner/PartnerPage";
 import FormPage from "../pages/forms/forms";
 import { TermOfServicePage } from "../pages/term_of_service/TermOfService";
 import { PrivacyPolicyPage } from "../pages/privacy_policy/PrivacyPolicy";
-import { CityPage } from "../pages/cities/CityPage";
+import CountyPage from "../pages/Counties/CountiesPage";
 import ArticleFormPage from "../pages/article/ArticleFormPage";
 import ArticleDetailPage from "../pages/article/ArticleDetailPage";
 import EmailTemplateList from "../pages/email-template/templates";
@@ -53,7 +53,7 @@ const Routes = () => {
         <Route path={ROUTES.PARTNER} element={<PartnerPage />} />
 
         <Route path={ROUTES.FORMS} element={<FormPage />} />
-        <Route path={ROUTES.CITIES} element={<CityPage />} />
+        <Route path={ROUTES.CITIES} element={<CountyPage />} />
         <Route path={ROUTES.PLACES} element={<Places />} />
         <Route path={ROUTES.PLACES_CREATE} element={<PlaceFormPage />} />
         <Route path={ROUTES.PLACES_VIEW} element={<PlaceDetailPage />} />

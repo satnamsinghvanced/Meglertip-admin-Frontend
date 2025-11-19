@@ -9,14 +9,14 @@ import { useNavigate } from "react-router";
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 
-import { getCities, deleteCity, createCity, importCities } from "../../store/slices/citySlice";
+import { getCounties, deleteCounties, createCounties, importCounties } from "../../store/slices/countySlice";
 
-export const CityPage = () => {
+export const CountyPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { cities, loading, error } = useSelector((state) => state.cities);
-
+  const { counties, loading, error } = useSelector((state) => state.counties);
+  console.log(counties,"dfsdjkfgsjdkfgjskadfsadfhkul")
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -34,14 +34,11 @@ export const CityPage = () => {
     description: "",
   });
 
-  const [uploadFile, setUploadFile] = useState(null);
-
-  // Fetch Cities
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await dispatch(getCities({ page, limit })).unwrap();
-        setTotalPages(res.pagination.pages || 1);
+        const res = await dispatch(getCounties({ page, limit })).unwrap();
+        setTotalPages(res.totalPages || 1);
       } catch (err) {
         console.error(err);
       }
@@ -49,12 +46,11 @@ export const CityPage = () => {
     fetchCities();
   }, [dispatch, page, limit]);
 
-  // ------------------ Delete City ------------------
   const handleDeleteCity = async () => {
     if (!cityToDelete) return;
 
     try {
-      const res = await dispatch(deleteCity(cityToDelete._id)).unwrap();
+      const res = await dispatch(deleteCounties(cityToDelete._id)).unwrap();
       toast.success(res.message || "City deleted");
       setShowDeleteModal(false);
       dispatch(getCities({ page, limit }));
@@ -63,14 +59,13 @@ export const CityPage = () => {
     }
   };
 
-  // ------------------ Add Manual City ------------------
   const handleAddCity = async () => {
     if (!manualCity.name || !manualCity.slug || !manualCity.countyId) {
       return toast.error("Fill required fields");
     }
 
     try {
-      await dispatch(createCity(manualCity)).unwrap();
+      await dispatch(createCounties(manualCity)).unwrap();
       toast.success("City added");
       setShowAddModal(false);
       setManualCity({
@@ -81,39 +76,38 @@ export const CityPage = () => {
         excerpt: "",
         description: "",
       });
-      dispatch(getCities({ page, limit }));
+      dispatch(getCounties({ page, limit }));
     } catch (err) {
       toast.error("Failed to add city");
     }
   };
 
-  // ------------------ Import Cities ------------------
-  const handleImportCities = async () => {
-    if (!uploadFile) return toast.error("Select a file first");
+  // const handleImportCities = async () => {
+  //   if (!uploadFile) return toast.error("Select a file first");
 
-    const formData = new FormData();
-    formData.append("file", uploadFile);
+  //   const formData = new FormData();
+  //   formData.append("file", uploadFile);
 
-    try {
-      await dispatch(importCities(formData)).unwrap();
-      toast.success("Cities imported successfully");
-      setUploadFile(null);
-      dispatch(getCities({ page, limit }));
-    } catch (err) {
-      toast.error("Import failed");
-    }
-  };
+  //   try {
+  //     await dispatch(importCities(formData)).unwrap();
+  //     toast.success("Cities imported successfully");
+  //     setUploadFile(null);
+  //     dispatch(getCities({ page, limit }));
+  //   } catch (err) {
+  //     toast.error("Import failed");
+  //   }
+  // };
 
-  // ------------------ Header Buttons ------------------
+
   const headerButtons = [
-    {
-      value: "Import",
-      variant: "white",
-      icon: <LuFileUp size={18} />,
-      className:
-        "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
-      onClick: () => document.getElementById("city-import-input").click(),
-    },
+    // {
+    //   value: "Import",
+    //   variant: "white",
+    //   icon: <LuFileUp size={18} />,
+    //   className:
+    //     "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
+    //   onClick: () => document.getElementById("city-import-input").click(),
+    // },
     {
       value: "Add City",
       variant: "primary",
@@ -124,7 +118,8 @@ export const CityPage = () => {
     },
   ];
 
-  const totalCities = cities?.data?.length || 0;
+  const totalCounties = counties?.length || 0;
+  console
 
   return (
     <div className="space-y-6">
@@ -134,7 +129,6 @@ export const CityPage = () => {
         buttonsList={headerButtons}
       />
 
-      {/* Hidden File Input for Import */}
       <input
         id="city-import-input"
         type="file"
@@ -146,7 +140,6 @@ export const CityPage = () => {
         }}
       />
 
-      {/* Table */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b px-6 py-4">
           <div>
@@ -154,7 +147,7 @@ export const CityPage = () => {
               Cities overview
             </p>
             <p className="text-xs text-slate-500">
-              {loading ? "Loading..." : `${totalCities} items`}
+              {loading ? "Loading..." : `${totalCounties} items`}
             </p>
           </div>
         </div>
@@ -188,8 +181,8 @@ export const CityPage = () => {
                     {error}
                   </td>
                 </tr>
-              ) : totalCities > 0 ? (
-                cities.data.map((city, index) => (
+              ) : totalCounties > 0 ? (
+                counties.map((city, index) => (
                   <tr key={city._id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 text-slate-500">
                       {(page - 1) * limit + index + 1}
@@ -203,7 +196,7 @@ export const CityPage = () => {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/cities/${city._id}/edit`)}
+                          onClick={() => navigate(`/counties/${city._id}/edit`)}
                         >
                           <AiTwotoneEdit size={16} />
                         </button>
@@ -223,7 +216,7 @@ export const CityPage = () => {
               ) : (
                 <tr>
                   <td colSpan="5" className="px-6 py-6 text-center text-slate-500">
-                    No cities found
+                    No counties found
                   </td>
                 </tr>
               )}
@@ -231,7 +224,7 @@ export const CityPage = () => {
           </table>
         </div>
 
-        {totalCities > 0 && (
+        {totalCounties > 0 && (
           <div className="border-t px-6 py-4">
             <Pagination totalPages={totalPages} page={page} setPage={setPage} />
           </div>
@@ -263,77 +256,9 @@ export const CityPage = () => {
         </div>
       )}
 
-      {/* Add Manual City Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-3xl shadow-xl w-full max-w-lg relative">
 
-            <button
-              className="absolute top-4 right-4 border p-2 rounded-full"
-              onClick={() => setShowAddModal(false)}
-            >
-              ✕
-            </button>
-
-            <h3 className="text-xl font-semibold text-center mb-6">
-              Add New City
-            </h3>
-
-            {[
-              { key: "name", label: "City Name" },
-              { key: "slug", label: "Slug" },
-              { key: "countyId", label: "County ID" },
-            ].map((field) => (
-              <div key={field.key} className="mb-4">
-                <label className="block text-sm font-semibold text-slate-600">
-                  {field.label}
-                </label>
-                <input
-                  className="w-full px-3 py-2 border rounded-xl"
-                  value={manualCity[field.key]}
-                  onChange={(e) =>
-                    setManualCity({ ...manualCity, [field.key]: e.target.value })
-                  }
-                />
-              </div>
-            ))}
-
-            {/* Description fields */}
-            {["title", "excerpt", "description"].map((field) => (
-              <div key={field} className="mb-4">
-                <label className="block text-sm font-semibold text-slate-600">
-                  {field.toUpperCase()}
-                </label>
-                <textarea
-                  className="w-full px-3 py-2 border rounded-xl"
-                  rows={field === "description" ? 5 : 2}
-                  value={manualCity[field]}
-                  onChange={(e) =>
-                    setManualCity({ ...manualCity, [field]: e.target.value })
-                  }
-                />
-              </div>
-            ))}
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                className="px-4 py-2 border rounded-full"
-                onClick={() => setShowAddModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-primary text-white rounded-full"
-                onClick={handleAddCity}
-              >
-                Add City
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default CityPage;
+export default CountyPage;

@@ -10,7 +10,7 @@ import partnerReducer from "./slices/partnerSlice";
 import formReducer from "./slices/formSlice";
 import privacyPolicyReducer from "./slices/privacyPolicySlice";
 import termOfServiceReducer from "./slices/termOfService";
-import cityReducer from "./slices/citySlice"
+import countySlice from "./slices/countySlice"
 import companySlice from "./slices/companySlice"
 import themeReducer from "./slices/themeSlice";
 import placeSlice from "./slices/placeSlice"
@@ -28,7 +28,7 @@ export default configureStore({
     form: formReducer,
     privacyPolicy: privacyPolicyReducer,
     termOfService: termOfServiceReducer,
-    cities: cityReducer,
+    counties: countySlice,
     companies:companySlice,
     places: placeSlice,
     theme: themeReducer,
