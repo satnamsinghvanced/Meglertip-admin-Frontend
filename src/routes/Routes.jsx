@@ -15,6 +15,7 @@ import PartnerPage from "../pages/partner/PartnerPage";
 import FormPage from "../pages/forms/forms";
 import { TermOfServicePage } from "../pages/term_of_service/TermOfService";
 import { PrivacyPolicyPage } from "../pages/privacy_policy/PrivacyPolicy";
+<<<<<<< Updated upstream
 import CountyPage from "../pages/Counties/CountiesPage";
 import ArticleFormPage from "../pages/article/ArticleFormPage";
 import ArticleDetailPage from "../pages/article/ArticleDetailPage";
@@ -26,6 +27,11 @@ import CompanyDetailPage from "../pages/companies/CompanyDetailPage";
 import CompanyFormPage from "../pages/companies/CompanyFormPage";
 import PlaceFormPage from "../pages/places/PlaceFormPage";
 import PlaceDetailPage from "../pages/places/PlaceDetailPage";
+=======
+import { CityPage } from "../pages/cities/CityPage";
+import { Quote } from "../pages/quote/quote";
+
+>>>>>>> Stashed changes
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -66,6 +72,7 @@ const Routes = () => {
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>} />
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
+        <Route path={ROUTES.QUOTES} element={<Quote/>}/>
 
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.EMAIL} element={<EmailTemplateList />} />

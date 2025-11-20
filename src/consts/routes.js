@@ -17,6 +17,7 @@ export const ROUTES = {
   PARTNER:"/partner",
   TERM_OF_SERVICE: "/term-of-service",
   PRIVACY_POLICY:"/privacy-policy",
+<<<<<<< Updated upstream
   EMAIL:"email-templates",
   CITIES:"/counties",
   PLACES:"/places",
@@ -27,4 +28,9 @@ export const ROUTES = {
   COMPANIES_CREATE:"/companies/create",
   COMPANIES_VIEW :"/company/:companyId",
   COMPANIES_EDIT :"/company/:companyId/Edit"
+=======
+  CITIES:"/cities",
+  COUNTIES:"/counties",
+  QUOTES:"/quotes"
+>>>>>>> Stashed changes
 };

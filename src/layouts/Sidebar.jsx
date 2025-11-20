@@ -14,9 +14,13 @@ import {
   FileCheck2,
   ShieldCheck,
   Settings,
+<<<<<<< Updated upstream
   Mail,
+=======
+  Quote,
+  
+>>>>>>> Stashed changes
 } from "lucide-react";
-
 import { ROUTES } from "../consts/routes";
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
@@ -80,10 +84,17 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.PRIVACY_POLICY,
     },
     {
+<<<<<<< Updated upstream
       name: "Email Templates",
       icon: Mail,
       href: ROUTES.EMAIL,
     },
+=======
+      name: "Quotes",
+      icon: Quote,
+      href: ROUTES.QUOTES,
+    }
+>>>>>>> Stashed changes
   ];
 
   const bottomRoutes = [

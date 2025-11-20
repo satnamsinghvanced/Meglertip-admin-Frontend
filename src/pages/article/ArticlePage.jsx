@@ -31,6 +31,7 @@ const ArticlePage = () => {
 
   useEffect(() => {
     const fetchArticles = async () => {
+      
       try {
         const res = await dispatch(getArticles({ page, limit })).unwrap();
         setTotalPages(res.pagination.pages || 1);
