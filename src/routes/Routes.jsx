@@ -126,6 +126,7 @@ const Routes = () => {
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
       </Route>
+       
     </RouteWrapper>
   );
 };
