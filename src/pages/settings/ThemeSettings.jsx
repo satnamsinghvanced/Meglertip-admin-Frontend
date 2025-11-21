@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { FiSave } from "react-icons/fi";
-import { fetchTheme, updateTheme } from "../../store/slices/themeSlice";
+import { fetchTheme, updateTheme } from "../../store/slices/website_settingsSlice";
 import { toast } from "react-toastify";
 import { AiOutlineUndo } from "react-icons/ai";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
@@ -24,7 +24,9 @@ const defaultTheme = {
 
 const ThemeSettings = () => {
   const dispatch = useDispatch();
-  const { theme, loading, saving } = useSelector((state) => state.theme);
+  const { theme, themeId, loading, saving } = useSelector(
+    (state) => state.settings
+  );
 
   const [editingKey, setEditingKey] = useState(null);
   const [tempColor, setTempColor] = useState("");
@@ -86,11 +88,11 @@ const ThemeSettings = () => {
   };
 
   const saveToServer = () => {
-    if (!theme?._id) {
+    if (!themeId) {
       toast.error("Theme ID not found!");
       return;
     }
-    dispatch(updateTheme({ id: theme._id, data: localTheme }))
+    dispatch(updateTheme({ id: themeId, data: localTheme }))
       .unwrap()
       .then(() => {
         toast.success("Theme saved successfully!");
@@ -102,7 +104,7 @@ const ThemeSettings = () => {
   };
 
   const restoreTheme = () => {
-    if (!theme?._id) {
+    if (!themeId) {
       toast.error("Theme ID not found!");
       return;
     }
@@ -113,7 +115,7 @@ const ThemeSettings = () => {
       document.documentElement.style.setProperty(`--${key}`, defaultTheme[key]);
     });
 
-    dispatch(updateTheme({ id: theme._id, data: defaultTheme }))
+    dispatch(updateTheme({ id: themeId, data: defaultTheme }))
       .unwrap()
       .then(() => {
         toast.success("Default theme restored and saved!");

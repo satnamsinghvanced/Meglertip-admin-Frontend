@@ -14,12 +14,9 @@ import {
   FileCheck2,
   ShieldCheck,
   Settings,
-<<<<<<< Updated upstream
   Mail,
-=======
   Quote,
-  
->>>>>>> Stashed changes
+  UserPlus,
 } from "lucide-react";
 import { ROUTES } from "../consts/routes";
 
@@ -63,7 +60,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: ShieldCheck,
       href: ROUTES.CITIES,
     },
-       {
+    {
       name: "Places",
       icon: ShieldCheck,
       href: ROUTES.PLACES,
@@ -72,7 +69,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Companies",
       icon: ShieldCheck,
       href: ROUTES.COMPANIES,
-    }, 
+    },
     {
       name: "Term of Service",
       icon: FileCheck2,
@@ -84,17 +81,21 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.PRIVACY_POLICY,
     },
     {
-<<<<<<< Updated upstream
       name: "Email Templates",
       icon: Mail,
       href: ROUTES.EMAIL,
     },
-=======
+    {
       name: "Quotes",
       icon: Quote,
       href: ROUTES.QUOTES,
-    }
->>>>>>> Stashed changes
+    },
+
+    {
+      name: "Collaborate Partners",
+      icon: UserPlus,
+      href: ROUTES.PARTNERS,
+    },
   ];
 
   const bottomRoutes = [
@@ -111,7 +112,9 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     <>
       <div
         className={`${
-          isMiniSidebarOpen ? "bg-black/40 w-full h-full fixed inset-0 z-30" : ""
+          isMiniSidebarOpen
+            ? "bg-black/40 w-full h-full fixed inset-0 z-30"
+            : ""
         } md:hidden`}
         onClick={onCloseSidebar}
       />
@@ -136,7 +139,9 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
             className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
           >
             <HiChevronDoubleLeft
-              className={`text-xl transition ${isMiniSidebarOpen ? "" : "rotate-180"}`}
+              className={`text-xl transition ${
+                isMiniSidebarOpen ? "" : "rotate-180"
+              }`}
             />
           </button>
         </div>

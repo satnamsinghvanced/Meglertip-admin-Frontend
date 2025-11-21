@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { Route, Routes as RouteWrapper, useNavigate } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
@@ -15,7 +16,6 @@ import PartnerPage from "../pages/partner/PartnerPage";
 import FormPage from "../pages/forms/forms";
 import { TermOfServicePage } from "../pages/term_of_service/TermOfService";
 import { PrivacyPolicyPage } from "../pages/privacy_policy/PrivacyPolicy";
-<<<<<<< Updated upstream
 import CountyPage from "../pages/Counties/CountiesPage";
 import ArticleFormPage from "../pages/article/ArticleFormPage";
 import ArticleDetailPage from "../pages/article/ArticleDetailPage";
@@ -27,11 +27,12 @@ import CompanyDetailPage from "../pages/companies/CompanyDetailPage";
 import CompanyFormPage from "../pages/companies/CompanyFormPage";
 import PlaceFormPage from "../pages/places/PlaceFormPage";
 import PlaceDetailPage from "../pages/places/PlaceDetailPage";
-=======
-import { CityPage } from "../pages/cities/CityPage";
+// import { CityPage } from "../pages/cities/CityPage";
 import { Quote } from "../pages/quote/quote";
-
->>>>>>> Stashed changes
+import CollaboratePartnerPage from "../pages/partners/CollaboratePartnerPage";
+import PartnerEditPage from "../pages/partners/PartnerEditPage";
+import { PartnerDetailPage } from "../pages/partners/PartnerDetails";
+import { AddPartnerPage } from "../pages/partners/AddPartnerPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -57,7 +58,6 @@ const Routes = () => {
         <Route path={ROUTES.ARTICLE_EDIT} element={<ArticleFormPage />} />
         <Route path={ROUTES.ARTICLE_VIEW} element={<ArticleDetailPage />} />
         <Route path={ROUTES.PARTNER} element={<PartnerPage />} />
-
         <Route path={ROUTES.FORMS} element={<FormPage />} />
         <Route path={ROUTES.CITIES} element={<CountyPage />} />
         <Route path={ROUTES.PLACES} element={<Places />} />
@@ -68,12 +68,10 @@ const Routes = () => {
         <Route path={ROUTES.COMPANIES_CREATE} element={<CompanyFormPage />} />
         <Route path={ROUTES.COMPANIES_VIEW} element={<CompanyDetailPage />} />
         <Route path={ROUTES.COMPANIES_EDIT} element={<CompanyFormPage />} />
-
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>} />
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
-        <Route path={ROUTES.QUOTES} element={<Quote/>}/>
-
+        <Route path={ROUTES.QUOTES} element={<Quote />} />
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.EMAIL} element={<EmailTemplateList />} />
         <Route path="/email/create" element={<CreateEmailTemplate />} />
@@ -81,6 +79,10 @@ const Routes = () => {
           path="/email/edit/:templateId"
           element={<CreateEmailTemplate />}
         />
+        <Route path={ROUTES.PARTNERS} element={<CollaboratePartnerPage />} />
+        <Route path={ROUTES.PARTNER_CREATE} element={<AddPartnerPage />} />
+        <Route path={ROUTES.PARTNERS_ID} element={<PartnerDetailPage />} />
+        <Route path={ROUTES.PARTNERS_EDIT_ID} element={<PartnerEditPage />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
