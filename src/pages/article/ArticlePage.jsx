@@ -21,7 +21,6 @@ const ArticlePage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
-  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [newCategory, setNewCategory] = useState({
     title: "",
     slug: "",
@@ -65,32 +64,7 @@ const ArticlePage = () => {
     }
   };
 
-  const handleAddCategory = async () => {
-    if (!newCategory.title || !newCategory.slug || !newCategory.description) {
-      toast.error("Please fill all fields");
-      return;
-    }
-
-    try {
-      await dispatch(createCategory(newCategory));
-      toast.success("Category added");
-      setShowAddCategoryModal(false);
-      setNewCategory({ title: "", slug: "", description: "", language: "" });
-    } catch (err) {
-      console.error("Error adding category:", err);
-      toast.error(err?.message || "Failed to add category");
-    }
-  };
-
   const headerButtons = [
-    {
-      value: "Add Category",
-      variant: "white",
-      icon: <LuFolderPlus size={18} />,
-      className:
-        "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
-      onClick: () => setShowAddCategoryModal(true),
-    },
     {
       value: "New Article",
       variant: "primary",
@@ -233,87 +207,6 @@ const ArticlePage = () => {
                 onClick={handleDeleteArticle}
               >
                 Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showAddCategoryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4">
-          <div className="relative w-full max-w-lg rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl">
-            <button
-              className="absolute right-4 top-4 rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-              onClick={() => setShowAddCategoryModal(false)}
-            >
-              ✕
-            </button>
-            <h3 className="mb-5 text-center text-xl font-semibold text-slate-900">
-              Add New Category
-            </h3>
-
-            {[
-              { label: "Title", key: "title", type: "text" },
-              { label: "Slug", key: "slug", type: "text" },
-            ].map((field) => (
-              <div key={field.key} className="mb-4">
-                <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {field.label}
-                </label>
-                <input
-                  type={field.type}
-                  placeholder={`Enter ${field.label.toLowerCase()}`}
-                  value={newCategory[field.key]}
-                  onChange={(e) =>
-                    setNewCategory({ ...newCategory, [field.key]: e.target.value })
-                  }
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
-                />
-              </div>
-            ))}
-
-            <div className="mb-4">
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Description
-              </label>
-              <textarea
-                placeholder="Enter description"
-                value={newCategory.description}
-                onChange={(e) =>
-                  setNewCategory({ ...newCategory, description: e.target.value })
-                }
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
-                rows={3}
-              />
-            </div>
-
-            <div className="mb-6">
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Language
-              </label>
-              <input
-                type="text"
-                placeholder="Enter language (e.g., English)"
-                value={newCategory.language}
-                onChange={(e) =>
-                  setNewCategory({ ...newCategory, language: e.target.value })
-                }
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
-              />
-            </div>
-
-            <div className="flex items-center justify-end gap-3">
-              <button
-                className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:border-slate-300"
-                onClick={() => setShowAddCategoryModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondary"
-                onClick={handleAddCategory}
-              >
-                Add Category
               </button>
             </div>
           </div>

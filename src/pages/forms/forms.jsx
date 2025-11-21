@@ -302,6 +302,24 @@ const AdminFormBuilder = () => {
                             className="border border-gray-300 rounded-md px-3 py-2 w-full mb-3"
                           />
 
+                      <label className="text-sm text-gray-600">
+                            Step Order
+                          </label>
+                          <input
+                            type="text"
+                            value={step.stepOrder}
+                             disabled={!step.visible}
+                            onChange={(e) =>
+                              handleStepChange(
+                                form._id,
+                                stepIndex,
+                                "stepOrder",
+                                e.target.value
+                              )
+                            }
+                            className="border border-gray-300 rounded-md px-3 py-2 w-full mb-3"
+                          />
+
                           <div className="space-y-3">
                             {(step.fields || []).map((field, fieldIndex) => (
                               <div

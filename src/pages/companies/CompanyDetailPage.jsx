@@ -75,10 +75,9 @@ return (
 
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-      {/* IMAGE */}
       {selectedCompany.companyImage ? (
         <img
-          src={`${import.meta.env.VITE_API_URL_IMAGE}/${selectedCompany.companyImage}`}
+          src={selectedCompany.companyImage}
           alt={selectedCompany.companyName}
           className="h-64 w-full object-cover"
         />
@@ -88,15 +87,13 @@ return (
         </div>
       )}
 
-      {/* DETAILS */}
       <div className="space-y-6 p-6">
 
-        {/* BASIC GRID */}
         <div className="grid gap-4 md:grid-cols-3">
           {[
             { label: "Address (Competitor)", value: selectedCompany.address },
-            { label: "Email", value: selectedCompany.email },
-            { label: "Zip Code", value: selectedCompany.zipCode },
+            // { label: "Email", value: selectedCompany.email },
+            // { label: "Zip Code", value: selectedCompany.zipCode },
             { label: "Broker Sites", value: selectedCompany.brokerSites },
             { label: "Website Address", value: selectedCompany.websiteAddress },
           ].map((item, i) => (
@@ -114,7 +111,6 @@ return (
           ))}
         </div>
 
-        {/* EXTRACTOR */}
         <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
           <p className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
             Extractor
@@ -135,7 +131,6 @@ return (
           </div>
         </div>
 
-        {/* EXCERPT */}
         {selectedCompany.excerpt && (
           <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
             <p className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
@@ -147,7 +142,6 @@ return (
           </div>
         )}
 
-        {/* DESCRIPTION */}
         <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner">
           <p className="text-xs font-semibold uppercase text-slate-500 tracking-wide">
             Description

@@ -191,7 +191,7 @@ const ArticleFormPage = () => {
                   name={field.name}
                   value={form[field.name]}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary/30"
                   required
                 />
               </div>
@@ -207,7 +207,7 @@ const ArticleFormPage = () => {
                 name="categoryId"
                 value={form.categoryId}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary/30"
                 required
               >
                 <option value="">Select a category</option>
@@ -228,7 +228,7 @@ const ArticleFormPage = () => {
                 name="showDate"
                 value={form.showDate}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary/30"
                 required
               />
             </div>
@@ -243,7 +243,7 @@ const ArticleFormPage = () => {
                 name="language"
                 value={form.language}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary/30"
               />
             </div>
             <div>
@@ -254,7 +254,7 @@ const ArticleFormPage = () => {
                 name="excerpt"
                 value={form.excerpt}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary/30"
                 rows={3}
               />
             </div>

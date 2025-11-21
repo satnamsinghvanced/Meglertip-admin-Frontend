@@ -15,7 +15,6 @@ import PartnerPage from "../pages/partner/PartnerPage";
 import FormPage from "../pages/forms/forms";
 import { TermOfServicePage } from "../pages/term_of_service/TermOfService";
 import { PrivacyPolicyPage } from "../pages/privacy_policy/PrivacyPolicy";
-<<<<<<< Updated upstream
 import CountyPage from "../pages/Counties/CountiesPage";
 import ArticleFormPage from "../pages/article/ArticleFormPage";
 import ArticleDetailPage from "../pages/article/ArticleDetailPage";
@@ -27,11 +26,12 @@ import CompanyDetailPage from "../pages/companies/CompanyDetailPage";
 import CompanyFormPage from "../pages/companies/CompanyFormPage";
 import PlaceFormPage from "../pages/places/PlaceFormPage";
 import PlaceDetailPage from "../pages/places/PlaceDetailPage";
-=======
-import { CityPage } from "../pages/cities/CityPage";
 import { Quote } from "../pages/quote/quote";
-
->>>>>>> Stashed changes
+import CountiesFormPage from "../pages/counties/CountiesFormPage";
+import ArticleCategoryFormPage from "../pages/article-category/ArticleCategoryFormPage";
+import ArticleCategoryPage from "../pages/article-category/ArticleCategoryPage";
+import RealEstateAgentsPage from "../pages/realEstateAgents/RealEstateAgentsPage";
+import RealEstateAgentsFormPage from "../pages/realEstateAgents/RealEstateAgentsFormPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -52,18 +52,32 @@ const Routes = () => {
         <Route path={ROUTES.HOMEPAGE} element={<HomePage />} />
         <Route path={ROUTES.ABOUT} element={<AboutPage />} />
         <Route path={ROUTES.FAQ} element={<Faq />} />
+
         <Route path={ROUTES.ARTICLE} element={<ArticlePage />} />
         <Route path={ROUTES.ARTICLE_CREATE} element={<ArticleFormPage />} />
         <Route path={ROUTES.ARTICLE_EDIT} element={<ArticleFormPage />} />
         <Route path={ROUTES.ARTICLE_VIEW} element={<ArticleDetailPage />} />
+
+        <Route path={ROUTES.ARTICLE_CATEGORY} element={<ArticleCategoryPage />} />
+        <Route path={ROUTES.ARTICLE_CATEGORY_CREATE} element={<ArticleCategoryFormPage />} />
+        <Route path={ROUTES.ARTICLE_CATEGORY_EDIT} element={<ArticleCategoryFormPage />} />
+        {/* <Route path={ROUTES.ARTICLE_CATEGORY_VIEW} element={<ArticleCategoryDetailPage />} /> */}
+
         <Route path={ROUTES.PARTNER} element={<PartnerPage />} />
+        <Route path={ROUTES.REAL_ESTATE_AGENTS} element={<RealEstateAgentsPage />} />
+        <Route path={ROUTES.REAL_ESTATE_AGENTS_EDIT} element={<RealEstateAgentsFormPage />} />
 
         <Route path={ROUTES.FORMS} element={<FormPage />} />
-        <Route path={ROUTES.CITIES} element={<CountyPage />} />
+
+        <Route path={ROUTES.COUNTY} element={<CountyPage />} />
+        <Route path={ROUTES.COUNTY_CREATE} element={<CountiesFormPage />} />
+        <Route path={ROUTES.COUNTY_EDIT} element={<CountiesFormPage />} />
+
         <Route path={ROUTES.PLACES} element={<Places />} />
         <Route path={ROUTES.PLACES_CREATE} element={<PlaceFormPage />} />
         <Route path={ROUTES.PLACES_VIEW} element={<PlaceDetailPage />} />
         <Route path={ROUTES.PLACES_EDIT} element={<PlaceFormPage />} />
+
         <Route path={ROUTES.COMPANIES} element={<Company />} />
         <Route path={ROUTES.COMPANIES_CREATE} element={<CompanyFormPage />} />
         <Route path={ROUTES.COMPANIES_VIEW} element={<CompanyDetailPage />} />

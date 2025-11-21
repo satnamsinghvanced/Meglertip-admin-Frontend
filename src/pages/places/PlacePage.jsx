@@ -5,10 +5,8 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuFileUp, LuPlus } from "react-icons/lu";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
-
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
-
 import { ROUTES } from "../../consts/routes";
 import {
   getPlaces,
@@ -28,8 +26,7 @@ export const Places = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUploadingFileLoader, setShowUploadingFileLoader] = useState(false);
   const [placeToDelete, setPlaceToDelete] = useState(null);
-
-
+ 
   const [uploadFile, setUploadFile] = useState(null);
 
   useEffect(() => {
@@ -57,27 +54,6 @@ export const Places = () => {
     }
   };
 
-  //   if (!manualCity.name || !manualCity.slug || !manualCity.countyId) {
-  //     return toast.error("Fill required fields");
-  //   }
-
-  //   try {
-  //     await dispatch(createPlace(manualCity)).unwrap();
-  //     toast.success("Place added");
-  //     setShowAddModal(false);
-  //     setManualCity({
-  //       name: "",
-  //       slug: "",
-  //       countyId: "",
-  //       title: "",
-  //       excerpt: "",
-  //       description: "",
-  //     });
-  //     dispatch(getCities({ page, limit }));
-  //   } catch (err) {
-  //     toast.error("Failed to add place");
-  //   }
-  // };
   const isValidFileExtension = (file) => {
     if (!file) return false;
 
@@ -154,7 +130,7 @@ export const Places = () => {
     },
   ];
 
-  const totalCities = places?.data?.length || 0;
+  const totalPlaces = places?.data?.length || 0;
 
   return (
     <div className="space-y-6">
@@ -189,13 +165,13 @@ export const Places = () => {
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b px-6 py-4">
+        <div className="flex items-center justify-between  px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-slate-900">
               Place overview
             </p>
             <p className="text-xs text-slate-500">
-              {loading ? "Loading..." : `${totalCities} items`}
+              {loading ? "Loading..." : `${totalPlaces} items`}
             </p>
           </div>
         </div>
@@ -234,7 +210,7 @@ export const Places = () => {
                     {error}
                   </td>
                 </tr>
-              ) : totalCities > 0 ? (
+              ) : totalPlaces > 0 ? (
                 places.data.map((place, index) => (
                   <tr key={place._id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 text-slate-500">
@@ -299,7 +275,7 @@ export const Places = () => {
                     colSpan="5"
                     className="px-6 py-6 text-center text-slate-500"
                   >
-                    No cities found
+                    No Places found
                   </td>
                 </tr>
               )}
@@ -307,8 +283,8 @@ export const Places = () => {
           </table>
         </div>
 
-        {totalCities > 0 && (
-          <div className="border-t px-6 py-4">
+        {totalPlaces > 0 && (
+          <div className="px-6 py-4">
             <Pagination totalPages={totalPages} page={page} setPage={setPage} />
           </div>
         )}

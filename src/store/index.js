@@ -10,15 +10,12 @@ import partnerReducer from "./slices/partnerSlice";
 import formReducer from "./slices/formSlice";
 import privacyPolicyReducer from "./slices/privacyPolicySlice";
 import termOfServiceReducer from "./slices/termOfService";
-<<<<<<< Updated upstream
 import countySlice from "./slices/countySlice"
 import companySlice from "./slices/companySlice"
 import themeReducer from "./slices/themeSlice";
 import placeSlice from "./slices/placeSlice"
-=======
 import QuoteReducer from "./slices/quoteSlice"
->>>>>>> Stashed changes
-
+import realEstateAgentSlice from "./slices/realEstateAgents";
 export default configureStore({
   reducer: {
     user,
@@ -32,13 +29,11 @@ export default configureStore({
     form: formReducer,
     privacyPolicy: privacyPolicyReducer,
     termOfService: termOfServiceReducer,
-<<<<<<< Updated upstream
     counties: countySlice,
     companies:companySlice,
     places: placeSlice,
     theme: themeReducer,
-=======
-    quote:QuoteReducer
->>>>>>> Stashed changes
+    quote:QuoteReducer,
+    agents:realEstateAgentSlice,
   },
 });

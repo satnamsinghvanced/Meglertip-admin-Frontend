@@ -14,12 +14,9 @@ import {
   FileCheck2,
   ShieldCheck,
   Settings,
-<<<<<<< Updated upstream
   Mail,
-=======
   Quote,
   
->>>>>>> Stashed changes
 } from "lucide-react";
 import { ROUTES } from "../consts/routes";
 
@@ -43,11 +40,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: FileSpreadsheet,
       href: ROUTES.FORMS,
     },
-    {
-      name: "Articles",
-      icon: BookOpenText,
-      href: ROUTES.ARTICLE,
-    },
+    
     {
       name: "FAQ",
       icon: HelpCircle,
@@ -58,10 +51,25 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: UsersRound,
       href: ROUTES.PARTNER,
     },
+        {
+      name: "Real Estate Agents",
+      icon: UsersRound,
+      href: ROUTES.REAL_ESTATE_AGENTS,
+    },
+    {
+      name: "Articles",
+      icon: BookOpenText,
+      href: ROUTES.ARTICLE,
+    },
+    {
+      name: "Article Categories",
+      icon: BookOpenText,
+      href: ROUTES.ARTICLE_CATEGORY,
+    },
     {
       name: "Counties",
       icon: ShieldCheck,
-      href: ROUTES.CITIES,
+      href: ROUTES.COUNTY,
     },
        {
       name: "Places",
@@ -84,17 +92,15 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.PRIVACY_POLICY,
     },
     {
-<<<<<<< Updated upstream
       name: "Email Templates",
       icon: Mail,
       href: ROUTES.EMAIL,
     },
-=======
+      {
       name: "Quotes",
       icon: Quote,
       href: ROUTES.QUOTES,
     }
->>>>>>> Stashed changes
   ];
 
   const bottomRoutes = [

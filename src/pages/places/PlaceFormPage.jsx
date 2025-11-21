@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector ,shallowEqual} from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import { getCounties } from "../../store/slices/countySlice";
+import {
+  getCountiesForPlace,
+} from "../../store/slices/countySlice";
 import {
   clearSelectedPlace,
   createPlace,
@@ -61,10 +63,7 @@ const PlaceFormPage = () => {
   const navigate = useNavigate();
 
   const { selectedPlace } = useSelector((state) => state.places || {});
-  const { counties, loading: citiesLoading } = useSelector(
-  (state) => state.counties || {}
-);
-  console.log(counties, "DFsafsadfsadfasdf");
+  const { counties } = useSelector((state) => state.counties);
 
   const [form, setForm] = useState({
     name: "",
@@ -87,13 +86,14 @@ const PlaceFormPage = () => {
     return () => dispatch(clearSelectedPlace());
   }, [dispatch, isEditMode, placeId]);
   useEffect(() => {
-    dispatch(getCounties());
-  }, [dispatch]);
+    console.log("DISPATCHING FROM PLACE FORM");
+    dispatch(getCountiesForPlace({}));
+  }, []);
   useEffect(() => {
     if (isEditMode && selectedPlace) {
       setForm({
         name: selectedPlace.name || "",
-        countyId: selectedPlace.countyId || "",
+        countyId: selectedPlace.countyId._id || "",
         slug: selectedPlace.slug || "",
         excerpt: selectedPlace.excerpt || "",
         title: selectedPlace.title || "",
@@ -139,12 +139,12 @@ const PlaceFormPage = () => {
 
   const buildPayload = () => ({
     name: form.name?.trim() || "",
-    countyId: form.countyId || "",
+    countyId: form.countyId._id || "",
     slug: form.slug?.trim() || "",
     excerpt: form.excerpt || "",
     title: form.title || "",
     description: form.description || "",
-    isRecommended: form.isRecommended, 
+    isRecommended: form.isRecommended,
     rank: Number(form.rank) || 0,
     companiesId: form.companiesId,
   });
@@ -234,7 +234,7 @@ const PlaceFormPage = () => {
                     ${
                       errors[field.name]
                         ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-indigo-500"
+                        : "border-slate-200 focus:border-primary"
                     }`}
                 />
                 {errors[field.name] && (
@@ -257,11 +257,11 @@ const PlaceFormPage = () => {
                     ${
                       errors.countyId
                         ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-indigo-500"
+                        : "border-slate-200 focus:border-primary"
                     }`}
               >
                 <option value="">Select County</option>
-                {counties?.data?.map((c) => (
+                {counties?.map((c) => (
                   <option key={c._id} value={c._id}>
                     {c.name}
                   </option>
@@ -278,24 +278,21 @@ const PlaceFormPage = () => {
                 className="flex items-center cursor-pointer pt-2"
               >
                 <div className="relative">
-                  {/* Hidden Input (The actual control) */}
                   <input
                     type="checkbox"
                     name="isRecommended"
                     checked={form.isRecommended}
                     onChange={handleChange}
                     id="isRecommended-toggle"
-                    className="sr-only" // Screen reader only to hide the default checkbox
+                    className="sr-only"
                   />
 
-                  {/* Track (The colored background) */}
                   <div
                     className={`w-11 h-6 rounded-full shadow-inner transition-colors duration-300 ease-in-out ${
-                      form.isRecommended ? "bg-indigo-600" : "bg-slate-300"
+                      form.isRecommended ? "bg-primary" : "bg-slate-300"
                     }`}
                   ></div>
 
-                  {/* Switch/Puck (The circle button) */}
                   <div
                     className={`dot absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ease-in-out ${
                       form.isRecommended ? "translate-x-full" : "translate-x-0"
@@ -319,7 +316,7 @@ const PlaceFormPage = () => {
                 value={form.excerpt ?? ""}
                 onChange={handleChange}
                 rows={2}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary"
               />
             </div>
           </div>

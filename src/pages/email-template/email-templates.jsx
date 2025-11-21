@@ -109,7 +109,7 @@ const CreateEmailTemplate = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:ring-offset-slate-50"
+                className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:ring-offset-slate-50"
                 placeholder="Welcome Email"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -123,7 +123,7 @@ const CreateEmailTemplate = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:ring-offset-slate-50"
+                className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:ring-offset-slate-50"
                 placeholder="Thank you for signing up"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
@@ -142,7 +142,7 @@ const CreateEmailTemplate = () => {
               </div>
               <textarea
                 rows={12}
-                className="mt-1 block w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:ring-offset-slate-50"
+                className="mt-1 block w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:ring-offset-slate-50"
                 placeholder="<h1>Welcome!</h1><p>We are glad to have you here.</p>"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}

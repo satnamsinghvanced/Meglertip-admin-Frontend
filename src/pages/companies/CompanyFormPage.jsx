@@ -43,8 +43,8 @@ const quillFormats = [
 
 const requiredFields = [
   "companyName",
-  "email",
-  "zipCode",
+  // "email",
+  // "zipCode",
   "address",
   "websiteAddress",
 ];
@@ -64,8 +64,8 @@ const CompanyFormPage = () => {
     websiteAddress: "",
     extractor: "",
     brokerSites: "",
-    email: "",
-    zipCode: "",
+    // email: "",
+    // zipCode: "",
     companyImage: "", 
   });
 
@@ -99,8 +99,8 @@ const CompanyFormPage = () => {
         brokerSites: Array.isArray(selectedCompany.brokerSites)
           ? selectedCompany.brokerSites.join(", ")
           : "",
-        email: selectedCompany.email || "",
-        zipCode: selectedCompany.zipCode || "",
+        // email: selectedCompany.email || "",
+        // zipCode: selectedCompany.zipCode || "",
         companyImage: selectedCompany.companyImage || "",
       });
       setPreviewImage(selectedCompany.companyImage || "");
@@ -112,15 +112,16 @@ const CompanyFormPage = () => {
     if (requiredFields.includes(name)) {
       if (!value || !String(value).trim()) {
         message = `${labelFor(name)} is required`;
-      } else {
-        if (name === "email") {
-          const re =
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i;
-          if (!re.test(String(value).toLowerCase())) {
-            message = "Please enter a valid email address";
-          }
-        }
       }
+      //  else {
+      //   if (name === "email") {
+      //     const re =
+      //       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i;
+      //     if (!re.test(String(value).toLowerCase())) {
+      //       message = "Please enter a valid email address";
+      //     }
+      //   }
+      // }
     }
     setErrors((prev) => ({ ...prev, [name]: message }));
     return message === "";
@@ -131,13 +132,13 @@ const CompanyFormPage = () => {
     requiredFields.forEach((f) => {
       const v = form[f];
       if (!v || !String(v).trim()) newErrors[f] = `${labelFor(f)} is required`;
-      if (f === "email" && v && String(v).trim()) {
-        const re =
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i;
-        if (!re.test(String(v).toLowerCase())) {
-          newErrors.email = "Please enter a valid email address";
-        }
-      }
+      // if (f === "email" && v && String(v).trim()) {
+      //   const re =
+      //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i;
+      //   if (!re.test(String(v).toLowerCase())) {
+      //     newErrors.email = "Please enter a valid email address";
+      //   }
+      // }
     });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -146,8 +147,8 @@ const CompanyFormPage = () => {
   function labelFor(name) {
     const map = {
       companyName: "Company Name",
-      email: "Email",
-      zipCode: "Zip Code",
+      // email: "Email",
+      // zipCode: "Zip Code",
       address: "Address (Competitor)",
       websiteAddress: "Website Address",
     };
@@ -205,8 +206,8 @@ const CompanyFormPage = () => {
       address: form.address?.trim() || "",
       description: form.description || "",
       websiteAddress: form.websiteAddress?.trim() || "",
-      email: form.email?.trim() || "",
-      zipCode: form.zipCode?.trim() || "",
+      // email: form.email?.trim() || "",
+      // zipCode: form.zipCode?.trim() || "",
       companyImage: form.companyImage || "",
       extractor: form.extractor
         ? form.extractor
@@ -286,8 +287,8 @@ const CompanyFormPage = () => {
               { label: "Company Name", name: "companyName" },
               { label: "Website Address", name: "websiteAddress" },
               { label: "Address (Competitor)", name: "address" },
-              { label: "Email", name: "email" },
-              { label: "Zip Code", name: "zipCode" },
+              // { label: "Email", name: "email" },
+              // { label: "Zip Code", name: "zipCode" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -298,7 +299,7 @@ const CompanyFormPage = () => {
                   value={form[field.name] ?? ""}
                   onChange={handleChange}
                   className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    ${errors[field.name] ? "border-red-400 focus:border-red-500" : "border-slate-200 focus:border-indigo-500"}`}
+                    ${errors[field.name] ? "border-red-400 focus:border-red-500" : "border-slate-200 focus:border-primary"}`}
                 />
                 {errors[field.name] && (
                   <p className="mt-1 text-xs text-red-600">{errors[field.name]}</p>
@@ -322,7 +323,7 @@ const CompanyFormPage = () => {
                   onChange={handleChange}
                   rows={2}
                   placeholder="e.g., tag1, tag2, tag3"
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30"
+                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary/30"
                 />
               </div>
             ))}

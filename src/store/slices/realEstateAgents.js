@@ -1,0 +1,171 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+export const getAgents = createAsyncThunk(
+  "agents/getAgents",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${BASE_URL}/real-estate-agent/`);
+      // console.log(data)
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const getAgentById = createAsyncThunk(
+  "agents/getAgentById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${BASE_URL}/real-estate-agent/${id}`);
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const createAgent = createAsyncThunk(
+  "agents/createAgent",
+  async (agentData, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/real-estate-agent/create`,
+        agentData
+      );
+      toast.success(data.message || "Agent created successfully");
+      return data.data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to create agent");
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const updateAgent = createAsyncThunk(
+  "agents/updateAgent",
+  async ({ id, agentData }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.put(
+        `${BASE_URL}/real-estate-agent/update/${id}`,
+        agentData
+      );
+      toast.success(data.message || "Agent updated successfully");
+      return data.data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update agent");
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const deleteAgent = createAsyncThunk(
+  "agents/deleteAgent",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `${BASE_URL}/real-estate-agent/delete/${id}`
+      );
+      toast.success(data.message || "Agent deleted successfully");
+      return id;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete agent");
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+const realEstateAgentSlice = createSlice({
+  name: "agents",
+  initialState: {
+    agents: [],
+    selectedAgent: null,
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    clearSelectedAgent: (state) => {
+      state.selectedAgent = null;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+    setAgents: (state, action) => {
+      state.agents = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+
+      .addCase(getAgents.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAgents.fulfilled, (state, action) => {
+        state.loading = false;
+        state.agents = action.payload;
+      })
+      .addCase(getAgents.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getAgentById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAgentById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedAgent = action.payload;
+      })
+      .addCase(getAgentById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(createAgent.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createAgent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.agents.push(action.payload);
+      })
+      .addCase(createAgent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(updateAgent.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateAgent.fulfilled, (state, action) => {
+        state.loading = false;
+        const updated = action.payload;
+        const index = state.agents.findIndex((a) => a._id === updated._id);
+        if (index !== -1) state.agents[index] = updated;
+      })
+      .addCase(updateAgent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(deleteAgent.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteAgent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.agents = state.agents.filter((a) => a._id !== action.payload);
+      })
+      .addCase(deleteAgent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
+
+export const { clearSelectedAgent, clearError, setAgents } =
+  realEstateAgentSlice.actions;
+
+export default realEstateAgentSlice.reducer;

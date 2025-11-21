@@ -7,39 +7,38 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
-import { getCounties, deleteCounty } from "../../store/slices/countySlice";
 import { ROUTES } from "../../consts/routes";
+import { deleteArticleCategory, getCategories } from "../../store/slices/articleCategoriesSlice";
 
-export const CountyPage = () => {
+export const ArticleCategoryPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { counties, loading, error } = useSelector((state) => state.counties);
+  const { categories, loading, error } = useSelector((state) => state.categories);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [countyToDelete, setCountyToDelete] = useState(null);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   useEffect(() => {
-    const fetchCounties = async () => {
+    const fetchCategories = async () => {
       try {
-        const res = await dispatch(getCounties({ page, limit })).unwrap();
+        const res = await dispatch(getCategories({ page, limit })).unwrap();
         setTotalPages(res.totalPages || 1);
       } catch (err) {
         console.error(err);
       }
     };
-    fetchCounties();
+    fetchCategories();
   }, [dispatch, page, limit]);
 
-  const handleDeleteCounty = async () => {
-    if (!countyToDelete) return;
-
+  const handleDeleteCategory = async () => {
+    if (!categoryToDelete) return;
     try {
-      const res = await dispatch(deleteCounty(countyToDelete._id)).unwrap();
-      toast.success(res.message || "County deleted");
+      const res = await dispatch(deleteArticleCategory(categoryToDelete._id)).unwrap();
+    //   toast.success(res.message || "Category deleted");
       setShowDeleteModal(false);
-      dispatch(getCounties({ page, limit }));
+      dispatch(getCategories({ page, limit }));
     } catch (err) {
       toast.error("Failed to delete");
     }
@@ -47,23 +46,23 @@ export const CountyPage = () => {
 
   const headerButtons = [
     {
-      value: "Add County",
+      value: "Add Article Category",
       variant: "primary",
       icon: <LuPlus size={18} />,
       className:
         "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
-      onClick: () => navigate(ROUTES.COUNTY_CREATE),
+      onClick: () => navigate(ROUTES.ARTICLE_CATEGORY_CREATE),
     },
   ];
 
-  const totalCounties = counties?.length || 0;
+  const totalCategories = categories?.length || 0;
   console;
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Counties"
-        description="Manage counties and related information."
+        title="Article Categories"
+        description="Manage categories and related information."
         buttonsList={headerButtons}
       />
 
@@ -71,10 +70,10 @@ export const CountyPage = () => {
         <div className="flex items-center justify-between  px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-slate-900">
-              Counties overview
+              Article Categories overview
             </p>
             <p className="text-xs text-slate-500">
-              {loading ? "Loading..." : `${totalCounties} items`}
+              {loading ? "Loading..." : `${totalCategories} items`}
             </p>
           </div>
         </div>
@@ -84,7 +83,7 @@ export const CountyPage = () => {
             <thead className="bg-slate-50 text-left text-[11px] font-semibold uppercase text-slate-500">
               <tr>
                 <th className="px-6 py-4">#</th>
-                <th className="px-6 py-4">County Name</th>
+                <th className="px-6 py-4">Article Category Name</th>
                 <th className="px-6 py-4">Slug</th>
                 <th className="px-6 py-4 flex items-center justify-center">
                   Actions
@@ -112,28 +111,28 @@ export const CountyPage = () => {
                     {error}
                   </td>
                 </tr>
-              ) : totalCounties > 0 ? (
-                counties.map((county, index) => (
-                  <tr key={county._id} className="hover:bg-slate-50">
+              ) : totalCategories > 0 ? (
+                categories.map((category, index) => (
+                  <tr key={category._id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 text-slate-500">
                       {(page - 1) * limit + index + 1}
                     </td>
                     <td className="px-6 py-4 font-medium text-slate-900">
-                      {county.name}
+                      {category.title}
                     </td>
-                    <td className="px-6 py-4">{county.slug}</td>
+                    <td className="px-6 py-4">{category.slug}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
                         <button
                           className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/county/${county._id}/edit`)}
+                          onClick={() => navigate(`/article-category/${category._id}/edit`)}
                         >
                           <AiTwotoneEdit size={16} />
                         </button>
                         <button
                           className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
                           onClick={() => {
-                            setCountyToDelete(county);
+                            setCategoryToDelete(category);
                             setShowDeleteModal(true);
                           }}
                         >
@@ -149,7 +148,7 @@ export const CountyPage = () => {
                     colSpan="5"
                     className="px-6 py-6 text-center text-slate-500"
                   >
-                    No counties found
+                    No categories found
                   </td>
                 </tr>
               )}
@@ -157,7 +156,7 @@ export const CountyPage = () => {
           </table>
         </div>
 
-        {totalCounties > 0 && (
+        {totalCategories > 0 && (
           <div className="px-6 py-4">
             <Pagination totalPages={totalPages} page={page} setPage={setPage} />
           </div>
@@ -167,7 +166,7 @@ export const CountyPage = () => {
         <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl">
             <p className="text-center mb-6 text-lg font-semibold">
-              Are you sure you want to delete this county?
+              Are you sure you want to delete this category?
             </p>
             <div className="flex justify-end gap-3">
               <button
@@ -178,7 +177,7 @@ export const CountyPage = () => {
               </button>
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded-full"
-                onClick={handleDeleteCounty}
+                onClick={handleDeleteCategory}
               >
                 Delete
               </button>
@@ -190,4 +189,4 @@ export const CountyPage = () => {
   );
 };
 
-export default CountyPage;
+export default ArticleCategoryPage;
