@@ -32,6 +32,8 @@ export const ROUTES = {
   COUNTY_VIEW: "/county/:countyId",
   COUNTY_EDIT: "/county/:countyId/Edit",
 
+  EMAIL: "email-templates",
+  CITIES: "/counties",
   PLACES: "/places",
   PLACES_CREATE: "/places/create",
   PLACES_VIEW: "/place/:placeId",
@@ -47,4 +49,10 @@ export const ROUTES = {
 
   REAL_ESTATE_AGENTS: "/real-estate-agents",
   REAL_ESTATE_AGENTS_EDIT: "/real-estate-agent/:agentId/edit",
+  COUNTIES: "/counties",
+  QUOTES: "/quotes",
+  PARTNERS: "/partners",
+  PARTNER_CREATE:"/partners/create",
+  PARTNERS_ID: "/partners/:id",
+  PARTNERS_EDIT_ID: "/partners/:PartnerId/edit",
 };

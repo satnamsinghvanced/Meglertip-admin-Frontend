@@ -17,6 +17,7 @@ import {
   Mail,
   Quote,
   
+  UserPlus,
 } from "lucide-react";
 import { ROUTES } from "../consts/routes";
 
@@ -71,7 +72,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: ShieldCheck,
       href: ROUTES.COUNTY,
     },
-       {
+    {
       name: "Places",
       icon: ShieldCheck,
       href: ROUTES.PLACES,
@@ -80,7 +81,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Companies",
       icon: ShieldCheck,
       href: ROUTES.COMPANIES,
-    }, 
+    },
     {
       name: "Term of Service",
       icon: FileCheck2,
@@ -100,7 +101,18 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Quotes",
       icon: Quote,
       href: ROUTES.QUOTES,
-    }
+    },
+    {
+      name: "Quotes",
+      icon: Quote,
+      href: ROUTES.QUOTES,
+    },
+
+    {
+      name: "Collaborate Partners",
+      icon: UserPlus,
+      href: ROUTES.PARTNERS,
+    },
   ];
 
   const bottomRoutes = [
@@ -117,7 +129,9 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     <>
       <div
         className={`${
-          isMiniSidebarOpen ? "bg-black/40 w-full h-full fixed inset-0 z-30" : ""
+          isMiniSidebarOpen
+            ? "bg-black/40 w-full h-full fixed inset-0 z-30"
+            : ""
         } md:hidden`}
         onClick={onCloseSidebar}
       />
@@ -142,7 +156,9 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
             className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
           >
             <HiChevronDoubleLeft
-              className={`text-xl transition ${isMiniSidebarOpen ? "" : "rotate-180"}`}
+              className={`text-xl transition ${
+                isMiniSidebarOpen ? "" : "rotate-180"
+              }`}
             />
           </button>
         </div>
