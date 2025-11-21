@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   fetchPartnerById,
   updatePartner,
@@ -11,7 +13,6 @@ const PartnerEditPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { partnerDetail, loading } = useSelector((state) => state.partners);
 
   const [formData, setFormData] = useState({
@@ -22,8 +23,10 @@ const PartnerEditPage = () => {
     isActive: false,
   });
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
   useEffect(() => {
-    dispatch(fetchPartnerById(id));
+    if (id) dispatch(fetchPartnerById(id));
   }, [id]);
 
   useEffect(() => {
@@ -46,8 +49,8 @@ const PartnerEditPage = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (!id) return toast.error("Partner ID is missing");
 
     const payload = {
       ...formData,
@@ -57,112 +60,117 @@ const PartnerEditPage = () => {
         .filter((p) => p),
     };
 
-    const result = await dispatch(updatePartner({ id, data: payload }));
-    if (updatePartner.fulfilled.match(result)) {
+    try {
+      await dispatch(updatePartner({ id, data: payload })).unwrap();
+      toast.success("Partner updated successfully");
+      setShowConfirmModal(false);
       navigate("/partners");
+    } catch {
+      toast.error("Failed to update partner");
     }
   };
 
+  if (loading) return <p>Loading...</p>;
+
   return (
-    <div className=" ">
+    <div className="space-y-6">
       <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-2xl font-semibold mb-5">Edit Partner</h2>
-        </div>
-        <div className="">
-          <div>
-            <button
-              className="btn group btn-white btn-sm rounded-10 text-base w-full  undefined border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white"
-              onClick={() => navigate(-1)}
-            >
-              <p className="flex gap-1 xs:gap-2 font-bold sm:text-sm md:text-base justify-center items-center whitespace-nowrap undefined">
-                Back to Companies
-              </p>
-            </button>
-          </div>
-        </div>
+        <h2 className="text-2xl font-semibold">Edit Partner</h2>
+        <button
+          className="btn group btn-white btn-sm rounded-10 text-base border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white"
+          onClick={() => navigate(-1)}
+        >
+          Back to Partners
+        </button>
       </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      <form className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm grid gap-4 md:grid-cols-6">
+        <div>
+          <label className="block text-sm font-medium">Name</label>
+          <input
+            type="text"
+            name="name"
+            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-indigo-500"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Partner Name"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">City</label>
+          <input
+            type="text"
+            name="city"
+            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-indigo-500"
+            value={formData.city}
+            onChange={handleChange}
+            placeholder="City"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Postal Codes</label>
+          <input
+            type="text"
+            name="postalCodes"
+            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-indigo-500"
+            value={formData.postalCodes}
+            onChange={handleChange}
+            placeholder="e.g. 1234, 5678"
+          />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <input
+            className="!relative"
+            type="checkbox"
+            name="isPremium"
+            checked={formData.isPremium}
+            onChange={handleChange}
+          />
+          <label>Premium Partner</label>
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            className="!relative"
+            type="checkbox"
+            name="isActive"
+            checked={formData.isActive}
+            onChange={handleChange}
+          />
+          <label>Active Partner</label>
+        </div>
+
+        <button
+          type="button"
+          className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-secondary"
+          onClick={() => setShowConfirmModal(true)}
         >
-          <div className="grid gap-4 md:grid-cols-6">
-            {" "}
-            <div>
-              <label className="block text-sm font-medium">Name</label>
-              <input
-                type="text"
-                name="name"
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    border-slate-200 focus:border-indigo-500"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Partner Name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">City</label>
-              <input
-                type="text"
-                name="city"
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    border-slate-200 focus:border-indigo-500"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="City"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Postal Codes</label>
-              <input
-                type="text"
-                name="postalCodes"
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    border-slate-200 focus:border-indigo-500"
-                value={formData.postalCodes}
-                onChange={handleChange}
-                placeholder="e.g. 1234, 5678, 7890"
-              />
+          Update Partner
+        </button>
+      </form>
+
+      {showConfirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-slate-900/60">
+          <div className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl">
+            <p className="text-center text-lg font-semibold mb-6">
+              Are you sure you want to update this partner?
+            </p>
+            <div className="flex justify-center gap-3">
+              <button
+                className="px-4 py-2 border rounded-full"
+                onClick={() => setShowConfirmModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-primary text-white rounded-full"
+                onClick={handleSubmit}
+              >
+                Update
+              </button>
             </div>
           </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-3">
-                <input
-                className="!relative"
-                  type="checkbox"
-                  name="isPremium"
-                  checked={formData.isPremium}
-                  onChange={handleChange}
-                />
-                <label>Premium Partner</label>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <input
-                className="!relative"
-                  type="checkbox"
-                  name="isActive"
-                  checked={formData.isActive}
-                  onChange={handleChange}
-                />
-                <label>Active Partner</label>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className=" rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              Update Partner
-            </button>
-          </div>
-        </form>
+        </div>
       )}
     </div>
   );

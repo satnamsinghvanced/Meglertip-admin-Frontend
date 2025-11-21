@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createPartner } from "../../store/slices/partnersSlice";
@@ -17,9 +19,12 @@ export const AddPartnerPage = () => {
     postalCodes: "",
     isPremium: false,
     isActive: true,
+    lastMonth: "",
+    currentMonth: "",
+    total: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [error, setErrors] = useState({});
 
   const validateForm = () => {
     let err = {};
@@ -72,8 +77,13 @@ export const AddPartnerPage = () => {
     const payload = {
       ...form,
       postalCodes: form.postalCodes.split(",").map((x) => x.trim()),
+      leads: {
+        lastMonth: Number(form.lastMonth) || 0,
+        currentMonth: Number(form.currentMonth) || 0,
+        total: Number(form.total) || 0,
+      },
     };
-
+    console.log(payload.total, "Total Leads");
     const result = await dispatch(createPartner(payload));
 
     if (result.payload?.success) {
@@ -109,17 +119,16 @@ export const AddPartnerPage = () => {
           <div className="grid gap-6 md:grid-cols-2">
             <div>
               <label className="text-sm font-semibold text-slate-700">
-                 Name <span className="text-red-500">*</span>
+                Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 name="name"
-                placeholder="Enter name "
+                placeholder="Enter name"
                 value={form.name}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-indigo-500 outline-none"
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
               />
-              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
             </div>
 
             <div>
@@ -132,11 +141,8 @@ export const AddPartnerPage = () => {
                 placeholder="Enter email"
                 value={form.email}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-indigo-500 outline-none"
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
               />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
-              )}
             </div>
 
             <div>
@@ -149,7 +155,7 @@ export const AddPartnerPage = () => {
                 placeholder="Enter address"
                 value={form.address}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-indigo-500 outline-none"
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
               />
             </div>
 
@@ -163,7 +169,7 @@ export const AddPartnerPage = () => {
                 placeholder="Enter city"
                 value={form.city}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-indigo-500 outline-none"
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
               />
             </div>
 
@@ -175,21 +181,59 @@ export const AddPartnerPage = () => {
               <input
                 type="text"
                 name="postalCodes"
-                placeholder="e.g. 1001, 2001"
+                placeholder="1001, 2001"
                 value={form.postalCodes}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-indigo-500 outline-none"
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
               />
-              {errors.postalCodes && (
-                <p className="text-red-500 text-sm">{errors.postalCodes}</p>
-              )}
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-slate-700">
+                Leads Last Month
+              </label>
+              <input
+                type="number"
+                name="lastMonth"
+                placeholder="0"
+                value={form.lastMonth}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold text-slate-700">
+                Leads Current Month
+              </label>
+              <input
+                type="number"
+                name="currentMonth"
+                placeholder="0"
+                value={form.currentMonth}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold text-slate-700">
+                Total Leads
+              </label>
+              <input
+                type="number"
+                name="total"
+                placeholder="0"
+                value={form.total}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+              />
             </div>
           </div>
 
           <div className="flex items-center gap-10 pt-4">
-            <label className="flex items-center gap-2 text-slate-700 font-medium">
+            <label className="flex items-center gap-2 font-medium">
               <input
-              className="!relative"
+                className="!relative"
                 type="checkbox"
                 name="isPremium"
                 checked={form.isPremium}
@@ -198,9 +242,9 @@ export const AddPartnerPage = () => {
               Premium Partner
             </label>
 
-            <label className="flex items-center gap-2 text-slate-700 font-medium">
+            <label className="flex items-center gap-2 font-medium">
               <input
-              className="!relative"
+                className="!relative"
                 type="checkbox"
                 name="isActive"
                 checked={form.isActive}

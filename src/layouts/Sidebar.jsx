@@ -3,7 +3,6 @@
 import { Link, useLocation, useNavigate } from "react-router";
 import { HiChevronDoubleLeft } from "react-icons/hi";
 import { Fragment } from "react";
-
 import {
   Home,
   Info,
@@ -19,14 +18,13 @@ import {
   UserPlus,
   Map,
   MapPin,
-  Building
+  Building,
 } from "lucide-react";
 import { ROUTES } from "../consts/routes";
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const adminRoutes = [
     {
       name: "Homepage",
@@ -43,7 +41,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: FileSpreadsheet,
       href: ROUTES.FORMS,
     },
-    
     {
       name: "FAQ",
       icon: HelpCircle,
@@ -51,10 +48,10 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     },
     {
       name: "Partner",
-      icon: UsersRound,
+      icon: UserPlus,
       href: ROUTES.PARTNER,
     },
-        {
+    {
       name: "Real Estate Agents",
       icon: UsersRound,
       href: ROUTES.REAL_ESTATE_AGENTS,
@@ -66,7 +63,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     },
     {
       name: "Article Categories",
-      icon: BookOpenText,
+      icon: FileCheck2,
       href: ROUTES.ARTICLE_CATEGORY,
     },
     {
@@ -89,14 +86,14 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: Mail,
       href: ROUTES.EMAIL,
     },
-      {
+    {
       name: "Quotes",
       icon: Quote,
       href: ROUTES.QUOTES,
     },
     {
       name: "Collaborate Partners",
-      icon: UserPlus,
+      icon: UsersRound,
       href: ROUTES.PARTNERS,
     },
     {
@@ -139,7 +136,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       >
         <div className="flex items-center justify-between px-4 py-5">
           {isMiniSidebarOpen && (
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/homepage" className="flex items-center gap-2">
               <img
                 src="/images/boligtip.png"
                 alt="logo"
@@ -165,9 +162,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
               className={`mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 ${
                 isMiniSidebarOpen ? "pl-2" : "text-center"
               }`}
-            >
-              {/* Navigation */}
-            </p>
+            ></p>
             <ul className="space-y-1">
               {navigationRoutes.map((item, index) => {
                 const isActive = location.pathname === item.href;

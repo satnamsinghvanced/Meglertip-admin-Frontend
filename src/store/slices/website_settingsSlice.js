@@ -18,15 +18,14 @@ export const uploadLogos = createAsyncThunk(
   "theme/uploadLogos",
   async ({ id, files }) => {
     const formData = new FormData();
-
-    if (!files.logo) throw new Error("Logo is required");
-    formData.append("logo", files.logo);
+    if (files.logo) formData.append("logo", files.logo);
     if (files.favicon) formData.append("favicon", files.favicon);
     if (files.logoDark) formData.append("logoDark", files.logoDark);
     if (files.wordmark) formData.append("wordmark", files.wordmark);
     if (files.wordmarkDark) formData.append("wordmarkDark", files.wordmarkDark);
     if (files.lettermark) formData.append("lettermark", files.lettermark);
     if (files.tagline) formData.append("tagline", files.tagline);
+
     const response = await api.put(
       `/website_settings/upload-logo?id=${id}`,
       formData,

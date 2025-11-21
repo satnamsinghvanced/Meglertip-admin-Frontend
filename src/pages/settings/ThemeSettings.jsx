@@ -1,18 +1,18 @@
-/* eslint-disable no-undef */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { FiSave } from "react-icons/fi";
+import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { AiOutlineUndo } from "react-icons/ai";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+
 import {
   fetchTheme,
   updateTheme,
   uploadLogos,
 } from "../../store/slices/website_settingsSlice";
-import { toast } from "react-toastify";
-import { AiOutlineUndo } from "react-icons/ai";
-import { IoCheckmarkDoneOutline } from "react-icons/io5";
-import Swal from "sweetalert2";
 
 const defaultTheme = {
   primary: "#2A4165",
@@ -33,11 +33,12 @@ const ThemeSettings = () => {
     (state) => state.settings
   );
 
+  const [localTheme, setLocalTheme] = useState(null);
   const [editingKey, setEditingKey] = useState(null);
   const [tempColor, setTempColor] = useState("");
-  const [localTheme, setLocalTheme] = useState(null);
   const [hasChanges, setHasChanges] = useState(false);
 
+  const [editingLogos, setEditingLogos] = useState(false);
   const [logoFiles, setLogoFiles] = useState({
     logo: null,
     logoDark: null,
@@ -46,11 +47,11 @@ const ThemeSettings = () => {
     lettermark: null,
     tagline: null,
   });
-
   const [wordmarkText, setWordmarkText] = useState({
     wordmark: "",
     wordmarkDark: "",
   });
+  const [removedLogos, setRemovedLogos] = useState({});
 
   const themeLabels = {
     primary: "Primary",
@@ -81,6 +82,15 @@ const ThemeSettings = () => {
       setWordmarkText({
         wordmark: logos.wordmarkText || "",
         wordmarkDark: logos.wordmarkDarkText || "",
+      });
+      setRemovedLogos({});
+      setLogoFiles({
+        logo: null,
+        logoDark: null,
+        wordmark: null,
+        wordmarkDark: null,
+        lettermark: null,
+        tagline: null,
       });
     }
   }, [theme, logos]);
@@ -133,83 +143,171 @@ const ThemeSettings = () => {
       .then(() => toast.success("Default theme restored and saved!"))
       .catch((err) => toast.error(err));
   };
-
-  // --- Logo upload handlers ---
   const handleLogoChange = (field, file) => {
     setLogoFiles((prev) => ({ ...prev, [field]: file }));
+    if (file) {
+      setWordmarkText((prev) => ({ ...prev, [field]: "" }));
+      setRemovedLogos((prev) => ({ ...prev, [field]: false }));
+    }
   };
 
   const handleWordmarkTextChange = (field, text) => {
     setWordmarkText((prev) => ({ ...prev, [field]: text }));
+    if (text) setLogoFiles((prev) => ({ ...prev, [field]: null }));
   };
 
-  const saveLogos = () => {
+  // const handleDeleteLogo = (field) => {
+  //   setLogoFiles((prev) => ({ ...prev, [field]: null }));
+  //   setWordmarkText((prev) => ({ ...prev, [field]: "" }));
+  //   setRemovedLogos((prev) => ({ ...prev, [field]: true }));
+  // };
+
+  const saveLogos = async () => {
     if (!themeId) return toast.error("Theme ID not found!");
-    const data = new FormData();
-    Object.keys(logoFiles).forEach((key) => {
-      if (logoFiles[key]) data.append(key, logoFiles[key]);
-    });
-    if (wordmarkText.wordmark)
-      data.append("wordmarkText", wordmarkText.wordmark);
-    if (wordmarkText.wordmarkDark)
-      data.append("wordmarkDarkText", wordmarkText.wordmarkDark);
 
-    dispatch(uploadLogos({ id: themeId, files: logoFiles }))
-      .unwrap()
-      .then(() => toast.success("Logos uploaded successfully!"))
-      .catch((err) => toast.error(err));
+    const formData = new FormData();
+    Object.keys(logoFiles).forEach((key) => {
+      if (logoFiles[key]) formData.append(key, logoFiles[key]);
+      if (removedLogos[key]) formData.append(`remove_${key}`, true);
+    });
+
+    if (wordmarkText.wordmark)
+      formData.append("wordmarkText", wordmarkText.wordmark);
+    if (wordmarkText.wordmarkDark)
+      formData.append("wordmarkDarkText", wordmarkText.wordmarkDark);
+
+    try {
+      await dispatch(uploadLogos({ id: themeId, files: formData })).unwrap();
+      toast.success("Logos updated successfully!");
+      setEditingLogos(false);
+      setRemovedLogos({});
+      setLogoFiles({
+        logo: null,
+        logoDark: null,
+        wordmark: null,
+        wordmarkDark: null,
+        lettermark: null,
+        tagline: null,
+      });
+      dispatch(fetchTheme());
+    } catch (err) {
+      toast.error(err.message || "Failed to update logos");
+    }
   };
+
   if (loading || !localTheme)
     return <p className="p-10 text-center">Loading theme...</p>;
 
-  // const IMAGE_URL = "http://localhost:9090/";
+  const IMAGE_URL = "http://localhost:9090/";
+
   return (
     <div>
       <div className="bg-white rounded-2xl p-8 shadow-md relative space-y-8">
-        {/* --- Logos Section --- */}
         <div>
-          <h4 className="font-bold text-xl mb-4">Logos Settings</h4>
+          <div className="flex justify-between items-center mb-4">
+            <h4 className="font-bold text-xl">Logos Settings</h4>
+            {!editingLogos && (
+              <button
+                onClick={() => setEditingLogos(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-500"
+              >
+                <AiTwotoneEdit className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { key: "logo", label: "Logo", type: "image" },
-              { key: "logoDark", label: "Logo Dark", type: "image" },
-              { key: "wordmark", label: "Wordmark", type: "image+text" },
+              { key: "logo", label: "Logo", type: "image", required: true },
+              {
+                key: "logoDark",
+                label: "Logo Dark",
+                type: "image",
+                required: false,
+              },
+              {
+                key: "wordmark",
+                label: "Wordmark",
+                type: "image+text",
+                required: true,
+              },
               {
                 key: "wordmarkDark",
                 label: "Wordmark Dark",
                 type: "image+text",
+                required: false,
               },
-              { key: "lettermark", label: "Lettermark", type: "image" },
-              { key: "tagline", label: "Tagline", type: "image" },
-            ].map(({ key, label, type }) => (
+              {
+                key: "lettermark",
+                label: "Lettermark",
+                type: "image",
+                required: false,
+              },
+              {
+                key: "tagline",
+                label: "Tagline",
+                type: "image",
+                required: false,
+              },
+            ].map(({ key, label, type, required }) => (
               <div
                 key={key}
                 className="p-5 border border-gray-300 rounded-lg bg-gray-50"
               >
-                <h3 className="font-semibold text-[16px] mb-2">{label}</h3>
-
+                <h3 className="font-semibold text-[16px] mb-2">
+                  {label} {required && <span className="text-red-600">*</span>}
+                </h3>
                 {type.includes("image") && (
-                  <div className="mb-2">
-                    {logos && logos[key] && (
+                  <div className="mb-2 flex items-center gap-2">
+                    {logos &&
+                      logos[key] &&
+                      !removedLogos[key] &&
+                      !logoFiles[key] && (
+                        <img
+                          src={`${IMAGE_URL}${logos[key].replaceAll(
+                            "\\",
+                            "/"
+                          )}`}
+                          alt={label}
+                          className="h-16"
+                        />
+                      )}
+                    {logoFiles[key] && (
                       <img
-                        src={`http://localhost:9090/${logos[key]}`}
+                        src={URL.createObjectURL(logoFiles[key])}
                         alt={label}
-                        className="h-16 mb-2"
+                        className="h-16"
                       />
                     )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleLogoChange(key, e.target.files[0])}
-                    />
+                    {/* {editingLogos &&
+                      ((logos[key] && !removedLogos[key]) ||
+                        logoFiles[key]) && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteLogo(key)}
+                          className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                          <RiDeleteBin5Line />
+                        </button>
+                      )} */}
+                    {editingLogos && (
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={wordmarkText[key]}
+                        onChange={(e) =>
+                          handleLogoChange(key, e.target.files[0])
+                        }
+                      />
+                    )}
                   </div>
                 )}
-
-                {type.includes("text") && (
+                {type.includes("text") && editingLogos && (
                   <input
                     type="text"
                     placeholder="Enter text"
                     value={wordmarkText[key] || ""}
+                    disabled={logoFiles[key]}
                     onChange={(e) =>
                       handleWordmarkTextChange(key, e.target.value)
                     }
@@ -220,12 +318,22 @@ const ThemeSettings = () => {
             ))}
           </div>
 
-          <button
-            onClick={saveLogos}
-            className="mt-4 px-6 py-3 bg-[#161925] text-white rounded-xl hover:bg-black transition"
-          >
-            Save Logos
-          </button>
+          {editingLogos && (
+            <div className="flex gap-4 mt-4">
+              <button
+                onClick={saveLogos}
+                className="px-6 py-3 bg-[#161925] text-white rounded-xl hover:bg-black transition"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditingLogos(false)}
+                className="px-6 py-3 border rounded-xl hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
         <div>
           <div className="w-full flex justify-end mb-4">
@@ -247,7 +355,7 @@ const ThemeSettings = () => {
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#161925] hover:bg-[#0d0f18] text-white transition"
             >
               <AiOutlineUndo className="w-5 h-5" />
-              Restore
+              Default Theme
             </button>
           </div>
 
@@ -324,7 +432,7 @@ const ThemeSettings = () => {
                 className="px-8 py-3 bg-[#161925] text-white rounded-xl shadow-md hover:bg-black active:scale-95 transition disabled:opacity-50 flex items-center gap-2"
               >
                 <FiSave className="text-lg" />
-                {saving ? "Saving..." : "Save Theme"}
+                {saving ? "Saving..." : "Save"}
               </button>
             </div>
           )}

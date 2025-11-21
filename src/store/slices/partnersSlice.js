@@ -5,8 +5,8 @@ export const fetchPartners = createAsyncThunk(
   "partners/fetchPartners",
   async (filters = {}) => {
     const params = {
-      status: filters.status,
-      premium: filters.premium,
+      isActive: filters.isActive,
+      isPremium: filters.isPremium,
       city: filters.city,
       postalCode: filters.postalCode,
       name: filters.name,
@@ -38,7 +38,9 @@ export const createPartner = createAsyncThunk(
 export const updatePartner = createAsyncThunk(
   "partners/updatePartner",
   async ({ id, data }) => {
-    const response = await api.put("/partners/update", data, { params: { id } });
+    const response = await api.put("/partners/update", data, {
+      params: { id },
+    });
     return response.data;
   }
 );

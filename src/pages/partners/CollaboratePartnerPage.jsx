@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaRegEye } from "react-icons/fa6";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import toast from "react-hot-toast";
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 import { fetchPartners, deletePartner } from "../../store/slices/partnersSlice";
@@ -19,6 +19,7 @@ export const CollaboratePartnerPage = () => {
 
   const [page, setPage] = useState(1);
   const limit = 10;
+
   const [filters, setFilters] = useState({
     isActive: "",
     isPremium: "",
@@ -26,9 +27,26 @@ export const CollaboratePartnerPage = () => {
     postalCode: "",
     name: "",
   });
+
   const debounceTimer = useRef(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
+
+  const applyFilters = (filterValues, requestPage = 1) => {
+    const params = {
+      isActive: filterValues.isActive || undefined,
+      isPremium: filterValues.isPremium || undefined,
+      city: filterValues.city || undefined,
+      postalCode: filterValues.postalCode || undefined,
+      name: filterValues.name || undefined,
+      page: requestPage,
+      limit,
+    };
+
+    dispatch(fetchPartners(params))
+      .unwrap()
+      .catch(() => toast.error("Failed to fetch partners"));
+  };
 
   const fetchWithDelay = (updatedFilters) => {
     clearTimeout(debounceTimer.current);
@@ -38,28 +56,23 @@ export const CollaboratePartnerPage = () => {
     }, 500);
   };
 
-  const applyFilters = (filterValues, requestPage = 1) => {
-    const params = {
-      status: filterValues.isActive,
-      premium: filterValues.isPremium,
-      city: filterValues.city,
-      postalCode: filterValues.postalCode,
-      name: filterValues.name,
-      page: requestPage,
-      limit,
-    };
-    dispatch(fetchPartners(params));
-  };
-
   useEffect(() => {
     applyFilters(filters, page);
   }, [page]);
 
   const handleDelete = () => {
+    if (!partnerToDelete) return;
+
     dispatch(deletePartner(partnerToDelete))
       .unwrap()
-      .then(() => applyFilters(filters, page));
+      .then(() => {
+        toast.success("Partner deleted successfully");
+        applyFilters(filters, page);
+      })
+      .catch(() => toast.error("Failed to delete partner"));
+
     setShowDeleteModal(false);
+    setPartnerToDelete(null);
   };
 
   const headerButtons = [
@@ -79,7 +92,6 @@ export const CollaboratePartnerPage = () => {
         description="Manage your collaborated partners here."
         buttonsList={headerButtons}
       />
-
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow flex flex-wrap gap-4">
         <select
           className="p-2 border border-slate-300 rounded-lg min-w-[150px]"
@@ -151,7 +163,6 @@ export const CollaboratePartnerPage = () => {
           onKeyDown={(e) => e.key === "Enter" && applyFilters(filters, 1)}
         />
       </div>
-
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div>
@@ -172,6 +183,7 @@ export const CollaboratePartnerPage = () => {
                 <th className="px-6 py-3">Name</th>
                 <th className="px-6 py-3">City</th>
                 <th className="px-6 py-3">Postal Codes</th>
+                <th className="px-6 py-3">Total Leads</th> {/* NEW */}
                 <th className="px-6 py-3">Premium</th>
                 <th className="px-6 py-3">Status</th>
                 <th className="px-6 py-3 text-center">Actions</th>
@@ -182,7 +194,7 @@ export const CollaboratePartnerPage = () => {
               {loading ? (
                 [...Array(limit)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    {[...Array(7)].map((__, idx) => (
+                    {[...Array(8)].map((__, idx) => (
                       <td key={idx} className="px-6 py-6">
                         <div className="h-4 bg-slate-100 rounded"></div>
                       </td>
@@ -200,6 +212,10 @@ export const CollaboratePartnerPage = () => {
                     </td>
                     <td className="px-6 py-4">{p.city}</td>
                     <td className="px-6 py-4">{p.postalCodes?.join(", ")}</td>
+                    <td className="px-6 py-4 font-semibold text-slate-900">
+                      {p.totalLeads ?? 0}
+                    </td>
+
                     <td className="px-6 py-4">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
@@ -209,6 +225,7 @@ export const CollaboratePartnerPage = () => {
                         {p.isPremium ? "Premium" : "Non-Premium"}
                       </span>
                     </td>
+
                     <td className="px-6 py-4">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
@@ -218,6 +235,7 @@ export const CollaboratePartnerPage = () => {
                         {p.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
+
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -248,7 +266,7 @@ export const CollaboratePartnerPage = () => {
               ) : (
                 <tr>
                   <td
-                    colSpan="7"
+                    colSpan="8"
                     className="px-6 py-6 text-center text-slate-500"
                   >
                     No partners found
