@@ -16,8 +16,10 @@ import {
   Settings,
   Mail,
   Quote,
-  
   UserPlus,
+  Map,
+  MapPin,
+  Building
 } from "lucide-react";
 import { ROUTES } from "../consts/routes";
 
@@ -69,28 +71,18 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     },
     {
       name: "Counties",
-      icon: ShieldCheck,
+      icon: Map,
       href: ROUTES.COUNTY,
     },
     {
       name: "Places",
-      icon: ShieldCheck,
+      icon: MapPin,
       href: ROUTES.PLACES,
     },
     {
       name: "Companies",
-      icon: ShieldCheck,
+      icon: Building,
       href: ROUTES.COMPANIES,
-    },
-    {
-      name: "Term of Service",
-      icon: FileCheck2,
-      href: ROUTES.TERM_OF_SERVICE,
-    },
-    {
-      name: "Privacy Policy",
-      icon: ShieldCheck,
-      href: ROUTES.PRIVACY_POLICY,
     },
     {
       name: "Email Templates",
@@ -103,15 +95,19 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.QUOTES,
     },
     {
-      name: "Quotes",
-      icon: Quote,
-      href: ROUTES.QUOTES,
-    },
-
-    {
       name: "Collaborate Partners",
       icon: UserPlus,
       href: ROUTES.PARTNERS,
+    },
+    {
+      name: "Term of Service",
+      icon: FileCheck2,
+      href: ROUTES.TERM_OF_SERVICE,
+    },
+    {
+      name: "Privacy Policy",
+      icon: ShieldCheck,
+      href: ROUTES.PRIVACY_POLICY,
     },
   ];
 

@@ -1,12 +1,11 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-
 import { FaRegEye } from "react-icons/fa6";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 import { fetchPartners, deletePartner } from "../../store/slices/partnersSlice";
@@ -14,14 +13,12 @@ import { fetchPartners, deletePartner } from "../../store/slices/partnersSlice";
 export const CollaboratePartnerPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { partners, loading, totalPages } = useSelector(
+  const { partners, loading, pagination } = useSelector(
     (state) => state.partners
   );
 
   const [page, setPage] = useState(1);
   const limit = 10;
-
   const [filters, setFilters] = useState({
     isActive: "",
     isPremium: "",
@@ -29,9 +26,7 @@ export const CollaboratePartnerPage = () => {
     postalCode: "",
     name: "",
   });
-
   const debounceTimer = useRef(null);
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
 
@@ -39,28 +34,21 @@ export const CollaboratePartnerPage = () => {
     clearTimeout(debounceTimer.current);
     debounceTimer.current = setTimeout(() => {
       setPage(1);
-    }, 800);
+      applyFilters(updatedFilters, 1);
+    }, 500);
   };
 
-  const applyFilters = (filterValues, requestPage) => {
-    const finalFilters = {};
-
-    if (filterValues.isActive !== "")
-      finalFilters.isActive = filterValues.isActive;
-
-    if (filterValues.isPremium !== "")
-      finalFilters.isPremium = filterValues.isPremium;
-
-    if (filterValues.city.trim() !== "")
-      finalFilters.city = filterValues.city.trim();
-
-    if (filterValues.postalCode.trim() !== "")
-      finalFilters.postalCode = filterValues.postalCode.trim();
-
-    if (filterValues.name.trim() !== "")
-      finalFilters.name = filterValues.name.trim();
-
-    dispatch(fetchPartners({ ...finalFilters, page: requestPage, limit }));
+  const applyFilters = (filterValues, requestPage = 1) => {
+    const params = {
+      status: filterValues.isActive,
+      premium: filterValues.isPremium,
+      city: filterValues.city,
+      postalCode: filterValues.postalCode,
+      name: filterValues.name,
+      page: requestPage,
+      limit,
+    };
+    dispatch(fetchPartners(params));
   };
 
   useEffect(() => {
@@ -70,10 +58,7 @@ export const CollaboratePartnerPage = () => {
   const handleDelete = () => {
     dispatch(deletePartner(partnerToDelete))
       .unwrap()
-      .then(() => {
-        applyFilters(filters, page);
-      });
-
+      .then(() => applyFilters(filters, page));
     setShowDeleteModal(false);
   };
 
@@ -134,7 +119,7 @@ export const CollaboratePartnerPage = () => {
             setFilters(updated);
             fetchWithDelay(updated);
           }}
-          onKeyDown={(e) => e.key === "Enter" && setPage(1)}
+          onKeyDown={(e) => e.key === "Enter" && applyFilters(filters, 1)}
         />
 
         <input
@@ -150,7 +135,7 @@ export const CollaboratePartnerPage = () => {
               fetchWithDelay(updated);
             }
           }}
-          onKeyDown={(e) => e.key === "Enter" && setPage(1)}
+          onKeyDown={(e) => e.key === "Enter" && applyFilters(filters, 1)}
         />
 
         <input
@@ -163,7 +148,7 @@ export const CollaboratePartnerPage = () => {
             setFilters(updated);
             fetchWithDelay(updated);
           }}
-          onKeyDown={(e) => e.key === "Enter" && setPage(1)}
+          onKeyDown={(e) => e.key === "Enter" && applyFilters(filters, 1)}
         />
       </div>
 
@@ -195,7 +180,7 @@ export const CollaboratePartnerPage = () => {
 
             <tbody className="divide-y divide-slate-100 text-slate-600">
               {loading ? (
-                [...Array(10)].map((_, i) => (
+                [...Array(limit)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
                     {[...Array(7)].map((__, idx) => (
                       <td key={idx} className="px-6 py-6">
@@ -215,7 +200,6 @@ export const CollaboratePartnerPage = () => {
                     </td>
                     <td className="px-6 py-4">{p.city}</td>
                     <td className="px-6 py-4">{p.postalCodes?.join(", ")}</td>
-
                     <td className="px-6 py-4">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
@@ -225,7 +209,6 @@ export const CollaboratePartnerPage = () => {
                         {p.isPremium ? "Premium" : "Non-Premium"}
                       </span>
                     </td>
-
                     <td className="px-6 py-4">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
@@ -235,7 +218,6 @@ export const CollaboratePartnerPage = () => {
                         {p.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
-
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -244,14 +226,12 @@ export const CollaboratePartnerPage = () => {
                         >
                           <FaRegEye size={16} />
                         </button>
-
                         <button
                           className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
                           onClick={() => navigate(`/partners/${p._id}/edit`)}
                         >
                           <AiTwotoneEdit size={16} />
                         </button>
-
                         <button
                           className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
                           onClick={() => {
@@ -279,13 +259,15 @@ export const CollaboratePartnerPage = () => {
           </table>
         </div>
 
-        <div className="px-6 py-4">
-          <Pagination
-            page={page}
-            setPage={setPage}
-            totalPages={totalPages || 1}
-          />
-        </div>
+        {partners.length > 0 && (
+          <div className="border-t px-6 py-4">
+            <Pagination
+              totalPages={pagination.totalPages || 1}
+              page={page}
+              setPage={setPage}
+            />
+          </div>
+        )}
       </div>
 
       {showDeleteModal && (
@@ -294,7 +276,6 @@ export const CollaboratePartnerPage = () => {
             <p className="mb-6 text-center text-lg font-semibold">
               Are you sure you want to delete this partner?
             </p>
-
             <div className="flex justify-center gap-3">
               <button
                 className="rounded-full border px-4 py-2"
@@ -302,7 +283,6 @@ export const CollaboratePartnerPage = () => {
               >
                 Cancel
               </button>
-
               <button
                 className="rounded-full bg-red-600 px-4 py-2 text-white"
                 onClick={handleDelete}
