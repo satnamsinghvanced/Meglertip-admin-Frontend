@@ -16,10 +16,6 @@ import themeReducer from "./slices/themeSlice";
 import placeSlice from "./slices/placeSlice"
 import QuoteReducer from "./slices/quoteSlice"
 import realEstateAgentSlice from "./slices/realEstateAgents";
-import countySlice from "./slices/countySlice";
-import companySlice from "./slices/companySlice";
-import placeSlice from "./slices/placeSlice";
-import QuoteReducer from "./slices/quoteSlice";
 import collaboratePartners from "./slices/partnersSlice";
 import website_settings from "./slices/website_settingsSlice";
 
@@ -42,7 +38,6 @@ export default configureStore({
     theme: themeReducer,
     quote:QuoteReducer,
     agents:realEstateAgentSlice,
-    quote: QuoteReducer,
     settings: website_settings,
     partners: collaboratePartners,
   },
