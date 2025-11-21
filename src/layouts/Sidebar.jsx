@@ -20,6 +20,8 @@ import {
   MapPin,
   Building,
 } from "lucide-react";
+import { MdOutlineFindInPage } from "react-icons/md";
+import { MdRealEstateAgent } from "react-icons/md";
 import { ROUTES } from "../consts/routes";
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
@@ -35,6 +37,16 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "About Page",
       icon: Info,
       href: ROUTES.ABOUT,
+    },
+        {
+      name: "Partner Page",
+      icon: UsersRound,
+      href: ROUTES.PARTNER,
+    },
+        {
+      name: "Real Estate Agents Page",
+      icon: MdRealEstateAgent,
+      href: ROUTES.REAL_ESTATE_AGENTS,
     },
     {
       name: "Forms",
@@ -55,6 +67,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Real Estate Agents",
       icon: UsersRound,
       href: ROUTES.REAL_ESTATE_AGENTS,
+    },
+      {
+      name: "Footer",
+      icon: MdOutlineFindInPage,
+      href: ROUTES.FOOTER,
     },
     {
       name: "Articles",
@@ -91,6 +108,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: Quote,
       href: ROUTES.QUOTES,
     },
+
     {
       name: "Collaborate Partners",
       icon: UsersRound,

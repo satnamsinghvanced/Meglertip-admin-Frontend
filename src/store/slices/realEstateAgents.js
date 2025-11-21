@@ -55,7 +55,7 @@ export const updateAgent = createAsyncThunk(
         agentData
       );
       toast.success(data.message || "Agent updated successfully");
-      return data.data;
+      return data;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to update agent");
       return rejectWithValue(err.response?.data || err.message);
@@ -113,16 +113,17 @@ const realEstateAgentSlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(getAgentById.pending, (state) => {
+       .addCase(getAgentById.pending, (state) => {
         state.loading = true;
+        state.selectedAgent = null; 
       })
       .addCase(getAgentById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedAgent = action.payload;
+        state.selectedAgent = action.payload?.data || action.payload;
       })
-      .addCase(getAgentById.rejected, (state, action) => {
+      .addCase(getAgentById.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
+        state.selectedAgent = null;
       })
 
       .addCase(createAgent.pending, (state) => {

@@ -37,6 +37,14 @@ import CollaboratePartnerPage from "../pages/partners/CollaboratePartnerPage";
 import PartnerEditPage from "../pages/partners/PartnerEditPage";
 import { PartnerDetailPage } from "../pages/partners/PartnerDetails";
 import { AddPartnerPage } from "../pages/partners/AddPartnerPage";
+import Footer from "../pages/footer/FooterListPage";
+import FooterFormPage from "../pages/footer/CreateFooterItemPage";
+import FooterDetailPage from "../pages/footer/EditFooterItemPage";
+import SitemapPage from "../pages/sitemap/SitemapPage";
+import FooterListPage from "../pages/footer/FooterListPage";
+import CreateFooterItemPage from "../pages/footer/CreateFooterItemPage";
+import CreateFooterArticlePage from "../pages/footer/CreateFooterArticlePage";
+import EditFooterItemPage from "../pages/footer/EditFooterItemPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -87,10 +95,17 @@ const Routes = () => {
         <Route path={ROUTES.COMPANIES_CREATE} element={<CompanyFormPage />} />
         <Route path={ROUTES.COMPANIES_VIEW} element={<CompanyDetailPage />} />
         <Route path={ROUTES.COMPANIES_EDIT} element={<CompanyFormPage />} />
+
+        <Route path={ROUTES.FOOTER} element={<FooterListPage />} />
+        <Route path={ROUTES.FOOTER_CREATE} element={<CreateFooterItemPage />} />
+        <Route path={ROUTES.FOOTER_VIEW} element={<CreateFooterArticlePage />} />
+        <Route path={ROUTES.FOOTER_EDIT} element={<EditFooterItemPage />} />
+
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>} />
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
         <Route path={ROUTES.QUOTES} element={<Quote />} />
+
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.EMAIL} element={<EmailTemplateList />} />
         <Route path="/email/create" element={<CreateEmailTemplate />} />
@@ -102,6 +117,12 @@ const Routes = () => {
         <Route path={ROUTES.PARTNER_CREATE} element={<AddPartnerPage />} />
         <Route path={ROUTES.PARTNERS_ID} element={<PartnerDetailPage />} />
         <Route path={ROUTES.PARTNERS_EDIT_ID} element={<PartnerEditPage />} />
+        <Route path={ROUTES.PARTNERS_EDIT_ID} element={<PartnerEditPage />} />
+
+        <Route path={ROUTES.SITEMAP} element={<SitemapPage />} />
+
+        
+
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />

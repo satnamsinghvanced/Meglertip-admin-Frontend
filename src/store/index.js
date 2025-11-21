@@ -18,7 +18,8 @@ import QuoteReducer from "./slices/quoteSlice"
 import realEstateAgentSlice from "./slices/realEstateAgents";
 import collaboratePartners from "./slices/partnersSlice";
 import website_settings from "./slices/website_settingsSlice";
-
+import footerReducer from "./slices/footerSlice";
+import sitemapSlice from "./slices/sitemapSlice"
 export default configureStore({
   reducer: {
     user,
@@ -40,5 +41,7 @@ export default configureStore({
     agents:realEstateAgentSlice,
     settings: website_settings,
     partners: collaboratePartners,
+    footer: footerReducer,
+    sitemap:sitemapSlice
   },
 });

@@ -23,7 +23,6 @@ axiosInstance.interceptors.response.use(
   function (response) {
     console.log(response);
     if (response.data.data?.redirect) {
-      // Handle the redirect
       window.location = response.data.data.redirect;
     }
 

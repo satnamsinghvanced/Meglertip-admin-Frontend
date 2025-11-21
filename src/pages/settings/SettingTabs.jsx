@@ -5,6 +5,8 @@ import { FiAlertCircle } from "react-icons/fi";
 import { MdOutlineLock } from "react-icons/md";
 import { Palette } from "lucide-react";
 import ThemeSettings from "./ThemeSettings";
+import { FaSearchengin } from "react-icons/fa6";
+import SEOSettings from "./SeoSettings";
 
 
 const SettingTabs = () => {
@@ -23,6 +25,11 @@ const SettingTabs = () => {
       icon: Palette,
       title: "Theme",
       content: <ThemeSettings/>,
+    },
+     {
+      icon: FaSearchengin ,
+      title: "SEO Settings",
+      content: <SEOSettings/>,
     },
   ];
 

@@ -3,20 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 
-import {
-  getAgents,
-} from "../../store/slices/realEstateAgents";
+import { getAgents } from "../../store/slices/realEstateAgents";
 
 const RealEstateAgentsPage = () => {
-  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { agents, loading } = useSelector((state) => state.agents);
-
+  console.log(agents);
   useEffect(() => {
     dispatch(getAgents());
   }, [dispatch]);
+  const id = agents?.[0]?._id;
 
   const headerButtons = [
     {
@@ -24,7 +22,7 @@ const RealEstateAgentsPage = () => {
       variant: "primary",
       className:
         "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
-      onClick: () => navigate(`/real-estate-agent/${agents?.[0]._id}/edit`),
+      onClick: () => navigate(`/real-estate-agent/${id}/edit`),
     },
   ];
 
@@ -44,7 +42,10 @@ const RealEstateAgentsPage = () => {
   if (!agents?.length) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Real Estate Agents Page" buttonsList={headerButtons} />
+        <PageHeader
+          title="Real Estate Agents Page"
+          buttonsList={headerButtons}
+        />
         <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
           No Real Estate Agents Page Found.
         </div>
@@ -64,7 +65,6 @@ const RealEstateAgentsPage = () => {
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="space-y-8 p-6">
-
           <div className="grid gap-6 md:grid-cols-3">
             {[
               { label: "Title", value: agent?.title },
@@ -103,7 +103,7 @@ const RealEstateAgentsPage = () => {
               }}
             />
           </div>
-  <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner">
+          <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner">
             <p className="text-xs font-semibold uppercase text-slate-500 tracking-wide">
               Description Bottom
             </p>
@@ -111,7 +111,8 @@ const RealEstateAgentsPage = () => {
             <div
               className="prose mt-3 max-w-none text-slate-700 leading-relaxed"
               dangerouslySetInnerHTML={{
-                __html: agent?.descriptionBottom || "<p>No description provided.</p>",
+                __html:
+                  agent?.descriptionBottom || "<p>No description provided.</p>",
               }}
             />
           </div>

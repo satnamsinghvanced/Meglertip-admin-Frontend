@@ -35,10 +35,23 @@ export const ROUTES = {
   COMPANIES_CREATE: "/companies/create",
   COMPANIES_VIEW: "/company/:companyId",
   COMPANIES_EDIT: "/company/:companyId/Edit",
+
+  FOOTER: "/footer",
+  FOOTER_CREATE: "footer/create/:tab",
+  FOOTER_VIEW: "footer/create/articles/select",
+  FOOTER_EDIT: "footer/edit/:tab/:index",
+
+
   COUNTIES: "/counties",
   QUOTES: "/quotes",
   REAL_ESTATE_AGENTS: "/real-estate-agents",
   REAL_ESTATE_AGENTS_EDIT: "/real-estate-agent/:agentId/edit",
+  REAL_ESTATE_AGENTS_EDIT: "/real-estate-agent/:id/edit",
+
+  SITEMAP:"/sitemap",
+
+  COUNTIES: "/counties",
+  QUOTES: "/quotes",
   PARTNERS: "/partners",
   PARTNER_CREATE: "/partners/create",
   PARTNERS_ID: "/partners/:id",

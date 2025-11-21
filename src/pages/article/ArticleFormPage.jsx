@@ -95,7 +95,6 @@ const ArticleFormPage = () => {
           ? selectedArticle.showDate.split("T")[0]
           : "",
         language: selectedArticle.language || "en",
-        originalSlug: selectedArticle.originalSlug || "",
       });
       setPreviewImage(selectedArticle.image || "");
     }
@@ -180,7 +179,7 @@ const ArticleFormPage = () => {
             {[
               { label: "Title", name: "title" },
               { label: "Slug", name: "slug" },
-              // { label: "Original slug", name: "original_slug" },
+               { label: "Article Tags", name: "articleTags" },
               { label: "Original slug ", name: "originalSlug" },
             ].map((field) => (
               <div key={field.name}>
