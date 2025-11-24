@@ -63,11 +63,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: UserPlus,
       href: ROUTES.PARTNER,
     },
-    {
-      name: "Real Estate Agents",
-      icon: UsersRound,
-      href: ROUTES.REAL_ESTATE_AGENTS,
-    },
       {
       name: "Footer",
       icon: MdOutlineFindInPage,
