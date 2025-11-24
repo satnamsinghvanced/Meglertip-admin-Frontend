@@ -81,6 +81,7 @@ const ChangePassword = () => {
         </div>
         <div className="text-right">
           <Button
+          // className="w-100"
             size="sm"
             value="Save"
             labelclass="flex gap-4 font-bold justify-center"

@@ -156,7 +156,7 @@ const handleAddQuote = async () => {
                 disabled={!isEditing}
                 value={formData[quote._id]?.heading || ""}
                 onChange={(e) => handleChange(e, quote._id, "heading")}
-                className="w-full border rounded-lg px-3 py-2 mb-3"
+                className="p-2 border border-slate-300 rounded-lg w-full"
               />
 
               <label className="block text-sm font-medium mb-1 text-gray-600">Description</label>
@@ -164,7 +164,7 @@ const handleAddQuote = async () => {
                 disabled={!isEditing}
                 value={formData[quote._id]?.description || ""}
                 onChange={(e) => handleChange(e, quote._id, "description")}
-                className="w-full border rounded-lg px-3 py-2 mb-3"
+                className="p-2 border border-slate-300 rounded-lg w-full"
               />
 
               <label className="block text-sm font-medium mb-1 text-gray-600">Points</label>
@@ -172,7 +172,7 @@ const handleAddQuote = async () => {
                 disabled={!isEditing}
                 value={formData[quote._id]?.points || ""}
                 onChange={(e) => handleChange(e, quote._id, "points")}
-                className="w-full border rounded-lg px-3 py-2 mb-3"
+                className="p-2 border border-slate-300 rounded-lg w-full"
               />
 
               <label className="block text-sm font-medium mb-1 text-gray-600">Button</label>
@@ -181,7 +181,7 @@ const handleAddQuote = async () => {
                 disabled={!isEditing}
                 value={formData[quote._id]?.button || ""}
                 onChange={(e) => handleChange(e, quote._id, "button")}
-                className="w-full border rounded-lg px-3 py-2"
+                className="w-full border border-slate-300 rounded-lg p-2 "
               />
             </div>
       {/* Adding new Quote */}

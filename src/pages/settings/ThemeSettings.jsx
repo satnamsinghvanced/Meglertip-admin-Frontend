@@ -300,11 +300,18 @@ const ThemeSettings = () => {
                         }
                       />
                     )}
+                    <input
+                      type="file"
+                      className="w-full"
+                      accept="image/*"
+                      onChange={(e) => handleLogoChange(key, e.target.files[0])}
+                    />
                   </div>
                 )}
                 {type.includes("text") && editingLogos && (
                   <input
                     type="text"
+                    
                     placeholder="Enter text"
                     value={wordmarkText[key] || ""}
                     disabled={logoFiles[key]}
@@ -334,6 +341,12 @@ const ThemeSettings = () => {
               </button>
             </div>
           )}
+          <button
+            onClick={saveLogos}
+            className="mt-4 px-6 py-3 bg-[#161925] text-white rounded-xl hover:bg-black transition w-full md:w-75"
+          >
+            Save Logos
+          </button>
         </div>
         <div>
           <div className="w-full flex justify-end mb-4">
@@ -352,7 +365,7 @@ const ThemeSettings = () => {
                   if (result.isConfirmed) restoreTheme();
                 })
               }
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#161925] hover:bg-[#0d0f18] text-white transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#161925] hover:bg-[#0d0f18] text-white transition w-full md:w-75"
             >
               <AiOutlineUndo className="w-5 h-5" />
               Default Theme

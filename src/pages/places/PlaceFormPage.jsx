@@ -338,11 +338,11 @@ const PlaceFormPage = () => {
             </div>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 flex justify-center">
             <button
               type="submit"
               disabled={isDisabled}
-              className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-70"
+              className="w-full md:w-75 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-70"
             >
               {submitting
                 ? "Saving..."

@@ -57,11 +57,9 @@ const Layout = () => {
           onCloseSidebar={onCloseSidebar}
         />
       )}
-      <Header
-        onClick={() => {
-          setIsSidebarOpen((prev) => !prev);
-        }}
-      />
+  
+
+        <Header setIsSidebarOpen={setIsSidebarOpen} />
       <main
         id="main"
         className="relative z-10 h-[calc(100vh-4.5rem)] overflow-y-auto bg-transparent px-4 py-6 md:px-8"

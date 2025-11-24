@@ -1,6 +1,6 @@
 import { Menu, MenuItems, MenuItem, MenuButton } from "@headlessui/react";
 import { Link, useNavigate } from "react-router";
-import { HiChevronDown } from "react-icons/hi";
+import { HiChevronDown, HiMenu } from "react-icons/hi";
 import Profile from "../UI/Profile";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../store/slices/user";
@@ -13,6 +13,18 @@ const Header = ({ setIsSidebarOpen }) => {
 
   return (
     <div className="px-5 py-3 min-h-[70px] bg-white dark:bg-blue-950 border-b border-solid border-gray-200 dark:border-gray-800 transition-all duration-300 flex items-center justify-end">
+    
+    
+    <button
+  className="lg:hidden mr-auto text-gray-700 dark:text-white"
+  onClick={() => setIsSidebarOpen(true)}
+>
+ <HiMenu className="w-8 h-8 text-gray-800 dark:text-white" />
+</button>
+
+    
+    
+    
       <div className="relative">
         <Menu>
           <MenuButton className="flex items-center space-x-1 cursor-pointer">

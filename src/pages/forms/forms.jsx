@@ -329,7 +329,7 @@ const AdminFormBuilder = () => {
                                 }`}
                               >
                                 <div className="flex max-xl:flex-wrap gap-3 items-center">
-                                  <div>
+                                  <div className="w-full md:w-auto">
                                     <label className="text-sm text-gray-600">
                                       Label
                                     </label>
@@ -350,7 +350,7 @@ const AdminFormBuilder = () => {
                                     />
                                   </div>
 
-                                  <div>
+                                  <div className="w-full md:w-auto">
                                     <label className="text-sm text-gray-600">
                                       Name
                                     </label>
@@ -370,7 +370,7 @@ const AdminFormBuilder = () => {
                                       className="border border-gray-300 rounded-md px-2 py-1 w-full"
                                     />
                                   </div>
-                                  <div>
+                                  <div className="w-full md:w-auto">
                                     <label className="text-sm text-gray-600">
                                       Place Holder
                                     </label>
@@ -391,7 +391,7 @@ const AdminFormBuilder = () => {
                                     />
                                   </div>
 
-                                  <div>
+                                  <div className="w-full md:w-auto">
                                     <label className="text-sm text-gray-600">
                                       Type
                                     </label>
@@ -525,13 +525,15 @@ const AdminFormBuilder = () => {
                           </div>
                         </div>
                       ))}
-
+                    <div className="flex justify-center md:justify-end ">
                       <button
                         onClick={() => handleAddStep(form._id)}
-                        className="mt-3 flex items-center gap-2 text-sm bg-[#161925] text-white px-3 py-2 rounded hover:bg-[#161925]/85 transition"
+                        className="mt-3 flex items-center gap-2 text-sm bg-[#161925] text-white px-3 py-2 rounded hover:bg-[#161925]/85 transition w-100 md:w-auto  flex justify-center"
                       >
-                        <AiOutlinePlus size={14} /> Add Step
+                        <span className="flex justify-center align-center gap-2  ">
+                        <AiOutlinePlus size={14} /> Add Step</span>
                       </button>
+                      </div>
                     </div>
                   </div>
                 );

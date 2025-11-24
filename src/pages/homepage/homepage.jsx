@@ -114,7 +114,7 @@ const HomePageEditor = () => {
 
   return (
     <div className=" min-h-screen space-y-10">
-      <h1 className="text-2xl font-bold text-gray-800">Homepage</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-4 6">Homepage</h1>
 
       {is_loading ? (
         <SkeletonLoader />

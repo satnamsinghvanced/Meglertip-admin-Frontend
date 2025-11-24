@@ -25,7 +25,7 @@ const Tabs = ({
             tabClass
               ? tabClass
               : "AtTabSidebar !rounded-b-none !rounded-lg bg-white dark:bg-blue-950 flex justify-center max-md:gap-5 flex-row lg:flex-col overflow-x-auto !p-[1.25rem]"
-          } ${className ? className : ""} !flex-shrink-0 w-full lg:max-w-80 sticky top-0 left-0`}
+          } ${className ? className : ""} !flex-shrink-0 w-full lg:max-w-80  top-0 left-0`}
         >
           {list.map((item, k) => {
             return (

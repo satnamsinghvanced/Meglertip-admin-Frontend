@@ -155,7 +155,7 @@ const CountiesFormPage = () => {
       />
 
       <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-1">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl md:p-8  space-y-6 border bg-white border-slate-200 shadow-sm max-w-[800px] m-auto p-4">
           <div className="grid gap-4 md:grid-cols-2">
             {[
               { label: "County Name", name: "name" },
@@ -193,7 +193,7 @@ const CountiesFormPage = () => {
             <button
               type="submit"
               disabled={isDisabled}
-              className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-70"
+              className=" w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-70"
             >
               {submitting
                 ? "Saving..."

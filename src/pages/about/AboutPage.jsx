@@ -32,7 +32,7 @@ const AboutPage = () => {
   };
 
   return (
-    <Section title="About Page" onSave={handleSave} loading={loading}>
+    <Section  title="About Page" onSave={handleSave} loading={loading}>
       {loading ? (
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-gray-300 rounded w-1/3"></div>

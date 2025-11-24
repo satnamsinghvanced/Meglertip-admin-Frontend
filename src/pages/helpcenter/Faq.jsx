@@ -133,13 +133,13 @@ const handleCreateOrEditCategory = async () => {
 
   return (
    <div className="w-full space-y-10">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-4">
         <h2 className="text-2xl font-bold dark:text-white">
           Frequently Asked Questions
         </h2>
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="flex flex-wrap items-center gap-3 ">
            <button
-            className="bg-[#161925] text-white px-4 py-2 rounded-md"
+            className="bg-[#161925] text-white px-4 py-2 rounded-md w-full md:w-50"
             onClick={() => {
               setShowCategoryModal(true);
               setIsEditCategoryMode(false);
@@ -148,7 +148,7 @@ const handleCreateOrEditCategory = async () => {
             + Add FAQ Category
           </button>
           <button
-            className="bg-[#161925] text-white px-4 py-2 rounded-md"
+            className="bg-[#161925] text-white px-4 py-2 rounded-md w-full md:w-50"
             onClick={() => {
               setShowFaqModal(true);
               setIsEditMode(false);
@@ -170,11 +170,11 @@ const handleCreateOrEditCategory = async () => {
             key={cat._id}
             className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
           >
-            <div className="flex gap-3 items-center">
+            <div className="flex flex-wrap gap-3 items-center">
               <h3 className="text-xl font-bold dark:text-white">
                 {cat.categoryName}
               </h3>
-              <div className="gap-3 flex items-center">
+              <div className="gap-3 flex flex-wrap items-center">
                 <button
                   className="text-white px-2 rounded-sm"
                   onClick={() => {
@@ -286,7 +286,7 @@ const handleCreateOrEditCategory = async () => {
               }
             />
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-center gap-4">
               <button
                 className="px-4 py-2 border rounded-md"
                 onClick={resetFaqForm}
@@ -326,7 +326,7 @@ const handleCreateOrEditCategory = async () => {
               }
             />
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-center gap-4">
               <button
                 className="px-4 py-2 border rounded-md"
                 onClick={resetCategoryForm}

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -44,7 +45,7 @@ const RealEstateAgentsFormPage = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { selectedAgent, loading } = useSelector((state) => state.agents);
+  const { selectedAgent } = useSelector((state) => state.agents);
 
   const [form, setForm] = useState({
     title: "",
@@ -96,6 +97,19 @@ const RealEstateAgentsFormPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedAgent) {
+      return (
+        <div className="space-y-6">
+          <PageHeader
+            title="Real Estate Agents Page"
+            buttonsList={headerButtons}
+          />
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-500 h-100vh">
+            No Real Estate Agents Page Found.
+          </div>
+        </div>
+      );
+    }
 
     if (!validateAll()) {
       toast.error("Please fix errors before saving");
@@ -128,7 +142,9 @@ const RealEstateAgentsFormPage = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={isEditMode ? "Edit Real Estate Agent Page" : "Add Real Estate Agent"}
+        title={
+          isEditMode ? "Edit Real Estate Agent Page" : "Add Real Estate Agent"
+        }
         description={
           isEditMode
             ? "Update content for this Agent."

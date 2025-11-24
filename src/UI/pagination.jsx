@@ -26,7 +26,7 @@ const Pagination = ({ totalPages, page, setPage }) => {
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="flex justify-center items-center gap-2 mt-6 mb-3 ">
+    <div className="flex justify-center items-center gap-4 mt-6 mb-3 ">
       <button
         onClick={() => handlePageChange(page - 1)}
         disabled={page === 1}
@@ -39,7 +39,7 @@ const Pagination = ({ totalPages, page, setPage }) => {
         Prev
       </button>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-4">
         {visiblePages.map((num, idx) => {
           const prev = visiblePages[idx - 1];
           const showDots = prev && num - prev > 1;

@@ -160,7 +160,7 @@ const CreateEmailTemplate = () => {
                 type="button"
                 onClick={handleSave}
                 disabled={loading || initializing}
-                className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-indigo-300"
+                className="btn group btn-primary btn-sm rounded-10 text-base  undefined !bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary"
               >
                 {loading
                   ? "Saving..."
