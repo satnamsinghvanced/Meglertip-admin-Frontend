@@ -93,7 +93,7 @@ export const CollaboratePartnerPage = () => {
         buttonsList={headerButtons}
       />
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow flex flex-wrap gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow grid  md:flex md:flex-wrap gap-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow grid  md:flex md:flex-wrap gap-4 w-full">
           <select
             className="p-2 border border-slate-300 rounded-lg min-w-[150px]"
             value={filters.isActive}
@@ -164,7 +164,7 @@ export const CollaboratePartnerPage = () => {
             onKeyDown={(e) => e.key === "Enter" && applyFilters(filters, 1)}
           />
         </div>
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">
           <div className="flex items-center justify-between px-6 py-4">
             <div>
               <p className="text-sm font-semibold text-slate-900">
