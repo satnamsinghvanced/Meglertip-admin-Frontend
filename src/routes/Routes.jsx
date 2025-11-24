@@ -16,7 +16,7 @@ import PartnerPage from "../pages/partner/PartnerPage";
 import FormPage from "../pages/forms/forms";
 import { TermOfServicePage } from "../pages/term_of_service/TermOfService";
 import { PrivacyPolicyPage } from "../pages/privacy_policy/PrivacyPolicy";
-import CountyPage from "../pages/Counties/CountiesPage";
+import CountyPage from "../pages/counties/CountiesPage";
 import ArticleFormPage from "../pages/article/ArticleFormPage";
 import ArticleDetailPage from "../pages/article/ArticleDetailPage";
 import EmailTemplateList from "../pages/email-template/templates";
