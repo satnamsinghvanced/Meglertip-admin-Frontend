@@ -16,9 +16,9 @@ export const fetchFooter = createAsyncThunk(
 
 export const updateFooter = createAsyncThunk(
   "footer/updateFooter",
-  async ({ id, body }, { rejectWithValue }) => {
+  async ({ body }, { rejectWithValue }) => {
     try {
-      const { data } = await api.put(`/footer/${id}`, body);
+      const { data } = await api.put(`/footer/update`, body);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Update failed");

@@ -44,7 +44,7 @@ const FooterListPage = () => {
       const pages = [...items];
       pages.splice(realIndex, 1);
       const working = { ...(footer || {}), [activeTab]: pages };
-      await dispatch(updateFooter(working)).unwrap();
+      await dispatch(updateFooter({body :working})).unwrap();
       toast.success("Deleted");
       dispatch(fetchFooter());
     } catch (err) {
@@ -58,16 +58,25 @@ const FooterListPage = () => {
       <PageHeader
         title="Footer"
         description="Manage site footer content"
-        buttonsList={[
-          {
-            value: "Add",
-            variant: "primary",
-            icon: <LuPlus size={18} />,
-            onClick: () => navigate(`/footer/create/${activeTab}`),
-            className:
-              "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
-          },
-        ]}
+        buttonsList={
+          [
+            "exploreLinks",
+            "socialLinks",
+            "contactInfo",
+            "footerLinks",
+          ].includes(activeTab)
+            ? [
+                {
+                  value: "Add",
+                  variant: "primary",
+                  icon: <LuPlus size={18} />,
+                  onClick: () => navigate(`/footer/create/${activeTab}`),
+                  className:
+                    "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
+                },
+              ]
+            : [] // hide Add button
+        }
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -80,7 +89,9 @@ const FooterListPage = () => {
                 setPage(1);
               }}
               className={`px-3 py-2 rounded-lg text-sm ${
-                t === activeTab ? "bg-slate-100 text-slate-900 font-semibold" : "text-slate-500"
+                t === activeTab
+                  ? "bg-slate-100 text-slate-900 font-semibold"
+                  : "text-slate-500"
               }`}
             >
               {t}
@@ -91,16 +102,22 @@ const FooterListPage = () => {
         <div className="flex items-center justify-between px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-slate-900">{activeTab}</p>
-            <p className="text-xs text-slate-500">{loading ? "Loading..." : `${items.length} items`}</p>
+            <p className="text-xs text-slate-500">
+              {loading ? "Loading..." : `${items.length} items`}
+            </p>
           </div>
           {/* Link to special article selector if on articles tab */}
-          {activeTab === "articles" && (
+          {["articles", "places", "companies"].includes(activeTab) && (
             <div>
               <button
-                onClick={() => navigate("/footer/create/articles/select")}
+                onClick={() => navigate(`/footer/create/${activeTab}/select`)}
                 className="rounded-full border px-3 py-2 text-sm"
               >
-                Add From Articles
+                {activeTab === "articles"
+                  ? "Add From Articles"
+                  : activeTab === "places"
+                  ? "Add From Places"
+                  : "Add From Companies"}
               </button>
             </div>
           )}
@@ -159,24 +176,39 @@ const FooterListPage = () => {
                 ))
               ) : items.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-6 text-center text-slate-500">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-6 text-center text-slate-500"
+                  >
                     No items found
                   </td>
                 </tr>
               ) : (
                 paginated.map((item, idx) => (
                   <tr key={idx} className="hover:bg-slate-50">
-                    <td className="px-6 py-4">{(page - 1) * limit + idx + 1}</td>
+                    <td className="px-6 py-4">
+                      {(page - 1) * limit + idx + 1}
+                    </td>
 
-                    {["articles", "places", "companies"].includes(activeTab) && (
+                    {["articles", "places", "companies"].includes(
+                      activeTab
+                    ) && (
                       <>
-                        <td className="px-6 py-4 font-medium text-slate-900">{item.title}</td>
+                        <td className="px-6 py-4 font-medium text-slate-900">
+                          {item.title}
+                        </td>
                         <td className="px-6 py-4 break-words">{item.href}</td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                              onClick={() => navigate(`/footer/edit/${activeTab}/${(page - 1) * limit + idx}`)}
+                              onClick={() =>
+                                navigate(
+                                  `/footer/edit/${activeTab}/${
+                                    (page - 1) * limit + idx
+                                  }`
+                                )
+                              }
                             >
                               <AiTwotoneEdit size={16} />
                             </button>
@@ -193,13 +225,21 @@ const FooterListPage = () => {
 
                     {["exploreLinks", "footerLinks"].includes(activeTab) && (
                       <>
-                        <td className="px-6 py-4 font-medium text-slate-900">{item.text}</td>
+                        <td className="px-6 py-4 font-medium text-slate-900">
+                          {item.text}
+                        </td>
                         <td className="px-6 py-4">{item.href}</td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                              onClick={() => navigate(`/footer/edit/${activeTab}/${(page - 1) * limit + idx}`)}
+                              onClick={() =>
+                                navigate(
+                                  `/footer/edit/${activeTab}/${
+                                    (page - 1) * limit + idx
+                                  }`
+                                )
+                              }
                             >
                               <AiTwotoneEdit size={16} />
                             </button>
@@ -216,14 +256,24 @@ const FooterListPage = () => {
 
                     {activeTab === "socialLinks" && (
                       <>
-                        <td className="px-6 py-4 font-medium text-slate-900">{item.icon}</td>
+                        <td className="px-6 py-4 font-medium text-slate-900">
+                          {item.icon}
+                        </td>
                         <td className="px-6 py-4">{item.href}</td>
-                        <td className="px-6 py-4">{item.newPage ? "Yes" : "No"}</td>
+                        <td className="px-6 py-4">
+                          {item.newPage ? "Yes" : "No"}
+                        </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                              onClick={() => navigate(`/footer/edit/${activeTab}/${(page - 1) * limit + idx}`)}
+                              onClick={() =>
+                                navigate(
+                                  `/footer/edit/${activeTab}/${
+                                    (page - 1) * limit + idx
+                                  }`
+                                )
+                              }
                             >
                               <AiTwotoneEdit size={16} />
                             </button>
@@ -240,15 +290,25 @@ const FooterListPage = () => {
 
                     {activeTab === "contactInfo" && (
                       <>
-                        <td className="px-6 py-4 font-medium text-slate-900">{item.type}</td>
+                        <td className="px-6 py-4 font-medium text-slate-900">
+                          {item.type}
+                        </td>
                         <td className="px-6 py-4">{item.value}</td>
                         <td className="px-6 py-4">{item.href}</td>
-                        <td className="px-6 py-4">{item.newPage ? "Yes" : "No"}</td>
+                        <td className="px-6 py-4">
+                          {item.newPage ? "Yes" : "No"}
+                        </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                              onClick={() => navigate(`/footer/edit/${activeTab}/${(page - 1) * limit + idx}`)}
+                              onClick={() =>
+                                navigate(
+                                  `/footer/edit/${activeTab}/${
+                                    (page - 1) * limit + idx
+                                  }`
+                                )
+                              }
                             >
                               <AiTwotoneEdit size={16} />
                             </button>

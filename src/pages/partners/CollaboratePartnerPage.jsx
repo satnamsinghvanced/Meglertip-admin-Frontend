@@ -279,7 +279,7 @@ export const CollaboratePartnerPage = () => {
           </div>
 
           {partners.length > 0 && (
-            <div className="border-t px-6 py-4">
+            <div className=" px-6 py-4">
               <Pagination
                 totalPages={pagination.totalPages || 1}
                 page={page}

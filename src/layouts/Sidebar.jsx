@@ -2,6 +2,7 @@
 
 import { Link, useLocation, useNavigate } from "react-router";
 import { HiChevronDoubleLeft } from "react-icons/hi";
+import { TbSitemap } from "react-icons/tb";
 import { Fragment } from "react";
 import {
   Home,
@@ -24,6 +25,7 @@ import { MdOutlineFindInPage } from "react-icons/md";
 import { MdRealEstateAgent } from "react-icons/md";
 import { ROUTES } from "../consts/routes";
 
+import { RiContactsBook2Fill } from "react-icons/ri";
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,12 +40,17 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: Info,
       href: ROUTES.ABOUT,
     },
-        {
-      name: "Partner Page",
-      icon: UsersRound,
+    {
+      name: "Partner  Page",
+      icon: UserPlus,
       href: ROUTES.PARTNER,
     },
         {
+      name: "Quotes Section",
+      icon: Quote,
+      href: ROUTES.QUOTES,
+    },
+    {
       name: "Real Estate Agents Page",
       icon: MdRealEstateAgent,
       href: ROUTES.REAL_ESTATE_AGENTS,
@@ -58,12 +65,8 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: HelpCircle,
       href: ROUTES.FAQ,
     },
+
     {
-      name: "Partner",
-      icon: UserPlus,
-      href: ROUTES.PARTNER,
-    },
-      {
       name: "Footer",
       icon: MdOutlineFindInPage,
       href: ROUTES.FOOTER,
@@ -98,12 +101,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: Mail,
       href: ROUTES.EMAIL,
     },
-    {
-      name: "Quotes",
-      icon: Quote,
-      href: ROUTES.QUOTES,
-    },
-
+  //  {
+  //     name: "Sitemap Page",
+  //     icon: TbSitemap ,
+  //     href: ROUTES.SITEMAP,
+  //   },
     {
       name: "Collaborate Partners",
       icon: UsersRound,
@@ -118,6 +120,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Privacy Policy",
       icon: ShieldCheck,
       href: ROUTES.PRIVACY_POLICY,
+    },
+    {
+      name: "Contact Us",
+      icon: RiContactsBook2Fill ,
+      href: ROUTES.CONTACTUS,
     },
   ];
 

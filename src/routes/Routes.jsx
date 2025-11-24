@@ -43,6 +43,11 @@ import FooterListPage from "../pages/footer/FooterListPage";
 import CreateFooterItemPage from "../pages/footer/CreateFooterItemPage";
 import CreateFooterArticlePage from "../pages/footer/CreateFooterArticlePage";
 import EditFooterItemPage from "../pages/footer/EditFooterItemPage";
+import CreateFooterSelectPage from "../pages/footer/CreateFooterSelectPage";
+import SitemapFormPage from "../pages/sitemap/SitemapFormPage";
+import ContactUsListPage from "../pages/contact-us/ContactUs";
+import ContactUsViewPage from "../pages/contact-us/ContactUsViewPage ";
+import SMTPSettings from "../pages/settings/EmailConfiguration";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -69,14 +74,29 @@ const Routes = () => {
         <Route path={ROUTES.ARTICLE_EDIT} element={<ArticleFormPage />} />
         <Route path={ROUTES.ARTICLE_VIEW} element={<ArticleDetailPage />} />
 
-        <Route path={ROUTES.ARTICLE_CATEGORY} element={<ArticleCategoryPage />} />
-        <Route path={ROUTES.ARTICLE_CATEGORY_CREATE} element={<ArticleCategoryFormPage />} />
-        <Route path={ROUTES.ARTICLE_CATEGORY_EDIT} element={<ArticleCategoryFormPage />} />
+        <Route
+          path={ROUTES.ARTICLE_CATEGORY}
+          element={<ArticleCategoryPage />}
+        />
+        <Route
+          path={ROUTES.ARTICLE_CATEGORY_CREATE}
+          element={<ArticleCategoryFormPage />}
+        />
+        <Route
+          path={ROUTES.ARTICLE_CATEGORY_EDIT}
+          element={<ArticleCategoryFormPage />}
+        />
         {/* <Route path={ROUTES.ARTICLE_CATEGORY_VIEW} element={<ArticleCategoryDetailPage />} /> */}
 
         <Route path={ROUTES.PARTNER} element={<PartnerPage />} />
-        <Route path={ROUTES.REAL_ESTATE_AGENTS} element={<RealEstateAgentsPage />} />
-        <Route path={ROUTES.REAL_ESTATE_AGENTS_EDIT} element={<RealEstateAgentsFormPage />} />
+        <Route
+          path={ROUTES.REAL_ESTATE_AGENTS}
+          element={<RealEstateAgentsPage />}
+        />
+        <Route
+          path={ROUTES.REAL_ESTATE_AGENTS_EDIT}
+          element={<RealEstateAgentsFormPage />}
+        />
 
         <Route path={ROUTES.FORMS} element={<FormPage />} />
 
@@ -96,8 +116,15 @@ const Routes = () => {
 
         <Route path={ROUTES.FOOTER} element={<FooterListPage />} />
         <Route path={ROUTES.FOOTER_CREATE} element={<CreateFooterItemPage />} />
-        <Route path={ROUTES.FOOTER_VIEW} element={<CreateFooterArticlePage />} />
+        <Route
+          path={ROUTES.FOOTER_VIEW}
+          element={<CreateFooterArticlePage />}
+        />
         <Route path={ROUTES.FOOTER_EDIT} element={<EditFooterItemPage />} />
+        <Route
+          path="/footer/create/:tab/select"
+          element={<CreateFooterSelectPage />}
+        />
 
         <Route path={ROUTES.HOME} element={<p>Dashboard</p>} />
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
@@ -118,15 +145,18 @@ const Routes = () => {
         <Route path={ROUTES.PARTNERS_EDIT_ID} element={<PartnerEditPage />} />
 
         <Route path={ROUTES.SITEMAP} element={<SitemapPage />} />
+        <Route path="/sitemap/create" element={<SitemapFormPage />} />
+        <Route path="/sitemap/edit/:index" element={<SitemapFormPage />} />
+        <Route path="/smtp" element={<SMTPSettings />} />
 
-        
 
+        <Route path={ROUTES.CONTACTUS} element={<ContactUsListPage />} />
+        <Route path={ROUTES.CONTACTUS_VIEW} element={<ContactUsViewPage />} /> 
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
       </Route>
-       
     </RouteWrapper>
   );
 };

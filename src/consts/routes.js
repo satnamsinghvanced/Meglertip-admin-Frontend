@@ -49,6 +49,8 @@ export const ROUTES = {
   REAL_ESTATE_AGENTS_EDIT: "/real-estate-agent/:id/edit",
 
   SITEMAP:"/sitemap",
+  CONTACTUS:"/contact",
+  CONTACTUS_VIEW :"/contact/:id",
 
   COUNTIES: "/counties",
   QUOTES: "/quotes",

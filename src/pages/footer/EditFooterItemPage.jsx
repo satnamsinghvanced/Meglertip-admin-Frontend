@@ -132,7 +132,8 @@ const EditFooterItemPage = () => {
       const arr = [...(footer[tab] || [])];
       arr[parseInt(index, 10)] = form;
       const working = { ...(footer || {}), [tab]: arr };
-      await dispatch(updateFooter(working)).unwrap();
+            console.log(working)
+      await dispatch(updateFooter({body:working})).unwrap();
       toast.success("Updated");
       navigate("/footer");
     } catch (err) {

@@ -41,8 +41,8 @@ const CreateFooterItemPage = () => {
       const arr = Array.isArray(working[tab]) ? [...working[tab]] : [];
       arr.push(form);
       working[tab] = arr;
-
-      await dispatch(updateFooter(working)).unwrap();
+      console.log(working)
+      await dispatch(updateFooter({body :working})).unwrap();
       toast.success("Added");
       navigate("/footer");
     } catch (err) {

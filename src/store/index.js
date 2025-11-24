@@ -19,7 +19,9 @@ import realEstateAgentSlice from "./slices/realEstateAgents";
 import collaboratePartners from "./slices/partnersSlice";
 import website_settings from "./slices/website_settingsSlice";
 import footerReducer from "./slices/footerSlice";
-import sitemapSlice from "./slices/sitemapSlice"
+import sitemapSlice from "./slices/sitemapSlice";
+import contactSlice from "./slices/contactUsSlice";
+import smtpSlice from "./slices/smtpSlice";
 export default configureStore({
   reducer: {
     user,
@@ -42,6 +44,8 @@ export default configureStore({
     settings: website_settings,
     partners: collaboratePartners,
     footer: footerReducer,
-    sitemap:sitemapSlice
+    sitemap:sitemapSlice,
+    contact: contactSlice,
+    smtp: smtpSlice,
   },
 });

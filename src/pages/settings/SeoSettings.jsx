@@ -134,18 +134,18 @@ const SEOSettings = () => {
             ? "Update content for this Agent."
             : "Create a new Real Estate Agent entry."
         }
-        buttonsList={useMemo(
-          () => [
-            {
-              value: "Back",
-              variant: "white",
-              className:
-                "border border-slate-300 text-slate-700 hover:border-slate-400",
-              onClick: () => navigate("/real-estate-agents"),
-            },
-          ],
-          [navigate]
-        )}
+        // buttonsList={useMemo(
+        //   () => [
+        //     {
+        //       value: "Back",
+        //       variant: "white",
+        //       className:
+        //         "border border-slate-300 text-slate-700 hover:border-slate-400",
+        //       onClick: () => navigate("/real-estate-agents"),
+        //     },
+        //   ],
+        //   [navigate]
+        // )}
       />
 
       <form

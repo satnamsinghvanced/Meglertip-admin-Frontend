@@ -20,7 +20,7 @@ const CreateFooterArticlePage = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const { data } = await api.get("/article?limit=200"); // adapt endpoint
+        const { data } = await api.get("/article?limit=200"); 
         setArticles(data.data || data || []);
       } catch (err) {
         console.error(err);
@@ -46,7 +46,8 @@ const CreateFooterArticlePage = () => {
       const arr = Array.isArray(working.articles) ? [...working.articles] : [];
       arr.push({ title, href });
       working.articles = arr;
-      await dispatch(updateFooter(working)).unwrap();
+      console.log(working)
+      await dispatch(updateFooter({body : working})).unwrap();
       toast.success("Article added to footer");
       dispatch(fetchFooter());
       navigate("/footer");

@@ -7,6 +7,8 @@ import { Palette } from "lucide-react";
 import ThemeSettings from "./ThemeSettings";
 import { FaSearchengin } from "react-icons/fa6";
 import SEOSettings from "./SeoSettings";
+import SMTPSettings from "./EmailConfiguration";
+import { TfiEmail } from "react-icons/tfi";
 
 
 const SettingTabs = () => {
@@ -30,6 +32,11 @@ const SettingTabs = () => {
       icon: FaSearchengin ,
       title: "SEO Settings",
       content: <SEOSettings/>,
+    },
+    {
+      icon: TfiEmail ,
+      title: "Email SMTP",
+      content: <SMTPSettings/>,
     },
   ];
 

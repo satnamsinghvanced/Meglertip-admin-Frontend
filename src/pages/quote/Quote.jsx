@@ -113,21 +113,21 @@ const handleAddQuote = async () => {
               <div className="flex gap-3">
                 {!isEditing ? (
                   <>
-                  <button className="flex items-center gap-1 text-sm bg-[#161925] text-white px-2 py-1 rounded hover:bg-[#161925]/85 transition">
+                  {/* <button className="flex items-center gap-1 text-sm bg-[#161925] text-white px-2 py-1 rounded hover:bg-[#161925]/85 transition">
                        <AiOutlinePlus size={14}type="button" onClick={()=>setAddingField(true)}/> Add Quote
-                  </button>
+                  </button> */}
                     <button onClick={() => setEditingId(quote._id)} className="px-2">
                       <AiTwotoneEdit size={20} className="text-[#161925]" />
                     </button>
                      {/* <button className="flex items-center gap-1 text-sm bg-[#161925] text-white px-2 py-1 rounded hover:bg-[#161925]/85 transition">
                         <AiOutlinePlus size={14} /> Add Quote
                     </button> */}
-                    <button
+                    {/* <button
                       onClick={() => setShowDelete(quote._id)}
                       className="text-red-600 px-2"
                     >
                       <RiDeleteBin5Line className="text-xl" />
-                    </button>
+                    </button> */}
                   </>
                 ) : (
                   <div className="flex gap-3">
