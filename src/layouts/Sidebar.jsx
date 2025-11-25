@@ -60,6 +60,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: FileSpreadsheet,
       href: ROUTES.FORMS,
     },
+      {
+      name: "Collaborate Partners",
+      icon: UsersRound,
+      href: ROUTES.PARTNERS,
+    },
     {
       name: "FAQ",
       icon: HelpCircle,
@@ -106,11 +111,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   //     icon: TbSitemap ,
   //     href: ROUTES.SITEMAP,
   //   },
-    {
-      name: "Collaborate Partners",
-      icon: UsersRound,
-      href: ROUTES.PARTNERS,
-    },
+    // {
+    //   name: "Collaborate Partners",
+    //   icon: UsersRound,
+    //   href: ROUTES.PARTNERS,
+    // },
     {
       name: "Term of Service",
       icon: FileCheck2,
@@ -120,6 +125,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Privacy Policy",
       icon: ShieldCheck,
       href: ROUTES.PRIVACY_POLICY,
+    },
+     {
+      name: "Form Users",
+      icon: RiContactsBook2Fill ,
+      href: ROUTES.CONTACTUS,
     },
     {
       name: "Contact Us",
@@ -193,7 +203,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                         navigate(item.href);
                         onCloseSidebar();
                       }}
-                      className={`relative flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
+                      className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition ${
                         isActive
                           ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10"
                           : "text-slate-600 hover:bg-slate-100"

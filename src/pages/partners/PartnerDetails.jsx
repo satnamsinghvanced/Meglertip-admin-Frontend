@@ -18,97 +18,113 @@ export const PartnerDetailPage = () => {
     dispatch(fetchPartnerById(id));
   }, [id]);
 
-  if (loading) {
-    return <p className="p-5 text-lg">Loading...</p>;
-  }
+  if (loading) return <p className="p-5 text-sm">Loading...</p>;
 
-  if (!partnerDetail) {
-    return <p className="p-5 text-lg">Partner not found</p>;
-  }
+  if (!partnerDetail)
+    return <p className="p-5 text-sm">Partner not found</p>;
 
   const p = partnerDetail;
 
   return (
-    <div className="relative z-10 h-[calc(100vh-4.5rem)] overflow-y-auto bg-transparent">
-      <div className="mx-auto max-w-[1600px]">
-        <div className="no-print flex flex-col lg:flex-row w-full justify-between lg:items-center gap-5 mb-8">
-          <div>
-            {" "}
-            <h1  className="text-center md:text-start text[32px] font-bold">{p.name}</h1>
-            <p className="text-sm font-medium text-gray-600 text-center md:text-start dark:text-gray-400 mt-2">
-              Preview the full content for this partner.
-            </p>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-4 undefined">
-            <div className="flex flex-col sm:flex-row justify-between items-center md:w-full  gap-2 xs:gap-4 undefined">
+    <div className="relative z-10 h-[calc(100vh-4.5rem)] overflow-y-auto">
+      <div className="mx-auto max-w-8xl p-4">
+
+        <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-semibold">{p.name}</h1>
+              <p className="text-gray-600 text-sm">{p.email}</p>
+            </div>
+
+            <div className="flex gap-2">
               <button
                 onClick={() => navigate(-1)}
-                className="btn group btn-white btn-sm rounded-10 text-base w-full 
-                border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white"
+                className="px-3 py-1.5 text-sm rounded-lg bg-gray-100 hover:bg-gray-200"
               >
-                <p className="flex gap-2 font-bold sm:text-sm md:text-base justify-center items-center">
-                  Back to partners
-                </p>
+                Back
               </button>
-              <button className="flex align-middle gap-3 justify-center "
-                style={{
-               
-                  backgroundColor: "#161925",
-                  color: "#fff",
-                  border: "none",
-                  padding: "10px 20px",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  width: "100%",
-                }}
+              <button
+                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-black text-white rounded-lg hover:bg-gray-900"
                 onClick={() => navigate(`/partners/${p._id}/edit`)}
               >
-               <p className="flex justify-center gap-3  align-middle"> <AiTwotoneEdit /> Edit Partner</p>
+                <AiTwotoneEdit size={14} /> Edit
               </button>
             </div>
           </div>
         </div>
+        <div className="bg-white rounded-xl shadow-sm p-5 grid sm:grid-cols-2 gap-5 mb-6">
 
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:p-6   p-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <InfoCard title="Email" value={p.email} />
-            <InfoCard title="City" value={p.city} />
+          <InfoCard title="City" value={p.city} />
+          <InfoCard title="Postal Codes" value={p.postalCodes?.join(", ") || "-"} />
+          <InfoCard title="Address" value={p.address || "-"} />
 
-            <InfoCard
-              title="Postal Codes"
-              value={p.postalCodes?.join(", ") || "-"}
-            />
+          <InfoCard title="Premium" value={p.isPremium ? "Yes" : "No"} badge={p.isPremium} />
+          <InfoCard title="Status" value={p.isActive ? "Active" : "Inactive"} badge={p.isActive} />
 
-            <InfoCard
-              title="Premium"
-              value={p.isPremium ? "Yes" : "No"}
-              badge={p.isPremium}
-            />
-
-            <InfoCard
-              title="Status"
-              value={p.isActive ? "Active" : "Inactive"}
-              badge={p.isActive}
-            />
-
+          {/* <InfoCard title="Created At" value={new Date(p.createdAt).toLocaleDateString()} />
+          <InfoCard title="Updated At" value={new Date(p.updatedAt).toLocaleDateString()} /> */}
         </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
+          <h2 className="text-sm font-semibold mb-3">Leads Summary</h2>
+
+          <div className="grid sm:grid-cols-3 gap-4">
+            <StatCard title="Last Month" value={p.leads?.lastMonth || 0} />
+            <StatCard title="Current Month" value={p.leads?.currentMonth || 0} />
+            <StatCard title="Total Leads" value={p.leads?.total || 0} />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-5">
+          <h2 className="text-sm font-semibold mb-3">Partner Wishes</h2>
+
+          {p.wishes?.length ? (
+            <div className="space-y-3">
+              {p.wishes.map((w, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl bg-gray-50 p-3"
+                >
+                  <p className="text-sm font-medium">
+                    {i + 1}. {w.question}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    <span className="font-semibold">Answer:</span> {w.expectedAnswer || "-"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm">No wishes added.</p>
+          )}
+        </div>
+
       </div>
     </div>
-    </div>
-  )}
-  
+  );
+};
 
 const InfoCard = ({ title, value, badge }) => (
-  <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
-    <p className="text-sm text-gray-500 mb-2">{title}</p>
+  <div className="rounded-lg bg-slate-50 p-3">
+    <p className="text-xs text-gray-500 mb-1">{title}</p>
 
     {badge !== undefined ? (
-      <span className="inline-block px-3 py-1 rounded-full bg-slate-900 text-white text-xs font-bold">
+      <span
+        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+          badge ? "bg-green-600 text-white" : "bg-red-600 text-white"
+        }`}
+      >
         {value}
       </span>
     ) : (
-      <p className="text-lg font-medium">{value}</p>
+      <p className="text-sm font-medium">{value}</p>
     )}
   </div>
-)
+);
+
+const StatCard = ({ title, value }) => (
+  <div className="rounded-lg bg-slate-50 p-3 text-center">
+    <p className="text-xs text-gray-500">{title}</p>
+    <p className="text-lg font-semibold">{value}</p>
+  </div>
+);

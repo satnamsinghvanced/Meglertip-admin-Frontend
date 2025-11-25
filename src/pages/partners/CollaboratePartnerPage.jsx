@@ -103,7 +103,7 @@ export const CollaboratePartnerPage = () => {
               fetchWithDelay(updated);
             }}
           >
-            <option value="">Status</option>
+            <option value="">All</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
@@ -117,7 +117,7 @@ export const CollaboratePartnerPage = () => {
               fetchWithDelay(updated);
             }}
           >
-            <option value="">Premium</option>
+            <option value="">All</option>
             <option value="true">Premium</option>
             <option value="false">Non-Premium</option>
           </select>
@@ -214,7 +214,7 @@ export const CollaboratePartnerPage = () => {
                       <td className="px-6 py-4">{p.city}</td>
                       <td className="px-6 py-4">{p.postalCodes?.join(", ")}</td>
                       <td className="px-6 py-4 font-semibold text-slate-900">
-                        {p.totalLeads ?? 0}
+                        {p.leads.total ?? 0}
                       </td>
 
                       <td className="px-6 py-4">

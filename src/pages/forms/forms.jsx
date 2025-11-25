@@ -235,9 +235,7 @@ const AdminFormBuilder = () => {
                       {(currentForm.steps || []).map((step, stepIndex) => (
                         <div
                           key={stepIndex}
-                          className={`border border-gray-200 rounded-lg bg-gray-50 p-4 ${
-                            !step.visible ? "opacity-50" : ""
-                          }`}
+                          className={`border border-gray-200 rounded-lg bg-gray-50 p-4`}
                         >
                           <div className="flex justify-between items-center mb-3">
                             <h3 className="font-medium text-gray-700">
@@ -251,11 +249,11 @@ const AdminFormBuilder = () => {
                                 className="text-gray-700 hover:text-gray-900"
                                 
                               >
-                                {step.visible ? (
+                                {/* {step.visible ? (
                                   <FaEye className="text-xl" />
                                 ) : (
                                   <FaEyeSlash className="text-xl" />
-                                )}
+                                )} */}
                               </button>
                               <button
                                 // onClick={() =>
@@ -324,9 +322,7 @@ const AdminFormBuilder = () => {
                             {(step.fields || []).map((field, fieldIndex) => (
                               <div
                                 key={fieldIndex}
-                                className={`bg-white border border-gray-200 rounded-md p-3 ${
-                                  !field.visible ? "opacity-50" : ""
-                                }`}
+                                className={`bg-white border border-gray-200 rounded-md p-3 `}
                               >
                                 <div className="flex max-xl:flex-wrap gap-3 items-center">
                                   <div className="w-full md:w-auto">
@@ -497,11 +493,11 @@ const AdminFormBuilder = () => {
                                           }
                                           className="text-gray-700 hover:text-gray-900  "
                                         >
-                                          {field.visible ? (
+                                          {/* {field.visible ? (
                                             <FaEye className="text-xl" />
                                           ) : (
                                             <FaEyeSlash className="text-xl" />
-                                          )}
+                                          )} */}
                                         </button>
                                         <button
                                           onClick={() =>

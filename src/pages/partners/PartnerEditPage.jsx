@@ -8,6 +8,7 @@ import {
   fetchPartnerById,
   updatePartner,
 } from "../../store/slices/partnersSlice";
+import axios from "axios";
 
 const PartnerEditPage = () => {
   const { id } = useParams();
@@ -23,11 +24,19 @@ const PartnerEditPage = () => {
     isActive: false,
   });
 
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [allQuestions, setAllQuestions] = useState([]);
+
+  const [wishes, setWishes] = useState([{ question: "", expectedAnswer: "" }]);
 
   useEffect(() => {
     if (id) dispatch(fetchPartnerById(id));
   }, [id]);
+
+  useEffect(() => {
+    axios.get("http://localhost:9090/api/partners/questions").then((res) => {
+      setAllQuestions(res.data.questions || []);
+    });
+  }, []);
 
   useEffect(() => {
     if (partnerDetail) {
@@ -38,15 +47,34 @@ const PartnerEditPage = () => {
         isPremium: partnerDetail.isPremium || false,
         isActive: partnerDetail.isActive || false,
       });
-    }
-  }, [partnerDetail]);
+const normalized = partnerDetail.wishes?.map(w => ({
+  question: typeof w.question === "object" ? w.question.question : w.question,
+  expectedAnswer: w.expectedAnswer || ""
+}));
 
+setWishes(normalized.length ? normalized : [{ question: "", expectedAnswer: "" }]);
+  }
+  }, [partnerDetail]);
+const removeWish = (index) => {
+  const updated = wishes.filter((_, i) => i !== index);
+  setWishes(updated.length ? updated : [{ question: "", expectedAnswer: "" }]);
+};
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+  };
+
+  const handleWishChange = (index, field, value) => {
+    const updated = [...wishes];
+    updated[index][field] = value;
+    setWishes(updated);
+  };
+
+  const addWish = () => {
+    setWishes([...wishes, { question: "", expectedAnswer: "" }]);
   };
 
   const handleSubmit = async () => {
@@ -58,12 +86,13 @@ const PartnerEditPage = () => {
         .split(",")
         .map((p) => p.trim())
         .filter((p) => p),
+
+      wishes,
     };
 
     try {
       await dispatch(updatePartner({ id, data: payload })).unwrap();
       toast.success("Partner updated successfully");
-      setShowConfirmModal(false);
       navigate("/partners");
     } catch {
       toast.error("Failed to update partner");
@@ -90,29 +119,31 @@ const PartnerEditPage = () => {
           <input
             type="text"
             name="name"
-            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-indigo-500"
+            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-primary"
             value={formData.name}
             onChange={handleChange}
             placeholder="Partner Name"
           />
         </div>
+
         <div>
           <label className="block text-sm font-medium">City</label>
           <input
             type="text"
             name="city"
-            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-indigo-500"
+            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-primary"
             value={formData.city}
             onChange={handleChange}
             placeholder="City"
           />
         </div>
+
         <div>
           <label className="block text-sm font-medium">Postal Codes</label>
           <input
             type="text"
             name="postalCodes"
-            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-indigo-500"
+            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-primary"
             value={formData.postalCodes}
             onChange={handleChange}
             placeholder="e.g. 1234, 5678"
@@ -129,6 +160,7 @@ const PartnerEditPage = () => {
           />
           <label>Premium Partner</label>
         </div>
+
         <div className="flex items-center gap-3">
           <input
             className="!relative"
@@ -140,38 +172,77 @@ const PartnerEditPage = () => {
           <label>Active Partner</label>
         </div>
 
+
+        <div className="col-span-6 mt-6">
+          <h3 className="text-lg font-semibold mb-3"> Preferances</h3>
+
+          {wishes.map((w, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 rounded-xl relative"
+            >
+                <button
+      type="button"
+      onClick={() => removeWish(i)}
+      className="absolute top-2 right-2 text-red-500 hover:text-red-600 font-bold"
+    >
+      ✕
+    </button>
+              <div>
+                <label className="block text-sm font-medium">Question</label>
+                <select
+                  value={w.question}
+                  onChange={(e) =>
+                    handleWishChange(i, "question", e.target.value)
+                  }
+                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-primary"
+                >
+                  <option value="">Select your question</option>
+
+                  {allQuestions.map((q, idx) => (
+                    <option key={idx} value={q.question}>
+                      {q.index}. {q.question}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">
+                  Expected Answer
+                </label>
+                <input
+                  type="text"
+                  value={w.expectedAnswer}
+                  onChange={(e) =>
+                    handleWishChange(i, "expectedAnswer", e.target.value)
+                  }
+                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-primary"
+                  placeholder="Type expected answer"
+                />
+              </div>
+            </div>
+          ))}
+        <div className="flex justify-end items-end"> <button
+            type="button"
+            onClick={addWish}
+            className="px-3 py-2 bg-primary text-white rounded-full "
+          >
+            + Add More Preferance
+          </button></div>
+         
+        </div>
+
         <button
           type="button"
-          className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-secondary"
-          onClick={() => setShowConfirmModal(true)}
+          className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-secondary mt-4"
+            onClick={handleSubmit}
         >
           Update Partner
         </button>
       </form>
 
-      {showConfirmModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-slate-900/60">
-          <div className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl">
-            <p className="text-center text-lg font-semibold mb-6">
-              Are you sure you want to update this partner?
-            </p>
-            <div className="flex justify-center gap-3">
-              <button
-                className="px-4 py-2 border rounded-full"
-                onClick={() => setShowConfirmModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-primary text-white rounded-full"
-                onClick={handleSubmit}
-              >
-                Update
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 };

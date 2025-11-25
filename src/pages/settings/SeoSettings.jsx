@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
@@ -36,7 +36,7 @@ const quillFormats = [
   "image",
 ];
 
-const requiredFields = ["title", "description", "descriptionBottom"];
+const requiredFields = ["title", "description", "metaTitle", "metaDescription"];
 
 const SEOSettings = () => {
   const { id } = useParams();
@@ -50,6 +50,14 @@ const SEOSettings = () => {
     title: "",
     description: "",
     descriptionBottom: "",
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+    canonicalUrl: "",
+    robotsTxt: "",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -67,6 +75,14 @@ const SEOSettings = () => {
       title: selectedAgent.title || "",
       description: selectedAgent.description || "",
       descriptionBottom: selectedAgent.descriptionBottom || "",
+      metaTitle: selectedAgent.metaTitle || "",
+      metaDescription: selectedAgent.metaDescription || "",
+      metaKeywords: selectedAgent.metaKeywords || "",
+      canonicalUrl: selectedAgent.canonicalUrl || "",
+      robotsTxt: selectedAgent.robotsTxt || "",
+      ogTitle: selectedAgent.ogTitle || "",
+      ogDescription: selectedAgent.ogDescription || "",
+      ogImage: selectedAgent.ogImage || "",
     });
   }, [selectedAgent]);
 
@@ -108,10 +124,10 @@ const SEOSettings = () => {
     try {
       if (isEditMode) {
         await dispatch(updateAgent({ id, agentData: payload })).unwrap();
-        // toast.success("Agent updated");
+        toast.success("SEO settings updated");
       } else {
         await dispatch(createAgent(payload)).unwrap();
-        // toast.success("Agent created");
+        toast.success("SEO settings created");
       }
 
       navigate("/real-estate-agents");
@@ -128,24 +144,12 @@ const SEOSettings = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={isEditMode ? "Edit Real Estate Agent Page" : "Add Real Estate Agent"}
+        title={isEditMode ? "Edit SEO Settings" : "Add SEO Settings"}
         description={
           isEditMode
-            ? "Update content for this Agent."
-            : "Create a new Real Estate Agent entry."
+            ? "Update SEO content for this page."
+            : "Create new SEO settings entry."
         }
-        // buttonsList={useMemo(
-        //   () => [
-        //     {
-        //       value: "Back",
-        //       variant: "white",
-        //       className:
-        //         "border border-slate-300 text-slate-700 hover:border-slate-400",
-        //       onClick: () => navigate("/real-estate-agents"),
-        //     },
-        //   ],
-        //   [navigate]
-        // )}
       />
 
       <form
@@ -153,39 +157,32 @@ const SEOSettings = () => {
         className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
       >
         {/* LEFT CARD */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Title <span className="text-red-500">*</span>
-              </label>
-              <input
-                name="title"
-                value={form.title}
-                onChange={handleChange}
-                className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm ${
-                  errors.title
-                    ? "border-red-400 focus:border-red-500"
-                    : "border-slate-200 focus:border-primary"
-                }`}
-              />
-              {errors.title && (
-                <p className="mt-1 text-xs text-red-600">{errors.title}</p>
-              )}
-            </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+          <div>
+            <label className="text-xs font-semibold uppercase text-slate-500">
+              Page Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm ${
+                errors.title
+                  ? "border-red-400 focus:border-red-500"
+                  : "border-slate-200 focus:border-primary"
+              }`}
+            />
+            {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title}</p>}
           </div>
 
-          {/* DESCRIPTION */}
-          <div className="mt-4">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <div>
+            <label className="text-xs font-semibold uppercase text-slate-500">
               Description <span className="text-red-500">*</span>
             </label>
             <div className="mt-2 rounded-2xl border border-slate-200 p-1">
               <ReactQuill
                 value={form.description}
-                onChange={(value) =>
-                  setForm((prev) => ({ ...prev, description: value }))
-                }
+                onChange={(value) => setForm((prev) => ({ ...prev, description: value }))}
                 modules={quillModules}
                 formats={quillFormats}
               />
@@ -194,33 +191,131 @@ const SEOSettings = () => {
               <p className="mt-1 text-xs text-red-600">{errors.description}</p>
             )}
           </div>
-        </div>
 
-        {/* RIGHT SIDE CARD */}
-        <div className="space-y-6">
-          {/* DESCRIPTION BOTTOM */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Description Bottom <span className="text-red-500">*</span>
+          {/* <div>
+            <label className="text-xs font-semibold uppercase text-slate-500">
+              Description Bottom
             </label>
             <div className="mt-2 rounded-2xl border border-slate-200 p-1">
               <ReactQuill
                 value={form.descriptionBottom}
-                onChange={(value) =>
-                  setForm((prev) => ({ ...prev, descriptionBottom: value }))
-                }
+                onChange={(value) => setForm((prev) => ({ ...prev, descriptionBottom: value }))}
                 modules={quillModules}
                 formats={quillFormats}
               />
             </div>
-            {errors.descriptionBottom && (
-              <p className="mt-1 text-xs text-red-600">
-                {errors.descriptionBottom}
-              </p>
+          </div> */}
+
+          <div>
+            <label className="text-xs font-semibold uppercase text-slate-500">
+              Meta Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="metaTitle"
+              value={form.metaTitle}
+              onChange={handleChange}
+              className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm ${
+                errors.metaTitle
+                  ? "border-red-400 focus:border-red-500"
+                  : "border-slate-200 focus:border-primary"
+              }`}
+            />
+            {errors.metaTitle && <p className="mt-1 text-xs text-red-600">{errors.metaTitle}</p>}
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold uppercase text-slate-500">
+              Meta Description <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              name="metaDescription"
+              value={form.metaDescription}
+              onChange={handleChange}
+              rows={3}
+              className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm ${
+                errors.metaDescription
+                  ? "border-red-400 focus:border-red-500"
+                  : "border-slate-200 focus:border-primary"
+              }`}
+            />
+            {errors.metaDescription && (
+              <p className="mt-1 text-xs text-red-600">{errors.metaDescription}</p>
             )}
           </div>
 
-          {/* SUBMIT BUTTON CARD */}
+          <div>
+            <label className="text-xs font-semibold uppercase text-slate-500">Meta Keywords</label>
+            <input
+              name="metaKeywords"
+              value={form.metaKeywords}
+              onChange={handleChange}
+              className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-primary"
+            />
+          </div>
+        </div>
+
+        {/* RIGHT CARD */}
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <h2 className="text-sm font-semibold uppercase text-slate-500">Canonical & Robots</h2>
+
+            <div>
+              <label className="text-xs font-semibold uppercase text-slate-500">Canonical URL</label>
+              <input
+                name="canonicalUrl"
+                value={form.canonicalUrl}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-primary"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold uppercase text-slate-500">Robots.txt</label>
+              <textarea
+                name="robotsTxt"
+                value={form.robotsTxt}
+                onChange={handleChange}
+                rows={5}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-primary font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <h2 className="text-sm font-semibold uppercase text-slate-500">Open Graph (OG) Tags</h2>
+
+            <div>
+              <label className="text-xs font-semibold uppercase text-slate-500">OG Title</label>
+              <input
+                name="ogTitle"
+                value={form.ogTitle}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-primary"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold uppercase text-slate-500">OG Description</label>
+              <textarea
+                name="ogDescription"
+                value={form.ogDescription}
+                onChange={handleChange}
+                rows={3}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-primary"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold uppercase text-slate-500">OG Image URL</label>
+              <input
+                name="ogImage"
+                value={form.ogImage}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm border-slate-200 focus:border-primary"
+              />
+            </div>
+          </div>
+
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <button
               type="submit"
@@ -231,13 +326,11 @@ const SEOSettings = () => {
                 ? "Saving..."
                 : isEditMode
                 ? "Save Changes"
-                : "Create Agent"}
+                : "Create SEO Settings"}
             </button>
 
             {isDisabled && (
-              <p className="mt-2 text-xs text-red-600">
-                Fix errors before submitting
-              </p>
+              <p className="mt-2 text-xs text-red-600">Fix errors before submitting</p>
             )}
           </div>
         </div>
