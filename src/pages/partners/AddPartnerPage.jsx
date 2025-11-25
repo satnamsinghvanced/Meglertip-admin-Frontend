@@ -24,6 +24,10 @@ export const AddPartnerPage = () => {
     total: "",
   });
 
+  const [wishes, setWishes] = useState([
+    { question: "", expectedAnswer: "" },
+  ]);
+
   const [error, setErrors] = useState({});
 
   const validateForm = () => {
@@ -63,6 +67,23 @@ export const AddPartnerPage = () => {
     });
   };
 
+  // ---------------- WISHES HANDLERS ----------------
+  const handleWishChange = (index, field, value) => {
+    const updated = [...wishes];
+    updated[index][field] = value;
+    setWishes(updated);
+  };
+
+  const addWish = () => {
+    setWishes([...wishes, { question: "", expectedAnswer: "" }]);
+  };
+
+  const deleteWish = (index) => {
+    const updated = wishes.filter((_, i) => i !== index);
+    setWishes(updated);
+  };
+  // --------------------------------------------------
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -82,8 +103,9 @@ export const AddPartnerPage = () => {
         currentMonth: Number(form.currentMonth) || 0,
         total: Number(form.total) || 0,
       },
+      wishes: wishes,
     };
-    console.log(payload.total, "Total Leads");
+
     const result = await dispatch(createPartner(payload));
 
     if (result.payload?.success) {
@@ -107,14 +129,14 @@ export const AddPartnerPage = () => {
         <div>
           <button
             onClick={() => navigate("/partners")}
-            className="btn btn-white btn-sm rounded-full border border-slate-300 text-slate-700 hover:border-slate-400 px-6 py-2"
+            className="btn btn-white btn-sm rounded-full border-slate-300 text-slate-700 hover:border-slate-400 px-6 py-2"
           >
             Back to Partners
           </button>
         </div>
       </div>
 
-      <div className="rounded-2xl border bg-white border-slate-200 shadow-sm max-w-[800px] m-auto">
+      <div className="rounded-2xl border bg-white border-slate-200 shadow-sm max-w-8xl m-auto">
         <form onSubmit={handleSubmit} className="p-8 rounded-xl space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div>
@@ -127,7 +149,7 @@ export const AddPartnerPage = () => {
                 placeholder="Enter name"
                 value={form.name}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
 
@@ -141,7 +163,7 @@ export const AddPartnerPage = () => {
                 placeholder="Enter email"
                 value={form.email}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
 
@@ -155,7 +177,7 @@ export const AddPartnerPage = () => {
                 placeholder="Enter address"
                 value={form.address}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
 
@@ -169,7 +191,7 @@ export const AddPartnerPage = () => {
                 placeholder="Enter city"
                 value={form.city}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
 
@@ -184,9 +206,10 @@ export const AddPartnerPage = () => {
                 placeholder="1001, 2001"
                 value={form.postalCodes}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
+
             <div>
               <label className="text-sm font-semibold text-slate-700">
                 Leads Last Month
@@ -197,7 +220,7 @@ export const AddPartnerPage = () => {
                 placeholder="0"
                 value={form.lastMonth}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
 
@@ -211,7 +234,7 @@ export const AddPartnerPage = () => {
                 placeholder="0"
                 value={form.currentMonth}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
 
@@ -225,10 +248,63 @@ export const AddPartnerPage = () => {
                 placeholder="0"
                 value={form.total}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
           </div>
+
+          {/* ------------------- WISHES SECTION ------------------- */}
+          <div className="pt-8">
+            <h2 className="text-lg font-semibold mb-4">Preferance</h2>
+
+            {wishes.map((wish, index) => (
+              <div key={index} className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="mb-3">
+                  <label className="text-sm font-medium">Question</label>
+                  <input
+                    type="text"
+                    value={wish.question}
+                    onChange={(e) => handleWishChange(index, "question", e.target.value)}
+                    placeholder="Enter question"
+                    className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="text-sm font-medium">Expected Answer</label>
+                  <input
+                    type="text"
+                    value={wish.expectedAnswer}
+                    onChange={(e) =>
+                      handleWishChange(index, "expectedAnswer", e.target.value)
+                    }
+                    placeholder="Enter expected answer"
+                    className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+
+                {wishes.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => deleteWish(index)}
+                    className="text-red-600 text-sm font-medium"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addWish}
+              className="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm"
+            >
+              + Add Wish
+            </button>
+          </div>
+
+          {/* ------------------------------------------------------- */}
 
           <div className="flex items-center gap-10 pt-4">
             <label className="flex items-center gap-2 font-medium">

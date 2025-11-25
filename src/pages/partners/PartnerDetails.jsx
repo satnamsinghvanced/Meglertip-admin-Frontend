@@ -76,7 +76,7 @@ export const PartnerDetailPage = () => {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-5">
-          <h2 className="text-sm font-semibold mb-3">Partner Wishes</h2>
+          <h2 className="text-sm font-semibold mb-3">Partner Preferance</h2>
 
           {p.wishes?.length ? (
             <div className="space-y-3">

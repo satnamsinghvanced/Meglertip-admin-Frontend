@@ -47,18 +47,23 @@ const PartnerEditPage = () => {
         isPremium: partnerDetail.isPremium || false,
         isActive: partnerDetail.isActive || false,
       });
-const normalized = partnerDetail.wishes?.map(w => ({
-  question: typeof w.question === "object" ? w.question.question : w.question,
-  expectedAnswer: w.expectedAnswer || ""
-}));
+      const normalized = partnerDetail.wishes?.map((w) => ({
+        question:
+          typeof w.question === "object" ? w.question.question : w.question,
+        expectedAnswer: w.expectedAnswer || "",
+      }));
 
-setWishes(normalized.length ? normalized : [{ question: "", expectedAnswer: "" }]);
-  }
+      setWishes(
+        normalized.length ? normalized : [{ question: "", expectedAnswer: "" }]
+      );
+    }
   }, [partnerDetail]);
-const removeWish = (index) => {
-  const updated = wishes.filter((_, i) => i !== index);
-  setWishes(updated.length ? updated : [{ question: "", expectedAnswer: "" }]);
-};
+  const removeWish = (index) => {
+    const updated = wishes.filter((_, i) => i !== index);
+    setWishes(
+      updated.length ? updated : [{ question: "", expectedAnswer: "" }]
+    );
+  };
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -172,7 +177,6 @@ const removeWish = (index) => {
           <label>Active Partner</label>
         </div>
 
-
         <div className="col-span-6 mt-6">
           <h3 className="text-lg font-semibold mb-3"> Preferances</h3>
 
@@ -181,13 +185,13 @@ const removeWish = (index) => {
               key={i}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 rounded-xl relative"
             >
-                <button
-      type="button"
-      onClick={() => removeWish(i)}
-      className="absolute top-2 right-2 text-red-500 hover:text-red-600 font-bold"
-    >
-      ✕
-    </button>
+              <button
+                type="button"
+                onClick={() => removeWish(i)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600 font-bold"
+              >
+                ✕
+              </button>
               <div>
                 <label className="block text-sm font-medium">Question</label>
                 <select
@@ -198,10 +202,10 @@ const removeWish = (index) => {
                   className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-primary"
                 >
                   <option value="">Select your question</option>
-
+                  <option value="postalCode">Postal Code</option>
                   {allQuestions.map((q, idx) => (
                     <option key={idx} value={q.question}>
-                      {q.index}. {q.question}
+                      {q.question}
                     </option>
                   ))}
                 </select>
@@ -223,26 +227,26 @@ const removeWish = (index) => {
               </div>
             </div>
           ))}
-        <div className="flex justify-end items-end"> <button
-            type="button"
-            onClick={addWish}
-            className="px-3 py-2 bg-primary text-white rounded-full "
-          >
-            + Add More Preferance
-          </button></div>
-         
+          <div className="flex justify-end items-end">
+            {" "}
+            <button
+              type="button"
+              onClick={addWish}
+              className="px-3 py-2 bg-primary text-white rounded-full "
+            >
+              + Add More Preferance
+            </button>
+          </div>
         </div>
 
         <button
           type="button"
           className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-secondary mt-4"
-            onClick={handleSubmit}
+          onClick={handleSubmit}
         >
           Update Partner
         </button>
       </form>
-
-
     </div>
   );
 };

@@ -103,6 +103,7 @@ export const CollaboratePartnerPage = () => {
               fetchWithDelay(updated);
             }}
           >
+            <option disabled>Status</option>
             <option value="">All</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>

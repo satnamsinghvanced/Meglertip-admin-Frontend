@@ -407,7 +407,7 @@ const ThemeSettings = () => {
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        className="w-12 h-10 rounded border"
+                        className="w-12 h-10 rounded"
                         value={tempColor}
                         onChange={(e) => setTempColor(e.target.value)}
                       />

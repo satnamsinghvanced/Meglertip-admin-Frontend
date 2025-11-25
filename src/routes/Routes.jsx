@@ -48,6 +48,8 @@ import SitemapFormPage from "../pages/sitemap/SitemapFormPage";
 import ContactUsListPage from "../pages/contact-us/ContactUs";
 import ContactUsViewPage from "../pages/contact-us/ContactUsViewPage ";
 import SMTPSettings from "../pages/settings/EmailConfiguration";
+import FormTypeSelectionPage from "../pages/forms/FormTypeSelectionPage";
+import AdminFormBuilder from "../pages/forms/forms";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -99,7 +101,15 @@ const Routes = () => {
         />
 
         <Route path={ROUTES.FORMS} element={<FormPage />} />
+        <Route
+          path="/admin/form-selection"
+          element={<FormTypeSelectionPage />}
+        />
 
+        <Route
+          path="/admin/form-builder/:formType"
+          element={<AdminFormBuilder />}
+        />
         <Route path={ROUTES.COUNTY} element={<CountyPage />} />
         <Route path={ROUTES.COUNTY_CREATE} element={<CountiesFormPage />} />
         <Route path={ROUTES.COUNTY_EDIT} element={<CountiesFormPage />} />
@@ -149,9 +159,8 @@ const Routes = () => {
         <Route path="/sitemap/edit/:index" element={<SitemapFormPage />} />
         <Route path="/smtp" element={<SMTPSettings />} />
 
-
         <Route path={ROUTES.CONTACTUS} element={<ContactUsListPage />} />
-        <Route path={ROUTES.CONTACTUS_VIEW} element={<ContactUsViewPage />} /> 
+        <Route path={ROUTES.CONTACTUS_VIEW} element={<ContactUsViewPage />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />

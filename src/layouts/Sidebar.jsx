@@ -126,11 +126,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: ShieldCheck,
       href: ROUTES.PRIVACY_POLICY,
     },
-     {
-      name: "Form Users",
-      icon: RiContactsBook2Fill ,
-      href: ROUTES.CONTACTUS,
-    },
+    //  {
+    //   name: "Form Users",
+    //   icon: RiContactsBook2Fill ,
+    //   href: ROUTES.CONTACTUS,
+    // },
     {
       name: "Contact Us",
       icon: RiContactsBook2Fill ,
