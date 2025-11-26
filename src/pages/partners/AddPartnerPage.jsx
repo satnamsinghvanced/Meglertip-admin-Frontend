@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-
+import axios from "axios";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createPartner } from "../../store/slices/partnersSlice";
@@ -27,7 +28,17 @@ export const AddPartnerPage = () => {
   const [wishes, setWishes] = useState([
     { question: "", expectedAnswer: "" },
   ]);
-
+const [allQuestions, setAllQuestions] = useState([]); 
+useEffect(() => {
+  axios
+    .get(`${import.meta.env.VITE_API_URL}/partners/questions`)
+    .then((res) => {
+      setAllQuestions(res.data?.questions || []);
+    })
+    .catch((err) => {
+      console.error("Error fetching questions:", err);
+    });
+}, []);
   const [error, setErrors] = useState({});
 
   const validateForm = () => {
@@ -254,56 +265,69 @@ export const AddPartnerPage = () => {
           </div>
 
           {/* ------------------- WISHES SECTION ------------------- */}
-          <div className="pt-8">
-            <h2 className="text-lg font-semibold mb-4">Preferance</h2>
+      <div className="pt-8">
+  <h2 className="text-lg font-semibold mb-4">Preferance</h2>
 
-            {wishes.map((wish, index) => (
-              <div key={index} className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="mb-3">
-                  <label className="text-sm font-medium">Question</label>
-                  <input
-                    type="text"
-                    value={wish.question}
-                    onChange={(e) => handleWishChange(index, "question", e.target.value)}
-                    placeholder="Enter question"
-                    className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
-                  />
-                </div>
+  {wishes.map((wish, index) => (
+    <div
+      key={index}
+      className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200 relative"
+    >
+      {wishes.length > 1 && (
+        <button
+          type="button"
+          onClick={() => deleteWish(index)}
+          className="absolute top-2 right-2 text-red-600 font-bold"
+        >
+          ✕
+        </button>
+      )}
 
-                <div className="mb-3">
-                  <label className="text-sm font-medium">Expected Answer</label>
-                  <input
-                    type="text"
-                    value={wish.expectedAnswer}
-                    onChange={(e) =>
-                      handleWishChange(index, "expectedAnswer", e.target.value)
-                    }
-                    placeholder="Enter expected answer"
-                    className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
-                  />
-                </div>
+      {/* Question Select */}
+      <div className="mb-3">
+        <label className="text-sm font-medium">Question</label>
+        <select
+          value={wish.question}
+          onChange={(e) =>
+            handleWishChange(index, "question", e.target.value)
+          }
+          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+        >
+          <option value="">Select question</option>
+          <option value="postalCode">Postal Code</option>
 
-                {wishes.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => deleteWish(index)}
-                    className="text-red-600 text-sm font-medium"
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
-            ))}
+          {allQuestions.map((q, i) => (
+            <option key={i} value={q.question}>
+              {q.question}
+            </option>
+          ))}
+        </select>
+      </div>
 
-            <button
-              type="button"
-              onClick={addWish}
-              className="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm"
-            >
-              + Add Wish
-            </button>
-          </div>
+      {/* Expected Answer */}
+      <div className="mb-3">
+        <label className="text-sm font-medium">Expected Answer</label>
+        <input
+          type="text"
+          value={wish.expectedAnswer}
+          onChange={(e) =>
+            handleWishChange(index, "expectedAnswer", e.target.value)
+          }
+          placeholder="Enter expected answer"
+          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+        />
+      </div>
+    </div>
+  ))}
 
+  <button
+    type="button"
+    onClick={addWish}
+    className="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm"
+  >
+    + Add Wish
+  </button>
+</div>
           {/* ------------------------------------------------------- */}
 
           <div className="flex items-center gap-10 pt-4">

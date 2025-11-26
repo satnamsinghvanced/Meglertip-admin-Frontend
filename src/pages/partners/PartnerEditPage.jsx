@@ -31,12 +31,16 @@ const PartnerEditPage = () => {
   useEffect(() => {
     if (id) dispatch(fetchPartnerById(id));
   }, [id]);
-
-  useEffect(() => {
-    axios.get("http://localhost:9090/api/partners/questions").then((res) => {
-      setAllQuestions(res.data.questions || []);
+useEffect(() => {
+  axios
+    .get(`${import.meta.env.VITE_API_URL}/partners/questions`)
+    .then((res) => {
+      setAllQuestions(res.data?.questions || []);
+    })
+    .catch((err) => {
+      console.error("Error fetching questions:", err);
     });
-  }, []);
+}, []);
 
   useEffect(() => {
     if (partnerDetail) {
