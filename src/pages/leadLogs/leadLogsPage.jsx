@@ -90,7 +90,7 @@ const LeadLogs = () => {
               <th className="p-3 text-left">Status</th>
               <th className="p-3 text-left">Profit</th>
               <th className="p-3 text-left">Created</th>
-              <th className="p-3 text-left">Action</th>
+              {/* <th className="p-3 text-left">Action</th> */}
             </tr>
           </thead>
 
@@ -132,7 +132,7 @@ const LeadLogs = () => {
                     {new Date(lead.createdAt).toLocaleDateString()}
                   </td>
 
-                  <td className="p-3">
+                  {/* <td className="p-3">
                     <button
                       onClick={() => navigate(`/leads/view/${lead._id}`)}
                       className="text-blue-600 hover:underline mr-3"
@@ -140,13 +140,13 @@ const LeadLogs = () => {
                       View
                     </button>
 
-                    {/* <button
+                    <button
                       onClick={() => navigate(`/leads/edit/${lead._id}`)}
                       className="text-green-600 hover:underline"
                     >
                       Edit
-                    </button> */}
-                  </td>
+                    </button>
+                  </td> */}
                 </tr>
               ))
             )}

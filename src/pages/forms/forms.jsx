@@ -44,85 +44,130 @@ const AdminFormBuilder = () => {
     });
   };
 
-  const handleFieldChange = (formId, stepId, fieldId, fieldName, value) => {
+  const handleFieldChange = (formId, stepId, fieldId, key, value) => {
     setEditableForms((prev) => {
       const form = prev[formId];
 
-      const steps = form.steps.map((step) => {
-        if (step._id !== stepId) return step;
-
-        const updatedFields = step.fields.map((field) =>
-          field._id === fieldId
-            ? {
-                ...field,
-                [fieldName]:
-                  fieldName === "options"
-                    ? value.split(",").map((o) => o.trim())
-                    : value,
-              }
-            : field
-        );
-
-        return { ...step, fields: updatedFields };
-      });
-
-      return { ...prev, [formId]: { ...form, steps, isChanged: true } };
-    });
-  };
-
-  const handleAddStep = (formId) => {
-    setEditableForms((prev) => {
-      const form = prev[formId] || {};
-      const steps = [
-        ...(form.steps || []),
-        { stepTitle: "", fields: [], visible: true },
-      ];
-      return { ...prev, [formId]: { ...form, steps, isChanged: true } };
-    });
-  };
-
-  const handleAddField = (formId, stepIndex) => {
-    setEditableForms((prev) => {
-      const form = prev[formId] || {};
-      const steps = [...(form.steps || [])];
-      const fields = [
-        ...(steps[stepIndex]?.fields || []),
-        {
-          label: "",
-          name: "",
-          placeholder: "",
-          type: "text",
-          options: "",
-          required: false,
-          visible: true,
-        },
-      ];
-      steps[stepIndex] = { ...steps[stepIndex], fields };
-      return { ...prev, [formId]: { ...form, steps, isChanged: true } };
-    });
-  };
-
-  const handleDeleteStep = (formId, stepIndex) => {
-    setEditableForms((prev) => {
-      const form = prev[formId] || {};
-      const steps = [...(form.steps || [])];
-      steps.splice(stepIndex, 1);
-      return { ...prev, [formId]: { ...form, steps, isChanged: true } };
-    });
-  };
-
-  const handleDeleteField = (formId, stepId, fieldId) => {
-    setEditableForms((prev) => {
-      const form = prev[formId];
-      const steps = form.steps.map((step) => {
+      const updatedSteps = form.steps.map((step) => {
         if (step._id !== stepId) return step;
 
         return {
           ...step,
-          fields: step.fields.filter((f) => f._id !== fieldId),
+          fields: step.fields.map((field) => {
+            const idMatch = field._id === fieldId || field.tempId === fieldId;
+
+            let newValue = value;
+
+            if (key === "options") {
+              newValue = value
+                .split(",")
+                .map((o) => o.trim())
+                .filter((o) => o.length > 0);
+            }
+
+            return idMatch ? { ...field, [key]: newValue } : field;
+          }),
         };
       });
-      return { ...prev, [formId]: { ...form, steps, isChanged: true } };
+
+      return {
+        ...prev,
+        [formId]: { ...form, steps: updatedSteps, isChanged: true },
+      };
+    });
+  };
+
+  const generateTempId = () =>
+    Math.random().toString(36).substring(2, 10) + Date.now();
+  const handleAddStep = (formId) => {
+    setEditableForms((prev) => {
+      const form = prev[formId] || {};
+
+      const newStep = {
+        _id: undefined, // DO NOT SEND ID
+        tempId: generateTempId(),
+        stepTitle: "",
+        stepOrder: (form.steps?.length || 0) + 1,
+        fields: [],
+        visible: true,
+      };
+
+      return {
+        ...prev,
+        [formId]: {
+          ...form,
+          steps: [...(form.steps || []), newStep],
+          isChanged: true,
+        },
+      };
+    });
+  };
+
+  const handleAddField = (formId, stepId) => {
+    setEditableForms((prev) => {
+      const form = prev[formId];
+
+      const updatedSteps = form.steps.map((step) => {
+        if (step._id !== stepId) return step;
+
+        const newField = {
+          _id: undefined,
+          tempId: generateTempId(), // 🔥 REQUIRED FIX
+          label: "",
+          name: "",
+          placeholder: "",
+          type: "text",
+          options: [],
+          required: false,
+          visible: true,
+        };
+
+        return {
+          ...step,
+          fields: [...step.fields, newField],
+        };
+      });
+
+      return {
+        ...prev,
+        [formId]: {
+          ...form,
+          steps: updatedSteps,
+          isChanged: true,
+        },
+      };
+    });
+  };
+
+  const handleDeleteStep = (formId, stepId) => {
+    setEditableForms((prev) => {
+      const form = prev[formId];
+      const updatedSteps = form.steps.filter((s) => s._id !== stepId);
+      return {
+        ...prev,
+        [formId]: { ...form, steps: updatedSteps, isChanged: true },
+      };
+    });
+  };
+  const handleDeleteField = (formId, stepId, fieldId) => {
+    setEditableForms((prev) => {
+      const form = prev[formId];
+
+      const updatedSteps = form.steps.map((step) => {
+        if (step._id !== stepId) return step;
+
+        return {
+          ...step,
+          fields: step.fields.filter(
+            (f) => f._id !== fieldId && f.tempId !== fieldId
+          ),
+        };
+      });
+
+      return {
+        ...prev,
+        [formId]: { ...form, steps: updatedSteps, isChanged: true },
+      };
     });
   };
 
@@ -242,22 +287,22 @@ const AdminFormBuilder = () => {
                                 Step {step.stepOrder}
                               </h3>
                               <div className="flex gap-3">
-                                <button
+                                {/* <button
                                   onClick={() =>
                                     toggleStepVisibility(form._id, stepIndex)
                                   }
                                   className="text-gray-700 hover:text-gray-900"
                                 >
-                                  {/* {step.visible ? (
+                                  {step.visible ? (
                                   <FaEye className="text-xl" />
                                 ) : (
                                   <FaEyeSlash className="text-xl" />
-                                )} */}
-                                </button>
+                                )}
+                                </button> */}
                                 <button
-                                  // onClick={() =>
-                                  //   handleDeleteStep(form._id, stepIndex)
-                                  // }
+                                  onClick={() =>
+                                    handleDeleteStep(form._id, step._id)
+                                  }
                                   className="text-red-600 hover:text-red-700"
                                 >
                                   <RiDeleteBin5Line className="text-xl" />
@@ -270,7 +315,9 @@ const AdminFormBuilder = () => {
                                 onCancel={() => setIsModalOpen(false)}
                               /> */}
                                 <button
-                                   onClick={() => handleAddField(form._id, stepIndex)}
+                                  onClick={() =>
+                                    handleAddField(form._id, step._id)
+                                  }
                                   disabled={!step.visible}
                                   className="flex items-center gap-1 text-sm bg-[#161925] text-white px-2 py-1 rounded hover:bg-[#161925]/85 transition"
                                 >
@@ -316,10 +363,10 @@ const AdminFormBuilder = () => {
                             />
 
                             <div className="space-y-3">
-                              {(step.fields || []).map((field, fieldIndex) => (
+                              {(step.fields || []).map((field) => (
                                 <div
-                                  key={fieldIndex}
-                                  className={`bg-white border border-gray-200 rounded-md p-3 `}
+                                  key={field._id || field.tempId}
+                                  className="bg-white border border-gray-200 rounded-md p-3"
                                 >
                                   <div className="flex max-xl:flex-wrap gap-3 items-center">
                                     <div className="w-full md:w-auto">
@@ -333,8 +380,8 @@ const AdminFormBuilder = () => {
                                         onChange={(e) =>
                                           handleFieldChange(
                                             form._id,
-                                            stepIndex,
-                                            fieldIndex,
+                                            step._id,
+                                            field._id || field.tempId,
                                             "label",
                                             e.target.value
                                           )
@@ -354,8 +401,8 @@ const AdminFormBuilder = () => {
                                         onChange={(e) =>
                                           handleFieldChange(
                                             form._id,
-                                            stepIndex,
-                                            fieldIndex,
+                                            step._id,
+                                            field._id || field.tempId,
                                             "name",
                                             e.target.value
                                           )
@@ -374,8 +421,8 @@ const AdminFormBuilder = () => {
                                         onChange={(e) =>
                                           handleFieldChange(
                                             form._id,
-                                            stepIndex,
-                                            fieldIndex,
+                                            step._id,
+                                            field._id || field.tempId,
                                             "placeholder",
                                             e.target.value
                                           )
@@ -394,8 +441,8 @@ const AdminFormBuilder = () => {
                                         onChange={(e) =>
                                           handleFieldChange(
                                             form._id,
-                                            stepIndex,
-                                            fieldIndex,
+                                            step._id,
+                                            field._id || field.tempId,
                                             "type",
                                             e.target.value
                                           )
@@ -437,8 +484,8 @@ const AdminFormBuilder = () => {
                                           onChange={(e) =>
                                             handleFieldChange(
                                               form._id,
-                                              stepIndex,
-                                              fieldIndex,
+                                              step._id,
+                                              field._id || field.tempId,
                                               "options",
                                               e.target.value
                                             )
@@ -457,8 +504,8 @@ const AdminFormBuilder = () => {
                                         onClick={() =>
                                           handleFieldChange(
                                             form._id,
-                                            stepIndex,
-                                            fieldIndex,
+                                            step._id,
+                                            field._id || field.tempId,
                                             "required",
                                             !field.required
                                           )
@@ -483,7 +530,7 @@ const AdminFormBuilder = () => {
                                       <div className="flex flex-col items-center">
                                         {/* <label className="text-sm text-gray-600 mb-2">Visibility</label> */}
                                         <div className="flex gap-2 items-center ">
-                                          <button
+                                          {/* <button
                                             onClick={() =>
                                               toggleFieldVisibility(
                                                 form._id,
@@ -493,18 +540,19 @@ const AdminFormBuilder = () => {
                                             }
                                             className="text-gray-700 hover:text-gray-900  "
                                           >
-                                            {/* {field.visible ? (
+                                            {field.visible ? (
                                             <FaEye className="text-xl" />
                                           ) : (
                                             <FaEyeSlash className="text-xl" />
-                                          )} */}
-                                          </button>
+                                          )}
+                                          </button> */}
                                           <button
                                             onClick={() =>
                                               handleDeleteField(
                                                 form._id,
-                                                stepIndex,
-                                                fieldIndex
+                                                step._id,
+                                                field._id || field.tempId
+
                                               )
                                             }
                                             disabled={!step.visible}
