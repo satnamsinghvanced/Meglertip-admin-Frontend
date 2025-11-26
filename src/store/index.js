@@ -22,6 +22,7 @@ import footerReducer from "./slices/footerSlice";
 import sitemapSlice from "./slices/sitemapSlice";
 import contactSlice from "./slices/contactUsSlice";
 import smtpSlice from "./slices/smtpSlice";
+import LeadLogsSlice from "./slices/leadLogsSlice";
 export default configureStore({
   reducer: {
     user,
@@ -47,5 +48,6 @@ export default configureStore({
     sitemap:sitemapSlice,
     contact: contactSlice,
     smtp: smtpSlice,
+    lead:LeadLogsSlice
   },
 });

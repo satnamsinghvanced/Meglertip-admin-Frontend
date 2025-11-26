@@ -23,6 +23,9 @@ import {
 } from "lucide-react";
 import { MdOutlineFindInPage } from "react-icons/md";
 import { MdRealEstateAgent } from "react-icons/md";
+import { FaUserCheck } from "react-icons/fa";
+import { TbLayoutDashboardFilled } from "react-icons/tb";
+
 import { ROUTES } from "../consts/routes";
 
 import { RiContactsBook2Fill } from "react-icons/ri";
@@ -30,6 +33,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const adminRoutes = [
+      {
+      name: "Dashboard",
+      icon: TbLayoutDashboardFilled ,
+      href: ROUTES.HOME,
+    },
     {
       name: "Homepage",
       icon: Home,
@@ -64,6 +72,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "Collaborate Partners",
       icon: UsersRound,
       href: ROUTES.PARTNERS,
+    },
+      {
+      name: "Lead Logs",
+      icon: FaUserCheck ,
+      href: ROUTES.LEAD_LOGS,
     },
     {
       name: "FAQ",
@@ -126,13 +139,9 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: ShieldCheck,
       href: ROUTES.PRIVACY_POLICY,
     },
-    //  {
-    //   name: "Form Users",
-    //   icon: RiContactsBook2Fill ,
-    //   href: ROUTES.CONTACTUS,
-    // },
+   
     {
-      name: "Contact Us",
+      name: "Contact Us Logs",
       icon: RiContactsBook2Fill ,
       href: ROUTES.CONTACTUS,
     },

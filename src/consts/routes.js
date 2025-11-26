@@ -7,7 +7,7 @@ export const ROUTES = {
   SETTINGS: "/settings",
   HELP_CENTER: "/helpcenter",
   FORMS: "/forms",
-  FAQ: "/faq",
+  FAQ: "/faqs",
   ABOUT: "/about",
   ARTICLE: "/articles",
   ARTICLE_CREATE: "/articles/create",
@@ -58,4 +58,6 @@ export const ROUTES = {
   PARTNER_CREATE: "/partners/create",
   PARTNERS_ID: "/partners/:id",
   PARTNERS_EDIT_ID: "/partners/:id/edit",
+
+  LEAD_LOGS :"/lead-logs"
 };

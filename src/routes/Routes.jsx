@@ -50,6 +50,14 @@ import ContactUsViewPage from "../pages/contact-us/ContactUsViewPage ";
 import SMTPSettings from "../pages/settings/EmailConfiguration";
 import FormTypeSelectionPage from "../pages/forms/FormTypeSelectionPage";
 import AdminFormBuilder from "../pages/forms/forms";
+import Faqs from "../pages/helpcenter/Faq";
+import AddFaq from "../pages/helpcenter/AddFaq";
+import EditFaq from "../pages/helpcenter/EditFaq";
+import Categories from "../pages/faqCategories/Categories";
+import AddCategory from "../pages/faqCategories/AddCategory";
+import EditCategory from "../pages/faqCategories/EditCategory";
+import Dashboard from "../pages/dashboard/dashboard";
+import LeadLogs from "../pages/leadLogs/leadLogsPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -69,7 +77,15 @@ const Routes = () => {
       <Route element={token ? <Layout /> : <AuthLayout />}>
         <Route path={ROUTES.HOMEPAGE} element={<HomePage />} />
         <Route path={ROUTES.ABOUT} element={<AboutPage />} />
+
         <Route path={ROUTES.FAQ} element={<Faq />} />
+
+        <Route path="/faqs/add" element={<AddFaq />} />
+        <Route path="/faqs/edit/:id" element={<EditFaq />} />
+
+        <Route path="/faqs/categories" element={<Categories />} />
+        <Route path="/faqs/categories/add" element={<AddCategory />} />
+        <Route path="/faqs/categories/edit/:id" element={<EditCategory />} />
 
         <Route path={ROUTES.ARTICLE} element={<ArticlePage />} />
         <Route path={ROUTES.ARTICLE_CREATE} element={<ArticleFormPage />} />
@@ -136,7 +152,7 @@ const Routes = () => {
           element={<CreateFooterSelectPage />}
         />
 
-        <Route path={ROUTES.HOME} element={<p>Dashboard</p>} />
+        <Route path={ROUTES.HOME} element={<Dashboard/>} />
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
         <Route path={ROUTES.QUOTES} element={<Quote />} />
@@ -165,6 +181,8 @@ const Routes = () => {
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
         <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
+        <Route path={ROUTES.LEAD_LOGS} element={<LeadLogs/>} />
+
       </Route>
     </RouteWrapper>
   );
