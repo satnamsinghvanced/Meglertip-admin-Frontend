@@ -145,15 +145,16 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: RiContactsBook2Fill ,
       href: ROUTES.CONTACTUS,
     },
-  ];
-
-  const bottomRoutes = [
     {
       name: "Settings",
       icon: Settings,
       href: ROUTES.SETTINGS,
-    },
+    }
   ];
+
+  // const bottomRoutes = [
+    
+  // ];
 
   const navigationRoutes = adminRoutes;
 
@@ -235,7 +236,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
             </ul>
           </div>
 
-          <div className="px-3 pb-4 pt-2">
+          {/* <div className="px-3 pb-4 pt-2">
             <p
               className={`mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 ${
                 isMiniSidebarOpen ? "pl-2" : "text-center"
@@ -272,7 +273,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                 </Fragment>
               );
             })}
-          </div>
+          </div> */}
         </div>
       </div>
     </>

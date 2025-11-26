@@ -5,7 +5,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import { toast } from "react-toastify";
 const ImageUploader = ({ label, value, onChange , disabled }) => {
   const [isUploading, setIsUploading] = useState(false);
-
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -15,7 +15,10 @@ const ImageUploader = ({ label, value, onChange , disabled }) => {
    toast.error("Invalid file type. Please upload an image or icon (jpeg, png, gif, webp, svg, ico).");
     return;
     }
-
+ if (file.size > MAX_FILE_SIZE) {
+    toast.error("File size too large. Maximum allowed size is 2MB.");
+    return;
+  }
     setIsUploading(true);
     const imageUrl = await uploadImage(file);
     setIsUploading(false);

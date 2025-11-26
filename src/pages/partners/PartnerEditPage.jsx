@@ -20,6 +20,7 @@ const PartnerEditPage = () => {
     name: "",
     city: "",
     postalCodes: "",
+    email: "",
     isPremium: false,
     isActive: false,
   });
@@ -31,22 +32,23 @@ const PartnerEditPage = () => {
   useEffect(() => {
     if (id) dispatch(fetchPartnerById(id));
   }, [id]);
-useEffect(() => {
-  axios
-    .get(`${import.meta.env.VITE_API_URL}/partners/questions`)
-    .then((res) => {
-      setAllQuestions(res.data?.questions || []);
-    })
-    .catch((err) => {
-      console.error("Error fetching questions:", err);
-    });
-}, []);
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/partners/questions`)
+      .then((res) => {
+        setAllQuestions(res.data?.questions || []);
+      })
+      .catch((err) => {
+        console.error("Error fetching questions:", err);
+      });
+  }, []);
 
   useEffect(() => {
     if (partnerDetail) {
       setFormData({
         name: partnerDetail.name || "",
         city: partnerDetail.city || "",
+        email: partnerDetail.email || "",
         postalCodes: partnerDetail.postalCodes?.join(", ") || "",
         isPremium: partnerDetail.isPremium || false,
         isActive: partnerDetail.isActive || false,
@@ -147,6 +149,17 @@ useEffect(() => {
           />
         </div>
 
+        <div>
+          <label className="block text-sm font-medium">Email</label>
+          <input
+            type="text"
+            name="email"
+            className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none border-slate-200 focus:border-primary"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium">Postal Codes</label>
           <input

@@ -221,7 +221,7 @@ useEffect(() => {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="text-sm font-semibold text-slate-700">
                 Leads Last Month
               </label>
@@ -233,9 +233,9 @@ useEffect(() => {
                 onChange={handleChange}
                 className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <label className="text-sm font-semibold text-slate-700">
                 Leads Current Month
               </label>
@@ -247,7 +247,7 @@ useEffect(() => {
                 onChange={handleChange}
                 className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
-            </div>
+            </div> */}
 
             <div>
               <label className="text-sm font-semibold text-slate-700">
