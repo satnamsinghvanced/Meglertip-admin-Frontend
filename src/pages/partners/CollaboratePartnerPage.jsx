@@ -241,12 +241,12 @@ export const CollaboratePartnerPage = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-center gap-2">
-                            <button
+                            {/* <button
                               className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
                               onClick={() => navigate(`/partners/${p._id}`)}
                             >
                               <FaRegEye size={16} />
-                            </button>
+                            </button> */}
                             <button
                               className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
                               onClick={() =>
