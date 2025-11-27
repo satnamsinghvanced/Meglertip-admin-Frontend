@@ -43,27 +43,40 @@ const PartnerEditPage = () => {
       });
   }, []);
 
-  useEffect(() => {
-    if (partnerDetail) {
-      setFormData({
-        name: partnerDetail.name || "",
-        city: partnerDetail.city || "",
-        email: partnerDetail.email || "",
-        postalCodes: partnerDetail.postalCodes?.join(", ") || "",
-        isPremium: partnerDetail.isPremium || false,
-        isActive: partnerDetail.isActive || false,
-      });
-      const normalized = partnerDetail.wishes?.map((w) => ({
-        question:
-          typeof w.question === "object" ? w.question.question : w.question,
-        expectedAnswer: w.expectedAnswer || "",
-      }));
-
-      setWishes(
-        normalized.length ? normalized : [{ question: "", expectedAnswer: "" }]
-      );
+useEffect(() => {
+  if (partnerDetail) {
+    // Normalize postalCodes to a string
+    let postalCodesStr = "";
+    if (Array.isArray(partnerDetail.postalCodes)) {
+      postalCodesStr = partnerDetail.postalCodes.join(", ");
+    } else if (partnerDetail.postalCodes) {
+      const exact = partnerDetail.postalCodes.exact?.map((x) => x.code) || [];
+      const ranges =
+        partnerDetail.postalCodes.ranges?.map((r) => `${r.from}-${r.to}`) || [];
+      postalCodesStr = [...exact, ...ranges].join(", ");
     }
-  }, [partnerDetail]);
+
+    setFormData({
+      name: partnerDetail.name || "",
+      city: partnerDetail.city || "",
+      email: partnerDetail.email || "",
+      postalCodes: postalCodesStr,
+      isPremium: partnerDetail.isPremium || false,
+      isActive: partnerDetail.isActive || false,
+    });
+
+    const normalized = partnerDetail.wishes?.map((w) => ({
+      question:
+        typeof w.question === "object" ? w.question.question : w.question,
+      expectedAnswer: w.expectedAnswer || "",
+    }));
+
+    setWishes(
+      normalized.length ? normalized : [{ question: "", expectedAnswer: "" }]
+    );
+  }
+}, [partnerDetail]);
+ 
   const removeWish = (index) => {
     const updated = wishes.filter((_, i) => i !== index);
     setWishes(
@@ -120,7 +133,7 @@ const PartnerEditPage = () => {
           className="btn group btn-white btn-sm rounded-10 text-base border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white"
           onClick={() => navigate(-1)}
         >
-          Back to Partners
+          Back to Companies
         </button>
       </div>
 
@@ -195,7 +208,7 @@ const PartnerEditPage = () => {
         </div>
 
         <div className="col-span-6 mt-6">
-          <h3 className="text-lg font-semibold mb-3"> Preferances</h3>
+          <h3 className="text-lg font-semibold mb-3"> Preferences</h3>
 
           {wishes.map((w, i) => (
             <div
@@ -251,7 +264,7 @@ const PartnerEditPage = () => {
               onClick={addWish}
               className="px-3 py-2 bg-primary text-white rounded-full "
             >
-              + Add More Preferance
+              + Add More Preference
             </button>
           </div>
         </div>

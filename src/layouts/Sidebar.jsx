@@ -2,8 +2,6 @@
 
 import { Link, useLocation, useNavigate } from "react-router";
 import { HiChevronDoubleLeft } from "react-icons/hi";
-import { TbSitemap } from "react-icons/tb";
-import { Fragment } from "react";
 import {
   Home,
   Info,
@@ -22,13 +20,13 @@ import {
   Building,
 } from "lucide-react";
 import { MdOutlineFindInPage } from "react-icons/md";
-import { MdRealEstateAgent } from "react-icons/md";
-import { FaUserCheck } from "react-icons/fa";
-import { TbLayoutDashboardFilled } from "react-icons/tb";
+import { MdOutlineRealEstateAgent } from "react-icons/md";
 
+import { TbLogs } from "react-icons/tb";
+import { TbLayoutDashboardFilled } from "react-icons/tb";
+import { MdOutlineContactSupport } from "react-icons/md";
 import { ROUTES } from "../consts/routes";
 
-import { RiContactsBook2Fill } from "react-icons/ri";
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -60,7 +58,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     },
     {
       name: "Real Estate Agents Page",
-      icon: MdRealEstateAgent,
+      icon: MdOutlineRealEstateAgent,
       href: ROUTES.REAL_ESTATE_AGENTS,
     },
     {
@@ -69,13 +67,13 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.FORMS,
     },
       {
-      name: "Collaborate Partners",
+      name: "Company Page",
       icon: UsersRound,
       href: ROUTES.PARTNERS,
     },
       {
       name: "Lead Logs",
-      icon: FaUserCheck ,
+      icon: TbLogs ,
       href: ROUTES.LEAD_LOGS,
     },
     {
@@ -119,16 +117,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: Mail,
       href: ROUTES.EMAIL,
     },
-  //  {
-  //     name: "Sitemap Page",
-  //     icon: TbSitemap ,
-  //     href: ROUTES.SITEMAP,
-  //   },
-    // {
-    //   name: "Collaborate Partners",
-    //   icon: UsersRound,
-    //   href: ROUTES.PARTNERS,
-    // },
     {
       name: "Term of Service",
       icon: FileCheck2,
@@ -142,7 +130,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
    
     {
       name: "Contact Us Logs",
-      icon: RiContactsBook2Fill ,
+      icon: MdOutlineContactSupport ,
       href: ROUTES.CONTACTUS,
     },
     {
@@ -152,10 +140,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     }
   ];
 
-  // const bottomRoutes = [
-    
-  // ];
-
+ 
   const navigationRoutes = adminRoutes;
 
   return (
@@ -235,45 +220,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
               })}
             </ul>
           </div>
-
-          {/* <div className="px-3 pb-4 pt-2">
-            <p
-              className={`mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 ${
-                isMiniSidebarOpen ? "pl-2" : "text-center"
-              }`}
-            >
-              Other
-            </p>
-            {bottomRoutes.map((item, index) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Fragment key={index}>
-                  <button
-                    onClick={() => {
-                      navigate(item.href);
-                      onCloseSidebar();
-                    }}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
-                      isActive
-                        ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10"
-                        : "text-slate-600 hover:bg-slate-100"
-                    } ${isMiniSidebarOpen ? "" : "justify-center"}`}
-                  >
-                    <span
-                      className={`flex h-6 w-6 items-center justify-center ${
-                        isActive ? "text-white" : "text-slate-500"
-                      }`}
-                    >
-                      <item.icon size={18} />
-                    </span>
-                    {isMiniSidebarOpen && (
-                      <span className="truncate">{item.name}</span>
-                    )}
-                  </button>
-                </Fragment>
-              );
-            })}
-          </div> */}
         </div>
       </div>
     </>

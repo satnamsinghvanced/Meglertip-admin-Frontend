@@ -102,7 +102,7 @@ const CreateFooterItemPage = () => {
               <input className="w-full rounded-lg border px-3 py-2" value={form.href || ""} onChange={(e) => setForm({ ...form, href: e.target.value })} />
 
               <div className="flex items-center gap-2">
-                <input id="newpage" type="checkbox" checked={form.newPage || false} onChange={(e) => setForm({ ...form, newPage: e.target.checked })} />
+                <input id="newpage" type="checkbox" className="!relative"  checked={form.newPage || false} onChange={(e) => setForm({ ...form, newPage: e.target.checked })} />
                 <label htmlFor="newpage" className="text-sm">Open in new page</label>
               </div>
             </>
@@ -125,7 +125,7 @@ const CreateFooterItemPage = () => {
               <input className="w-full rounded-lg border px-3 py-2" value={form.href || ""} onChange={(e) => setForm({ ...form, href: e.target.value })} />
 
               <div className="flex items-center gap-2">
-                <input id="contact-newpage" type="checkbox" checked={form.newPage || false} onChange={(e) => setForm({ ...form, newPage: e.target.checked })} />
+                <input id="contact-newpage" type="checkbox" className="!relative" checked={form.newPage || false} onChange={(e) => setForm({ ...form, newPage: e.target.checked })} />
                 <label htmlFor="contact-newpage" className="text-sm">Open in new page</label>
               </div>
             </>

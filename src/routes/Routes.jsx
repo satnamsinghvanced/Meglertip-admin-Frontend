@@ -7,7 +7,6 @@ import { ROUTES } from "../consts/routes";
 import LoginForm from "../components/LoginForm";
 import { useSelector } from "react-redux";
 import Settings from "../pages/settings/Settings";
-import HelpCenter from "../pages/helpcenter/HelpCenter";
 import Faq from "../pages/helpcenter/Faq";
 import HomePage from "../pages/homepage/homepage";
 import ArticlePage from "../pages/article/ArticlePage";
@@ -178,9 +177,7 @@ const Routes = () => {
         <Route path={ROUTES.CONTACTUS} element={<ContactUsListPage />} />
         <Route path={ROUTES.CONTACTUS_VIEW} element={<ContactUsViewPage />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
-        <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
-        <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
-        <Route path={ROUTES.HELP_CENTER} element={<HelpCenter />} />
+
         <Route path={ROUTES.LEAD_LOGS} element={<LeadLogs/>} />
 
       </Route>
