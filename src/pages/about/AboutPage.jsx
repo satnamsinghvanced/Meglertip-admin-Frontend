@@ -6,11 +6,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAboutPage, updateAboutPage } from "../../store/slices/aboutPageSlice";
 import { toast } from "react-toastify";
 
+// Helper for converting Date objects/strings to datetime-local format (YYYY-MM-DDThh:mm)
+const formatDateTimeLocal = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "";
+    // Get date part (YYYY-MM-DD)
+    const datePart = date.toISOString().substring(0, 10);
+    // Get time part (hh:mm)
+    const timePart = date.toTimeString().substring(0, 5);
+    return `${datePart}T${timePart}`;
+};
+
 const AboutPage = () => {
   const dispatch = useDispatch();
+  // Ensure default state structure if 'about' or 'state.about' is undefined
   const { about, loading } = useSelector((state) => state.about || {});
 
-  const [form, setForm] = useState({
+  const initialFormState = {
     heading: "",
     subHeading: "",
     image: "",
@@ -42,7 +55,7 @@ const AboutPage = () => {
       noarchive: false,
       nosnippet: false,
       noimageindex: false,
-      notranslate: false
+      notranslate: false,
     },
 
     customHead: "",
@@ -52,7 +65,7 @@ const AboutPage = () => {
       enabled: false,
       from: "",
       to: "",
-      type: 301
+      type: 301,
     },
 
     breadcrumbs: [],
@@ -66,7 +79,9 @@ const AboutPage = () => {
 
     isDeleted: false,
     isHidden: false,
-  });
+  };
+
+  const [form, setForm] = useState(initialFormState);
 
   useEffect(() => {
     dispatch(getAboutPage());
@@ -75,12 +90,16 @@ const AboutPage = () => {
   useEffect(() => {
     if (about) {
       setForm({
-        ...form,
+        ...initialFormState, // Start with initial state defaults
         ...about,
-        metaKeywords: about.metaKeywords || "",
-        robots: about.robots || form.robots,
-        redirect: about.redirect || form.redirect,
-        breadcrumbs: about.breadcrumbs || []
+        // Explicitly merge nested objects to preserve defaults if missing in DB
+        robots: about.robots || initialFormState.robots,
+        redirect: about.redirect || initialFormState.redirect,
+        breadcrumbs: about.breadcrumbs || initialFormState.breadcrumbs,
+        // Handle dates coming from the database (likely ISO strings)
+        publishedDate: about.publishedDate || "",
+        lastUpdatedDate: about.lastUpdatedDate || "",
+        scheduledPublishDate: about.scheduledPublishDate || "",
       });
     }
   }, [about]);
@@ -104,6 +123,36 @@ const AboutPage = () => {
     setForm({ ...form, breadcrumbs: updated });
   };
 
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    
+    // Handle checkbox/boolean fields
+    if (type === 'checkbox') {
+        setForm({ ...form, [name]: checked });
+    } 
+    // Handle nested fields (like in Robots or Redirect)
+    else if (name.includes('.')) {
+        const [parent, child] = name.split('.');
+        const newValue = type === 'number' ? Number(value) : value;
+
+        setForm(prev => ({
+            ...prev,
+            [parent]: {
+                ...prev[parent],
+                [child]: newValue
+            }
+        }));
+    }
+    // Handle top-level number fields (Priority, Redirect Type)
+    else if (type === 'number') {
+        setForm({ ...form, [name]: Number(value) });
+    }
+    // Handle all other fields
+    else {
+        setForm({ ...form, [name]: value });
+    }
+  };
+
   const handleSave = async () => {
     const res = await dispatch(updateAboutPage(form));
 
@@ -121,92 +170,165 @@ const AboutPage = () => {
         </div>
       ) : (
         <div className="space-y-8">
+          {/* ------------------------------------------
+          // PRIMARY CONTENT
+          // ------------------------------------------ */}
+          <Input 
+            label="Heading" 
+            name="heading"
+            value={form.heading}
+            onChange={handleChange} 
+          />
+          <Input 
+            label="Sub Heading" 
+            name="subHeading"
+            value={form.subHeading}
+            onChange={handleChange} 
+          />
 
-          {/* BASIC CONTENT */}
-          <Input label="Heading" value={form.heading}
-            onChange={(e) => setForm({ ...form, heading: e.target.value })} />
-          <Input label="Sub Heading" value={form.subHeading}
-            onChange={(e) => setForm({ ...form, subHeading: e.target.value })} />
+          <ImageUploader 
+            label="Main Image" 
+            value={form.image}
+            onChange={(img) => setForm({ ...form, image: img })} 
+          />
 
-          <ImageUploader label="Main Image" value={form.image}
-            onChange={(img) => setForm({ ...form, image: img })} />
-
-          <Input label="Heading 1" value={form.heading1}
-            onChange={(e) => setForm({ ...form, heading1: e.target.value })} />
-          <Input label="Sub Heading 1" value={form.subHeading1}
-            onChange={(e) => setForm({ ...form, subHeading1: e.target.value })} />
-
-          {/* SEO SECTION */}
+          <Input 
+            label="Heading 1" 
+            name="heading1"
+            value={form.heading1}
+            onChange={handleChange} 
+          />
+          <Input 
+            label="Sub Heading 1" 
+            name="subHeading1"
+            value={form.subHeading1}
+            onChange={handleChange} 
+          />
+          
+          {/* ------------------------------------------
+          // SEO SETTINGS
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">SEO Settings</h2>
 
-            <Input label="Meta Title" value={form.metaTitle}
-              onChange={(e) => setForm({ ...form, metaTitle: e.target.value })} />
+            <Input 
+                label="Meta Title" 
+                name="metaTitle"
+                value={form.metaTitle}
+                onChange={handleChange} 
+            />
 
-            <Input label="Meta Description" textarea value={form.metaDescription}
-              onChange={(e) => setForm({ ...form, metaDescription: e.target.value })} />
+            <Input 
+                label="Meta Description" 
+                name="metaDescription"
+                textarea 
+                value={form.metaDescription}
+                onChange={handleChange} 
+            />
 
-            <Input label="Meta Keywords (comma separated)"
-              value={form.metaKeywords}
-              onChange={(e) => setForm({ ...form, metaKeywords: e.target.value })} />
+            <Input 
+                label="Meta Keywords (comma separated)"
+                name="metaKeywords"
+                value={form.metaKeywords}
+                onChange={handleChange} 
+            />
 
-            <ImageUploader label="Meta Image" value={form.metaImage}
-              onChange={(img) => setForm({ ...form, metaImage: img })} />
+            <ImageUploader 
+                label="Meta Image" 
+                value={form.metaImage}
+                onChange={(img) => setForm({ ...form, metaImage: img })} 
+            />
           </div>
 
-          {/* OG TAGS */}
+          {/* ------------------------------------------
+          // OPEN GRAPH (OG) TAGS
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Open Graph (OG) Tags</h2>
 
-            <Input label="OG Title" value={form.ogTitle}
-              onChange={(e) => setForm({ ...form, ogTitle: e.target.value })} />
-            <Input label="OG Description" textarea value={form.ogDescription}
-              onChange={(e) => setForm({ ...form, ogDescription: e.target.value })} />
+            <Input 
+                label="OG Title" 
+                name="ogTitle"
+                value={form.ogTitle}
+                onChange={handleChange} 
+            />
+            <Input 
+                label="OG Description" 
+                name="ogDescription"
+                textarea 
+                value={form.ogDescription}
+                onChange={handleChange} 
+            />
 
-            <ImageUploader label="OG Image" value={form.ogImage}
-              onChange={(img) => setForm({ ...form, ogImage: img })} />
+            <ImageUploader 
+                label="OG Image" 
+                value={form.ogImage}
+                onChange={(img) => setForm({ ...form, ogImage: img })} 
+            />
 
-            <Input label="OG Type" value={form.ogType}
-              onChange={(e) => setForm({ ...form, ogType: e.target.value })} />
+            <Input 
+                label="OG Type" 
+                name="ogType"
+                value={form.ogType}
+                onChange={handleChange} 
+            />
           </div>
 
-          {/* ADVANCED SEO */}
+          {/* ------------------------------------------
+          // ADVANCED SEO
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Advanced SEO</h2>
 
-            <Input label="Canonical URL" value={form.canonicalUrl}
-              onChange={(e) => setForm({ ...form, canonicalUrl: e.target.value })} />
+            <Input 
+                label="Canonical URL" 
+                name="canonicalUrl"
+                value={form.canonicalUrl}
+                onChange={handleChange} 
+            />
 
-            <Input label="JSON-LD Schema" textarea value={form.jsonLd}
-              onChange={(e) => setForm({ ...form, jsonLd: e.target.value })} />
+            <Input 
+                label="JSON-LD Schema" 
+                name="jsonLd"
+                textarea 
+                value={form.jsonLd}
+                onChange={handleChange} 
+            />
 
-            <Input label="Custom Head Tags" textarea value={form.customHead}
-              onChange={(e) => setForm({ ...form, customHead: e.target.value })} />
+            <Input 
+                label="Custom Head Tags" 
+                name="customHead"
+                textarea 
+                value={form.customHead}
+                onChange={handleChange} 
+            />
           </div>
 
-          {/* ROBOTS */}
+          {/* ------------------------------------------
+          // ROBOTS SETTINGS
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Robots Settings</h2>
-
-            {Object.keys(form.robots).map((key) => (
-              <label key={key} className="flex items-center gap-2">
-                <input
-                  className="!relative"
-                  type="checkbox"
-                  checked={form.robots[key]}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      robots: { ...form.robots, [key]: e.target.checked },
-                    })
-                  }
-                />
-                {key}
-              </label>
-            ))}
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {Object.keys(form.robots).map((key) => (
+                <label key={key} className="flex items-center gap-2 capitalize">
+                  <input
+                    className="!relative"
+                    type="checkbox"
+                    name={`robots.${key}`}
+                    checked={form.robots[key]}
+                    onChange={handleChange}
+                  />
+                  {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
+                </label>
+              ))}
+            </div>
           </div>
 
-          {/* REDIRECT */}
+          {/* ------------------------------------------
+          // REDIRECT (UNCOMMENTED)
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Redirect</h2>
 
@@ -214,61 +336,58 @@ const AboutPage = () => {
               <input
                className="!relative"
                 type="checkbox"
+                name="redirect.enabled"
                 checked={form.redirect.enabled}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    redirect: { ...form.redirect, enabled: e.target.checked },
-                  })
-                }
+                onChange={handleChange}
               />
               Enable Redirect
             </label>
 
             {form.redirect.enabled && (
               <>
-                <Input label="Redirect From" value={form.redirect.from}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      redirect: { ...form.redirect, from: e.target.value },
-                    })
-                  }
+                <Input 
+                    label="Redirect From (Old Path)" 
+                    name="redirect.from"
+                    value={form.redirect.from}
+                    onChange={handleChange}
                 />
-                <Input label="Redirect To" value={form.redirect.to}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      redirect: { ...form.redirect, to: e.target.value },
-                    })
-                  }
+                <Input 
+                    label="Redirect To (New Path)" 
+                    name="redirect.to"
+                    value={form.redirect.to}
+                    onChange={handleChange}
                 />
-                <Input label="Redirect Type (301/302)" value={form.redirect.type}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      redirect: { ...form.redirect, type: Number(e.target.value) },
-                    })
-                  }
+                <Input 
+                    label="Redirect Type (301 or 302)" 
+                    name="redirect.type"
+                    type="number"
+                    value={form.redirect.type}
+                    onChange={handleChange}
                 />
               </>
             )}
           </div>
 
-          {/* BREADCRUMBS */}
+          {/* ------------------------------------------
+          // BREADCRUMBS (UNCOMMENTED)
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Breadcrumbs</h2>
 
             {form.breadcrumbs.map((b, i) => (
-              <div key={i} className="p-3 border rounded mb-3">
-                <Input label="Label" value={b.label}
-                  onChange={(e) => handleBreadcrumbChange(i, "label", e.target.value)}
+              <div key={i} className="p-3 border rounded mb-3 bg-gray-50">
+                <Input 
+                    label="Label" 
+                    value={b.label}
+                    onChange={(e) => handleBreadcrumbChange(i, "label", e.target.value)}
                 />
-                <Input label="URL" value={b.url}
-                  onChange={(e) => handleBreadcrumbChange(i, "url", e.target.value)}
+                <Input 
+                    label="URL" 
+                    value={b.url}
+                    onChange={(e) => handleBreadcrumbChange(i, "url", e.target.value)}
                 />
                 <button
-                  className="mt-2 text-red-600"
+                  className="mt-2 text-red-600 hover:text-red-800 transition-colors"
                   onClick={() => removeBreadcrumb(i)}
                 >
                   Remove
@@ -276,94 +395,107 @@ const AboutPage = () => {
               </div>
             ))}
 
-            <button className="text-blue-600" onClick={addBreadcrumb}>
+            <button 
+                className="text-blue-600 hover:text-blue-800 transition-colors" 
+                onClick={addBreadcrumb}
+            >
               + Add Breadcrumb
             </button>
           </div>
 
-          {/* SITEMAP SETTINGS */}
+          {/* ------------------------------------------
+          // SITEMAP SETTINGS
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Sitemap Settings</h2>
 
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={form.includeInSitemap}
+              <input 
+                type="checkbox" 
+                name="includeInSitemap"
+                checked={form.includeInSitemap}
                className="!relative"
-                onChange={(e) =>
-                  setForm({ ...form, includeInSitemap: e.target.checked })
-                }
+                onChange={handleChange}
               />
               Include in Sitemap
             </label>
 
             <Input
-              label="Priority (0.1 - 1.0)"
+              label="Priority (0.0 - 1.0)"
               type="number"
+              name="priority"
               value={form.priority}
-              onChange={(e) => setForm({ ...form, priority: Number(e.target.value) })}
+              onChange={handleChange}
             />
 
             <Input
-              label="Change Frequency"
+              label="Change Frequency (e.g., weekly, monthly)"
+              name="changefreq"
               value={form.changefreq}
-              onChange={(e) => setForm({ ...form, changefreq: e.target.value })}
+              onChange={handleChange}
             />
           </div>
 
-          {/* PUBLISHING SETTINGS */}
+          {/* ------------------------------------------
+          // PUBLISHING DATES
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
-            <h2 className="text-xl font-bold mb-4">Publishing Settings</h2>
+            <h2 className="text-xl font-bold mb-4">Publishing Dates</h2>
 
             <Input
               type="date"
               label="Published Date"
-              value={form.publishedDate?.substring(0, 10)}
-              onChange={(e) =>
-                setForm({ ...form, publishedDate: e.target.value })
-              }
+              name="publishedDate"
+              // Only take the date part (YYYY-MM-DD)
+              value={form.publishedDate?.substring(0, 10)} 
+              onChange={handleChange}
             />
 
             <Input
               type="date"
               label="Last Updated Date"
+              name="lastUpdatedDate"
+              // Only take the date part (YYYY-MM-DD)
               value={form.lastUpdatedDate?.substring(0, 10)}
-              onChange={(e) =>
-                setForm({ ...form, lastUpdatedDate: e.target.value })
-              }
+              onChange={handleChange}
             />
 
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={form.showPublishedDate}
+              <input 
+                type="checkbox" 
+                name="showPublishedDate"
+                checked={form.showPublishedDate}
                className="!relative"
-                onChange={(e) =>
-                  setForm({ ...form, showPublishedDate: e.target.checked })
-                }
+                onChange={handleChange}
               />
               Show Published Date
             </label>
 
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={form.showLastUpdatedDate}
+              <input 
+                type="checkbox" 
+                name="showLastUpdatedDate"
+                checked={form.showLastUpdatedDate}
                className="!relative"
-                onChange={(e) =>
-                  setForm({ ...form, showLastUpdatedDate: e.target.checked })
-                }
+                onChange={handleChange}
               />
               Show Last Updated Date
             </label>
           </div>
 
-          {/* SCHEDULED PUBLISHING */}
+          {/* ------------------------------------------
+          // SCHEDULE PUBLISHING
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Schedule Publishing</h2>
 
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
-                 className="!relative"
+                name="isScheduled"
+               className="!relative"
                 checked={form.isScheduled}
-                onChange={(e) =>
-                  setForm({ ...form, isScheduled: e.target.checked })
-                }
+                onChange={handleChange}
               />
               Enable Scheduling
             </label>
@@ -372,36 +504,46 @@ const AboutPage = () => {
               <Input
                 type="datetime-local"
                 label="Scheduled Publish Date"
-                value={form.scheduledPublishDate}
-                onChange={(e) =>
-                  setForm({ ...form, scheduledPublishDate: e.target.value })
-                }
+                name="scheduledPublishDate"
+                value={formatDateTimeLocal(form.scheduledPublishDate)}
+                onChange={handleChange}
               />
             )}
           </div>
 
-          {/* VISIBILITY */}
+          {/* ------------------------------------------
+          // PAGE VISIBILITY (UNCOMMENTED)
+          // ------------------------------------------ */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Page Visibility</h2>
 
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={form.isHidden}
-               className="!relative"
-                onChange={(e) =>
-                  setForm({ ...form, isHidden: e.target.checked })
-                }
-              />
-              Hide Page
-            </label>
+            <Input 
+                label="Slug (URL Path)" 
+                name="slug"
+                value={form.slug}
+                onChange={handleChange} 
+            />
 
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={form.isDeleted}
+              <input 
+                type="checkbox" 
+                name="isHidden"
+                checked={form.isHidden}
                className="!relative"
-                onChange={(e) =>
-                  setForm({ ...form, isDeleted: e.target.checked })
-                }
+                onChange={handleChange}
               />
-              Mark as Deleted
+              Hide Page (Draft/Unpublished)
+            </label>
+
+            <label className="flex items-center gap-2 text-red-600">
+              <input 
+                type="checkbox" 
+                name="isDeleted"
+                checked={form.isDeleted}
+               className="!relative"
+                onChange={handleChange}
+              />
+              Mark as Deleted (Soft Delete)
             </label>
           </div>
         </div>

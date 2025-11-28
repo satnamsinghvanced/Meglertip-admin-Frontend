@@ -3,23 +3,34 @@ import api from "../../api/axios";
 
 export const getAllLeads = createAsyncThunk(
   "lead/getAllLeads",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, search = "", status = "" }, { rejectWithValue }) => {
     try {
-      const res = await api.get("lead-logs/all");
-      return res.data.leads;
+      const params = new URLSearchParams();
+
+      params.append("page", page);
+      params.append("limit", limit);
+      if (search) params.append("search", search);
+      if (status) params.append("status", status);
+
+      const res = await api.get(`lead-logs/all?${params.toString()}`);
+
+      return res.data; // return entire response
     } catch (err) {
       return rejectWithValue(err.response?.data || "Error fetching leads");
     }
   }
 );
 
-// =============================
-// SLICE
-// =============================
 const leadSlice = createSlice({
   name: "lead",
   initialState: {
     leads: [],
+    pagination: {
+      total: 0,
+      page: 1,
+      limit: 10,
+      pages: 1,
+    },
     loading: false,
     error: null,
   },
@@ -34,7 +45,8 @@ const leadSlice = createSlice({
       })
       .addCase(getAllLeads.fulfilled, (state, action) => {
         state.loading = false;
-        state.leads = action.payload;
+        state.leads = action.payload.leads;
+        state.pagination = action.payload.pagination;
       })
       .addCase(getAllLeads.rejected, (state, action) => {
         state.loading = false;

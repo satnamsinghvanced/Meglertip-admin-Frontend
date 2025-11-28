@@ -59,7 +59,7 @@ const ArticleFormPage = () => {
     description: "",
     categoryId: "",
     showDate: "",
-    articlePosition:""
+    articlePosition: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
@@ -90,7 +90,7 @@ const ArticleFormPage = () => {
         excerpt: selectedArticle.excerpt || "",
         description: selectedArticle.description || "",
         categoryId: selectedArticle.categoryId?._id || "",
-        articlePosition : selectedArticle.articlePosition || 0,
+        articlePosition: selectedArticle.articlePosition || 0,
         showDate: selectedArticle.showDate
           ? selectedArticle.showDate.split("T")[0]
           : "",
@@ -106,7 +106,7 @@ const ArticleFormPage = () => {
         variant: "white",
         className:
           "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
-        onClick: () => navigate( "/articles"),
+        onClick: () => navigate("/articles"),
       },
     ],
     [navigate, isEditMode, articleId]
@@ -178,8 +178,12 @@ const ArticleFormPage = () => {
             {[
               { label: "Title", name: "title" },
               { label: "Slug", name: "slug" },
-               { label: "Article Tags", name: "articleTags" },
-               { label: "Article Position", name: "articlePosition", type:"number" },
+              { label: "Article Tags", name: "articleTags" },
+              {
+                label: "Article Position",
+                name: "articlePosition",
+                type: "number",
+              },
             ].map((field) => (
               <div key={field.name}>
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -234,7 +238,6 @@ const ArticleFormPage = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-          
             <div>
               <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Excerpt
@@ -256,7 +259,9 @@ const ArticleFormPage = () => {
             <div className="mt-2 rounded-2xl border border-slate-200 p-1">
               <ReactQuill
                 value={form.description}
-                onChange={(value) => setForm((prev) => ({ ...prev, description: value }))}
+                onChange={(value) =>
+                  setForm((prev) => ({ ...prev, description: value }))
+                }
                 modules={quillModules}
                 formats={quillFormats}
                 className="rounded-2xl [&_.ql-container]:rounded-b-2xl [&_.ql-toolbar]:rounded-t-2xl"
@@ -324,4 +329,3 @@ const ArticleFormPage = () => {
 };
 
 export default ArticleFormPage;
-

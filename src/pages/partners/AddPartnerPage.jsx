@@ -10,7 +10,8 @@ export const AddPartnerPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading } = useSelector((state) => state.partners);
-
+  const [leadTypesList, setLeadTypesList] = useState([]);
+  const [leadTypes, setLeadTypes] = useState([]);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -18,11 +19,7 @@ export const AddPartnerPage = () => {
     city: "",
     isPremium: false,
     isActive: true,
-    lastMonth: "",
-    currentMonth: "",
     total: "",
-
-    // NEW POSTAL CODE STRUCTURE
     postalCodesExact: [""],
     postalCodesRanges: [{ from: "", to: "" }],
   });
@@ -40,7 +37,37 @@ export const AddPartnerPage = () => {
         console.error("Error fetching questions:", err);
       });
   }, []);
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/lead-type`)
+      .then((res) => {
+        const list = res.data?.data || [];
+        setLeadTypesList(list);
 
+        const defaultLeadTypes = list.slice(0, 2).map((type) => ({
+          typeId: type._id,
+          name: type.name,
+          price: type.price || 0,
+        }));
+        setLeadTypes(defaultLeadTypes);
+      })
+      .catch((err) => console.error("Error fetching lead types:", err));
+  }, []);
+
+  const handleLeadTypeChange = (index, field, value) => {
+    const updated = [...leadTypes];
+    updated[index][field] = field === "price" ? Number(value) : value;
+    setLeadTypes(updated);
+  };
+
+  const addLeadType = () => {
+    if (leadTypesList.length === 0) return;
+    setLeadTypes([...leadTypes, { typeId: leadTypesList[0]._id, price: 0 }]);
+  };
+
+  const removeLeadType = (index) => {
+    setLeadTypes(leadTypes.filter((_, i) => i !== index));
+  };
   const [error, setErrors] = useState({});
 
   const validateForm = () => {
@@ -66,7 +93,6 @@ export const AddPartnerPage = () => {
     });
   };
 
-  // ---------------- WISHES HANDLERS ----------------
   const handleWishChange = (index, field, value) => {
     const updated = [...wishes];
     updated[index][field] = value;
@@ -81,7 +107,6 @@ export const AddPartnerPage = () => {
     const updated = wishes.filter((_, i) => i !== index);
     setWishes(updated);
   };
-  // --------------------------------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,24 +124,19 @@ export const AddPartnerPage = () => {
       email: form.email,
       address: form.address,
       city: form.city,
-
       postalCodes: {
         exact: form.postalCodesExact.filter((c) => c.trim() !== ""),
         ranges: form.postalCodesRanges.filter(
           (r) => r.from.trim() !== "" && r.to.trim() !== ""
         ),
       },
-
       isPremium: form.isPremium,
       isActive: form.isActive,
-
       leads: {
-        lastMonth: Number(form.lastMonth) || 0,
-        currentMonth: Number(form.currentMonth) || 0,
         total: Number(form.total) || 0,
       },
-
-      wishes: wishes,
+      wishes,
+      leadTypes,
     };
 
     const result = await dispatch(createPartner(payload));
@@ -213,20 +233,29 @@ export const AddPartnerPage = () => {
                 className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
+             <div>
+              <label className="text-sm font-semibold text-slate-700">
+                Total Leads
+              </label>
+              <input
+                type="number"
+                name="total"
+                value={form.total}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+              />
+            </div>
           </div>
 
-          {/* ---------------- POSTAL CODES SECTION ---------------- */}
           <div className="pt-6">
             <h2 className="text-lg font-semibold mb-4">Postal Codes</h2>
-
-            {/* EXACT POSTAL CODES */}
             <div className="mb-6">
               <h3 className="text-sm font-semibold mb-2">Exact Postal Codes</h3>
 
               {form.postalCodesExact.map((code, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-3 mb-3 bg-slate-50 border border-slate-200 p-3 rounded-xl"
+                  className="flex items-center gap-3 mb-3 p-3 rounded-xl"
                 >
                   <input
                     type="text"
@@ -273,14 +302,13 @@ export const AddPartnerPage = () => {
               </button>
             </div>
 
-            {/* POSTAL RANGES */}
             <div className="mb-6">
               <h3 className="text-sm font-semibold mb-2">Postal Code Ranges</h3>
 
               {form.postalCodesRanges.map((item, idx) => (
                 <div
                   key={idx}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 bg-slate-50 border border-slate-200 p-4 rounded-xl relative"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3  p-4 rounded-xl relative"
                 >
                   <button
                     type="button"
@@ -352,16 +380,36 @@ export const AddPartnerPage = () => {
               </button>
             </div>
           </div>
-          {/* ------------------------------------------------------ */}
 
-          {/* ----------------- WISHES SECTION ----------------- */}
+          <div className="pt-8">
+            <h2 className="text-lg font-semibold mb-4">Lead Types & Prices</h2>
+
+            {leadTypes.map((lt, idx) => (
+              <div
+                key={idx}
+                className="flex gap-3 mb-3 items-center p-3 rounded-xl"
+              >
+                <label className="w-1/2 font-medium">{lt.name}</label>
+                <input
+                  type="number"
+                  value={lt.price}
+                  onChange={(e) =>
+                    handleLeadTypeChange(idx, "price", e.target.value)
+                  }
+                  placeholder="Price"
+                  className="w-1/4 rounded-xl border border-slate-300 px-3 py-2 text-sm"
+                />
+              </div>
+            ))}
+          </div>
+
           <div className="pt-8">
             <h2 className="text-lg font-semibold mb-4">Preferences</h2>
 
             {wishes.map((wish, index) => (
               <div
                 key={index}
-                className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200 relative"
+                className="mb-4 p-4 bg-slate-50 rounded-xl  relative"
               >
                 {wishes.length > 1 && (
                   <button
@@ -458,3 +506,4 @@ export const AddPartnerPage = () => {
     </div>
   );
 };
+export default AddPartnerPage;

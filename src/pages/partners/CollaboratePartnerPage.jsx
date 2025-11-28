@@ -13,7 +13,9 @@ import { fetchPartners, deletePartner } from "../../store/slices/partnersSlice";
 export const CollaboratePartnerPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { partners, loading, pagination } = useSelector((state) => state.partners);
+  const { partners, loading, pagination } = useSelector(
+    (state) => state.partners
+  );
 
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -88,8 +90,7 @@ export const CollaboratePartnerPage = () => {
       />
 
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow flex flex-wrap gap-4">
-        {/* Filters */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow grid md:flex md:flex-wrap gap-4 w-full">
+        <div className=" rounded-xl p-1  grid md:flex md:flex-wrap gap-4 w-full">
           <select
             className="p-2 border border-slate-300 rounded-lg min-w-[150px]"
             value={filters.isActive}
@@ -99,8 +100,7 @@ export const CollaboratePartnerPage = () => {
               fetchWithDelay(updated);
             }}
           >
-            <option disabled>Status</option>
-            <option value="">All</option>
+            <option value="">Status: All</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
@@ -114,7 +114,7 @@ export const CollaboratePartnerPage = () => {
               fetchWithDelay(updated);
             }}
           >
-            <option value="">All</option>
+            <option value="">User Type: All</option>
             <option value="true">Premium</option>
             <option value="false">Non-Premium</option>
           </select>
@@ -162,7 +162,6 @@ export const CollaboratePartnerPage = () => {
           />
         </div>
 
-        {/* Partners Table */}
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">
           <div className="flex items-center justify-between px-6 py-4">
             <div>
@@ -191,93 +190,91 @@ export const CollaboratePartnerPage = () => {
               </thead>
 
               <tbody className="divide-y divide-slate-100 text-slate-600">
-                {loading
-                  ? [...Array(limit)].map((_, i) => (
-                      <tr key={i} className="animate-pulse">
-                        {[...Array(8)].map((__, idx) => (
-                          <td key={idx} className="px-6 py-6">
-                            <div className="h-4 bg-slate-100 rounded"></div>
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  : partners.length > 0
-                  ? partners.map((p, index) => (
-                      <tr key={p._id} className="hover:bg-slate-50">
-                        <td className="px-6 py-4">
-                          {(page - 1) * limit + index + 1}
+                {loading ? (
+                  [...Array(limit)].map((_, i) => (
+                    <tr key={i} className="animate-pulse">
+                      {[...Array(8)].map((__, idx) => (
+                        <td key={idx} className="px-6 py-6">
+                          <div className="h-4 bg-slate-100 rounded"></div>
                         </td>
-                        <td className="px-6 py-4 font-medium text-slate-900">
-                          {p.name}
-                        </td>
-                        <td className="px-6 py-4">{p.city}</td>
-                        <td className="px-6 py-4">
-                          {Array.isArray(p.postalCodes)
-                            ? p.postalCodes.join(", ")
-                            : p.postalCodes?.exact
-                            ? p.postalCodes.exact.map((c) => c.code).join(", ")
-                            : ""}
-                        </td>
-                        <td className="px-6 py-4 font-semibold text-slate-900">
-                          {p.leads.total ?? 0}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
-                              p.isPremium ? "bg-slate-900" : "bg-slate-400"
-                            }`}
-                          >
-                            {p.isPremium ? "Premium" : "Non-Premium"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
-                              p.isActive ? "bg-slate-900" : "bg-slate-400"
-                            }`}
-                          >
-                            {p.isActive ? "Active" : "Inactive"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center justify-center gap-2">
-                            {/* <button
+                      ))}
+                    </tr>
+                  ))
+                ) : partners.length > 0 ? (
+                  partners.map((p, index) => (
+                    <tr key={p._id} className="hover:bg-slate-50">
+                      <td className="px-6 py-4">
+                        {(page - 1) * limit + index + 1}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-slate-900">
+                        {p.name}
+                      </td>
+                      <td className="px-6 py-4">{p.city}</td>
+                      <td className="px-6 py-4">
+                        {Array.isArray(p.postalCodes)
+                          ? p.postalCodes.join(", ")
+                          : p.postalCodes?.exact
+                          ? p.postalCodes.exact.map((c) => c.code).join(", ")
+                          : ""}
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-slate-900">
+                        {p.leads.total ?? 0}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
+                            p.isPremium ? "bg-slate-900" : "bg-slate-400"
+                          }`}
+                        >
+                          {p.isPremium ? "Premium" : "Non-Premium"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
+                            p.isActive ? "bg-slate-900" : "bg-slate-400"
+                          }`}
+                        >
+                          {p.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
                               className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
                               onClick={() => navigate(`/partners/${p._id}`)}
                             >
                               <FaRegEye size={16} />
-                            </button> */}
-                            <button
-                              className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                              onClick={() =>
-                                navigate(`/partners/${p._id}/edit`)
-                              }
-                            >
-                              <AiTwotoneEdit size={16} />
                             </button>
-                            <button
-                              className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
-                              onClick={() => {
-                                setPartnerToDelete(p._id);
-                                setShowDeleteModal(true);
-                              }}
-                            >
-                              <RiDeleteBin5Line size={16} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  : (
-                      <tr>
-                        <td
-                          colSpan="8"
-                          className="px-6 py-6 text-center text-slate-500"
-                        >
-                          No Companies found
-                        </td>
-                      </tr>
-                    )}
+                          <button
+                            className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
+                            onClick={() => navigate(`/partners/${p._id}/edit`)}
+                          >
+                            <AiTwotoneEdit size={16} />
+                          </button>
+                          <button
+                            className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
+                            onClick={() => {
+                              setPartnerToDelete(p._id);
+                              setShowDeleteModal(true);
+                            }}
+                          >
+                            <RiDeleteBin5Line size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="8"
+                      className="px-6 py-6 text-center text-slate-500"
+                    >
+                      No Companies found
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -293,7 +290,6 @@ export const CollaboratePartnerPage = () => {
           )}
         </div>
 
-        {/* Delete Modal */}
         {showDeleteModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60">
             <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
