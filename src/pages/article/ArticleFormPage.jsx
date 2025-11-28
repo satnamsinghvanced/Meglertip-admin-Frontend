@@ -59,6 +59,7 @@ const ArticleFormPage = () => {
     description: "",
     categoryId: "",
     showDate: "",
+    articlePosition:""
   });
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
@@ -89,6 +90,7 @@ const ArticleFormPage = () => {
         excerpt: selectedArticle.excerpt || "",
         description: selectedArticle.description || "",
         categoryId: selectedArticle.categoryId?._id || "",
+        articlePosition : selectedArticle.articlePosition || 0,
         showDate: selectedArticle.showDate
           ? selectedArticle.showDate.split("T")[0]
           : "",
