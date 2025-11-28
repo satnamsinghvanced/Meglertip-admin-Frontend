@@ -98,6 +98,14 @@ const ArticleDetailPage = () => {
                 {selectedArticle.createdBy?.username || "N/A"}
               </p>
             </div>
+             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Article Position
+              </p>
+              <p className="mt-1 text-base font-semibold text-slate-900">
+                {selectedArticle.articlePosition || 0 }
+              </p>
+            </div>
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Show date
@@ -110,11 +118,23 @@ const ArticleDetailPage = () => {
             </div>
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Language
+                Article Tags
               </p>
-              <p className="mt-1 text-base font-semibold text-slate-900">
-                {selectedArticle.language || "N/A"}
-              </p>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {Array.isArray(selectedArticle.articleTags) &&
+                selectedArticle.articleTags.length > 0 ? (
+                  selectedArticle.articleTags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 text-xs bg-slate-200 rounded-full text-slate-700"
+                    >
+                      {tag}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-base font-semibold text-slate-900">N/A</p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -137,7 +157,8 @@ const ArticleDetailPage = () => {
               className="prose mt-3 max-w-none text-slate-700"
               dangerouslySetInnerHTML={{
                 __html:
-                  selectedArticle.description || "<p>No description provided.</p>",
+                  selectedArticle.description ||
+                  "<p>No description provided.</p>",
               }}
             />
           </div>
@@ -148,4 +169,3 @@ const ArticleDetailPage = () => {
 };
 
 export default ArticleDetailPage;
-

@@ -54,13 +54,11 @@ const ArticleFormPage = () => {
   const [form, setForm] = useState({
     title: "",
     slug: "",
-    original_slug: "",
+    articleTags: "",
     excerpt: "",
     description: "",
     categoryId: "",
     showDate: "",
-    language: "en",
-    originalSlug: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
@@ -87,14 +85,13 @@ const ArticleFormPage = () => {
       setForm({
         title: selectedArticle.title || "",
         slug: selectedArticle.slug || "",
-        original_slug: selectedArticle.original_slug || "",
+        articleTags: selectedArticle.articleTags || "",
         excerpt: selectedArticle.excerpt || "",
         description: selectedArticle.description || "",
         categoryId: selectedArticle.categoryId?._id || "",
         showDate: selectedArticle.showDate
           ? selectedArticle.showDate.split("T")[0]
           : "",
-        language: selectedArticle.language || "en",
       });
       setPreviewImage(selectedArticle.image || "");
     }
@@ -180,13 +177,14 @@ const ArticleFormPage = () => {
               { label: "Title", name: "title" },
               { label: "Slug", name: "slug" },
                { label: "Article Tags", name: "articleTags" },
-              { label: "Original slug ", name: "originalSlug" },
+               { label: "Article Position", name: "articlePosition", type:"number" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                   {field.label}
                 </label>
                 <input
+                   type={field.type || "text"}
                   name={field.name}
                   value={form[field.name]}
                   onChange={handleChange}
@@ -234,17 +232,7 @@ const ArticleFormPage = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Language
-              </label>
-              <input
-                name="language"
-                value={form.language}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary/30"
-              />
-            </div>
+          
             <div>
               <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Excerpt

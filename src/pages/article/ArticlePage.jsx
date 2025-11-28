@@ -30,7 +30,6 @@ const ArticlePage = () => {
 
   useEffect(() => {
     const fetchArticles = async () => {
-      
       try {
         const res = await dispatch(getArticles({ page, limit })).unwrap();
         setTotalPages(res.pagination.pages || 1);
@@ -110,9 +109,9 @@ const ArticlePage = () => {
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-600">
               {loading ? (
-                [...Array(5)].map((_, i) => (
+                [...Array(10)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    {[...Array(6)].map((__, idx) => (
+                    {[...Array(10)].map((__, idx) => (
                       <td key={idx} className="px-6 py-4">
                         <div className="h-4 rounded bg-slate-100" />
                       </td>

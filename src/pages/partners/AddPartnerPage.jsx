@@ -120,12 +120,14 @@ export const AddPartnerPage = () => {
     };
 
     const result = await dispatch(createPartner(payload));
-    console.log(result)
-    if (result.payload.success) {
+    console.log(result);
+    if (result?.payload?.success) {
       toast.success("Partner created successfully!");
       navigate("/partners");
     } else {
-      toast.error("Failed to create partner.");
+      const errorMessage =
+        result.payload?.message || "Failed to create partner.";
+      toast.error(errorMessage);
     }
   };
 
@@ -199,7 +201,9 @@ export const AddPartnerPage = () => {
 
             {/* CITY */}
             <div>
-              <label className="text-sm font-semibold text-slate-700">City</label>
+              <label className="text-sm font-semibold text-slate-700">
+                City
+              </label>
               <input
                 type="text"
                 name="city"

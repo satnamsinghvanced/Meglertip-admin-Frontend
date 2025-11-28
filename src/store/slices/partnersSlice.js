@@ -29,19 +29,27 @@ export const fetchPartnerById = createAsyncThunk(
 
 export const createPartner = createAsyncThunk(
   "partners/createPartner",
-  async (data) => {
-    const response = await api.post("/partners/create", data);
-    return response.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/partners/create", data);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { message: err.message });
+    }
   }
 );
 
 export const updatePartner = createAsyncThunk(
   "partners/updatePartner",
   async ({ id, data }) => {
+      try {
     const response = await api.put("/partners/update", data, {
       params: { id },
     });
     return response.data;
+     } catch (err) {
+      return rejectWithValue(err.response?.data || { message: err.message });
+    }
   }
 );
 

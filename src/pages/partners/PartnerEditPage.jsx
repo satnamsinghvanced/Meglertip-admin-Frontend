@@ -185,7 +185,7 @@ const PartnerEditPage = () => {
                 maxLength={4}
                 value={code}
                 onChange={(e) => updateExactCode(idx, e.target.value)}
-                className="w-full rounded-xl border px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
               <button type="button" onClick={() => removeExactCode(idx)} className="text-red-600 font-bold">
                 ✕
@@ -205,7 +205,7 @@ const PartnerEditPage = () => {
                 value={r.from}
                 onChange={(e) => updateRange(idx, "from", e.target.value)}
                 placeholder="From"
-                className="w-full rounded-xl border px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
               <input
                 type="text"
@@ -213,7 +213,7 @@ const PartnerEditPage = () => {
                 value={r.to}
                 onChange={(e) => updateRange(idx, "to", e.target.value)}
                 placeholder="To"
-                className="w-full rounded-xl border px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
               <button type="button" onClick={() => removeRange(idx)} className="text-red-600 font-bold">
                 ✕
@@ -243,7 +243,7 @@ const PartnerEditPage = () => {
               <button type="button" onClick={() => removeWish(i)} className="absolute top-2 right-2 text-red-500 font-bold">✕</button>
               <div>
                 <label className="text-sm font-medium">Question</label>
-                <select value={w.question} onChange={(e) => handleWishChange(i, "question", e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2 text-sm">
+                <select value={w.question} onChange={(e) => handleWishChange(i, "question", e.target.value)} className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
                   <option value="">Select question</option>
                   <option value="postalCode">Postal Code</option>
                   {allQuestions.map((q, idx) => <option key={idx} value={q.question}>{q.question}</option>)}
@@ -251,7 +251,7 @@ const PartnerEditPage = () => {
               </div>
               <div>
                 <label className="text-sm font-medium">Expected Answer</label>
-                <input type="text" value={w.expectedAnswer} onChange={(e) => handleWishChange(i, "expectedAnswer", e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2 text-sm" placeholder="Expected answer" />
+                <input type="text" value={w.expectedAnswer} onChange={(e) => handleWishChange(i, "expectedAnswer", e.target.value)} className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" placeholder="Expected answer" />
               </div>
             </div>
           ))}
