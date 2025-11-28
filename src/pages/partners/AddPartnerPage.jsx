@@ -120,8 +120,8 @@ export const AddPartnerPage = () => {
     };
 
     const result = await dispatch(createPartner(payload));
-
-    if (result.success) {
+    console.log(result)
+    if (result.payload.success) {
       toast.success("Partner created successfully!");
       navigate("/partners");
     } else {
