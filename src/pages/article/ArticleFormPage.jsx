@@ -186,7 +186,7 @@ const ArticleFormPage = () => {
                   {field.label}
                 </label>
                 <input
-                   type={field.type || "text"}
+                  type={field.type || "text"}
                   name={field.name}
                   value={form[field.name]}
                   onChange={handleChange}
