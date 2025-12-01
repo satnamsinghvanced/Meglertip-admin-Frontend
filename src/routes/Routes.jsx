@@ -58,7 +58,7 @@ import EditCategory from "../pages/faqCategories/EditCategory";
 import Dashboard from "../pages/dashboard/dashboard";
 import LeadLogs from "../pages/leadLogs/leadLogsPage";
 import FaqPage from "../pages/faqPage/FaqPage";
-import ArticleUIPage from "../pages/ArticlePage/ArticlePage";
+import ArticleUIPage from "../pages/articlePage/ArticlePage";
 import FormUIPage from "../pages/formpage/FormPage";
 
 const Routes = () => {
