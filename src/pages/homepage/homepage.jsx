@@ -30,13 +30,23 @@ const HomePageEditor = () => {
   });
 
   const [category, setCategory] = useState({ heading: "" });
-  const [articles, setArticles] = useState({ heading: "" });
+  const [faq, setFaq] = useState({ title: "" });
+  const [articles, setArticles] = useState({
+    heading: "",
+    ctaLink: "",
+    buttonText: "",
+  });
   const [whyChoose, setWhyChoose] = useState({
     heading: "",
     cards: [{ title: "", icon: "", description: "" }],
   });
 
-  const [city, setCity] = useState({ title: "", description: "" });
+  const [city, setCity] = useState({
+    title: "",
+    description: "",
+    ctaLink: "",
+    buttonText: "",
+  });
   const [pros, setPros] = useState([
     {
       title: "",
@@ -63,7 +73,11 @@ const HomePageEditor = () => {
         ],
       });
     if (sections["articles-heading"])
-      setArticles({ heading: sections["articles-heading"].heading || "" });
+      setArticles({
+        heading: sections["articles-heading"].heading || "",
+        buttonText: sections["articles-heading"].buttonText || "",
+        ctaLink: sections["articles-heading"].ctaLink || "",
+      });
     if (sections["category-heading"])
       setCategory({ heading: sections["category-heading"].heading || "" });
     if (sections["why-choose"])
@@ -73,10 +87,16 @@ const HomePageEditor = () => {
           { title: "", icon: "", description: "" },
         ],
       });
-    if (sections.city)
+    if (sections.faq)
+      setFaq({
+        title: sections.faq.title || ""
+      });
+       if (sections.city)
       setCity({
         title: sections.city.title || "",
         description: sections.city.description || "",
+        buttonText: sections.city.buttonText || "",
+        ctaLink: sections.city.ctaLink || "",
       });
     if (sections.pros)
       setPros(
@@ -109,6 +129,7 @@ const HomePageEditor = () => {
     dispatch(updateHomepageSection("why-choose", whyChoose));
   };
   const saveCity = () => dispatch(updateHomepageSection("city", city));
+  const saveFaq = () => dispatch(updateHomepageSection("faq", faq));
   const savePros = () =>
     dispatch(updateHomepageSection("pros", { prosSection: pros }));
 
@@ -254,12 +275,49 @@ const HomePageEditor = () => {
                 setCity({ ...city, description: e.target.value })
               }
             />
+            <Input
+              label="Button Text"
+              value={city.buttonText}
+              onChange={(e) => setCity({ ...city, buttonText: e.target.value })}
+            />
+            <Input
+              label="CTA Link"
+              value={city.ctaLink}
+              onChange={(e) => setCity({ ...city, ctaLink: e.target.value })}
+            />
           </Section>
           <Section title="Articles Heading" onSave={saveArticlesHeading}>
             <Input
               label="Heading"
               value={articles.heading}
-              onChange={(e) => setArticles({ heading: e.target.value })}
+              onChange={(e) =>
+                setArticles((prev) => ({ ...prev, heading: e.target.value }))
+              }
+            />
+
+            <Input
+              label="Button Text"
+              value={articles.buttonText}
+              onChange={(e) =>
+                setArticles((prev) => ({ ...prev, buttonText: e.target.value }))
+              }
+            />
+
+            <Input
+              label="CTA Link"
+              value={articles.ctaLink}
+              onChange={(e) =>
+                setArticles((prev) => ({ ...prev, ctaLink: e.target.value }))
+              }
+            />
+          </Section>
+           <Section title="FAQ Section" onSave={saveFaq}>
+            <Input
+              label="Title"
+              value={faq.title}
+              onChange={(e) =>
+                setFaq(() => ({  title: e.target.value }))
+              }
             />
           </Section>
           <Section title="Pros Section" onSave={savePros}>
@@ -410,6 +468,75 @@ const HomePageEditor = () => {
               }
             />
           </Section>
+          {/* SEO SECTION */}
+          {/* <div className="border-t pt-6">
+            <h2 className="text-xl font-bold mb-4">SEO Settings</h2>
+
+            <Input label="Meta Title" value={form.metaTitle}
+              onChange={(e) => setForm({ ...form, metaTitle: e.target.value })} />
+
+            <Input label="Meta Description" textarea value={form.metaDescription}
+              onChange={(e) => setForm({ ...form, metaDescription: e.target.value })} />
+
+            <Input label="Meta Keywords (comma separated)"
+              value={form.metaKeywords}
+              onChange={(e) => setForm({ ...form, metaKeywords: e.target.value })} />
+
+            <ImageUploader label="Meta Image" value={form.metaImage}
+              onChange={(img) => setForm({ ...form, metaImage: img })} />
+          </div> */}
+
+          {/* OG TAGS */}
+          {/* <div className="border-t pt-6">
+            <h2 className="text-xl font-bold mb-4">Open Graph (OG) Tags</h2>
+
+            <Input label="OG Title" value={form.ogTitle}
+              onChange={(e) => setForm({ ...form, ogTitle: e.target.value })} />
+            <Input label="OG Description" textarea value={form.ogDescription}
+              onChange={(e) => setForm({ ...form, ogDescription: e.target.value })} />
+
+            <ImageUploader label="OG Image" value={form.ogImage}
+              onChange={(img) => setForm({ ...form, ogImage: img })} />
+
+            <Input label="OG Type" value={form.ogType}
+              onChange={(e) => setForm({ ...form, ogType: e.target.value })} />
+          </div> */}
+
+          {/* ADVANCED SEO */}
+          {/* <div className="border-t pt-6">
+            <h2 className="text-xl font-bold mb-4">Advanced SEO</h2>
+
+            <Input label="Canonical URL" value={form.canonicalUrl}
+              onChange={(e) => setForm({ ...form, canonicalUrl: e.target.value })} />
+
+            <Input label="JSON-LD Schema" textarea value={form.jsonLd}
+              onChange={(e) => setForm({ ...form, jsonLd: e.target.value })} />
+
+            <Input label="Custom Head Tags" textarea value={form.customHead}
+              onChange={(e) => setForm({ ...form, customHead: e.target.value })} />
+          </div> */}
+
+          {/* ROBOTS */}
+          {/* <div className="border-t pt-6">
+            <h2 className="text-xl font-bold mb-4">Robots Settings</h2>
+
+            {Object.keys(form.robots).map((key) => (
+              <label key={key} className="flex items-center gap-2">
+                <input
+                  className="!relative"
+                  type="checkbox"
+                  checked={form.robots[key]}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      robots: { ...form.robots, [key]: e.target.checked },
+                    })
+                  }
+                />
+                {key}
+              </label>
+            ))}
+          </div> */}
         </>
       )}
     </div>

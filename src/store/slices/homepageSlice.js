@@ -91,6 +91,7 @@ export const fetchAllHomepageSections = () => async (dispatch) => {
     "why-choose",
     "city",
     "pros",
+    "faq"
   ];
 
   for (const section of sections) {

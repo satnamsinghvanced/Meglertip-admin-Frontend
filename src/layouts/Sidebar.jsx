@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { MdOutlineFindInPage } from "react-icons/md";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
+import { FaQ } from "react-icons/fa6";
 
 import { TbLogs } from "react-icons/tb";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
@@ -56,6 +57,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: Quote,
       href: ROUTES.QUOTES,
     },
+        {
+      name: "Faq Page",
+      icon: FaQ ,
+      href: ROUTES.FAQPAGE,
+    },
     {
       name: "Real Estate Agents Page",
       icon: MdOutlineRealEstateAgent,
@@ -77,7 +83,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.LEAD_LOGS,
     },
     {
-      name: "FAQ",
+      name: "FAQ's",
       icon: HelpCircle,
       href: ROUTES.FAQ,
     },

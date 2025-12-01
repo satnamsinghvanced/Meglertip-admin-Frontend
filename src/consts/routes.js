@@ -41,6 +41,8 @@ export const ROUTES = {
   FOOTER_VIEW: "footer/create/articles/select",
   FOOTER_EDIT: "footer/edit/:tab/:index",
 
+  FAQPAGE :"/faq-page",
+
 
   COUNTIES: "/counties",
   QUOTES: "/quotes",

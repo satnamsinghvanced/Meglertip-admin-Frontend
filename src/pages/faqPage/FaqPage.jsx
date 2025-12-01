@@ -3,20 +3,17 @@ import Section from "../../UI/Section";
 import Input from "../../UI/Input";
 import ImageUploader from "../../UI/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
-import { getAboutPage, updateAboutPage } from "../../store/slices/aboutPageSlice";
+import { getFaqPage, updateFaqPage } from "../../store/slices/FaqPageSlice";
 import { toast } from "react-toastify";
+import { Description } from "@headlessui/react";
 
-const AboutPage = () => {
+const FaqPage = () => {
   const dispatch = useDispatch();
-  const { about, loading } = useSelector((state) => state.about || {});
+  const { faq, loading } = useSelector((state) => state.faq || {});
 
   const [form, setForm] = useState({
-    heading: "",
-    subHeading: "",
-    image: "",
-
-    heading1: "",
-    subHeading1: "",
+    title : "",
+    description: "",
 
     metaTitle: "",
     metaDescription: "",
@@ -69,21 +66,21 @@ const AboutPage = () => {
   });
 
   useEffect(() => {
-    dispatch(getAboutPage());
+    dispatch(getFaqPage());
   }, [dispatch]);
 
   useEffect(() => {
-    if (about) {
+    if (faq) {
       setForm({
         ...form,
-        ...about,
-        metaKeywords: about.metaKeywords || "",
-        robots: about.robots || form.robots,
-        redirect: about.redirect || form.redirect,
-        breadcrumbs: about.breadcrumbs || []
+        ...faq,
+        metaKeywords: faq.metaKeywords || "",
+        robots: faq.robots || form.robots,
+        redirect: faq.redirect || form.redirect,
+        breadcrumbs: faq.breadcrumbs || []
       });
     }
-  }, [about]);
+  }, [faq]);
 
   const handleBreadcrumbChange = (index, field, value) => {
     const updated = [...form.breadcrumbs];
@@ -105,15 +102,15 @@ const AboutPage = () => {
   };
 
   const handleSave = async () => {
-    const res = await dispatch(updateAboutPage(form));
+    const res = await dispatch(updateFaqPage(form));
 
     res?.payload
-      ? toast.success("About Page Updated Successfully!")
-      : toast.error("Failed to update About Page");
+      ? toast.success("Faq Page Updated Successfully!")
+      : toast.error("Failed to update Faq Page");
   };
 
   return (
-    <Section title="About Page" onSave={handleSave} loading={loading}>
+    <Section title="Faq Page" onSave={handleSave} loading={loading}>
       {loading ? (
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-gray-300 rounded w-1/3"></div>
@@ -122,19 +119,11 @@ const AboutPage = () => {
       ) : (
         <div className="space-y-8">
 
-          <Input label="Heading" value={form.heading}
-            onChange={(e) => setForm({ ...form, heading: e.target.value })} />
-          <Input label="Sub Heading" value={form.subHeading}
-            onChange={(e) => setForm({ ...form, subHeading: e.target.value })} />
-
-          <ImageUploader label="Main Image" value={form.image}
-            onChange={(img) => setForm({ ...form, image: img })} />
-
-          <Input label="Heading 1" value={form.heading1}
-            onChange={(e) => setForm({ ...form, heading1: e.target.value })} />
-          <Input label="Sub Heading 1" value={form.subHeading1}
-            onChange={(e) => setForm({ ...form, subHeading1: e.target.value })} />
-
+          <Input label="Title" value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })} />
+               <Input label="Description" value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        
           {/* SEO SECTION */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">SEO Settings</h2>
@@ -409,4 +398,4 @@ const AboutPage = () => {
   );
 };
 
-export default AboutPage;
+export default FaqPage;

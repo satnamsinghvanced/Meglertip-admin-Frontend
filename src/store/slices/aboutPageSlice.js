@@ -9,7 +9,7 @@ export const getAboutPage = createAsyncThunk("about/get", async () => {
 
 export const updateAboutPage = createAsyncThunk("about/update", async (body) => {
   const res = await axios.put(`${import.meta.env.VITE_API_URL}/about/update`, body);
-   toast.success(res.data?.message || "About page updated successfully");
+  //  toast.success(res.data?.message || "About page updated successfully");
   return res.data.data;
    
 

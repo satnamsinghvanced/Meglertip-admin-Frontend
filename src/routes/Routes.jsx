@@ -57,6 +57,7 @@ import AddCategory from "../pages/faqCategories/AddCategory";
 import EditCategory from "../pages/faqCategories/EditCategory";
 import Dashboard from "../pages/dashboard/dashboard";
 import LeadLogs from "../pages/leadLogs/leadLogsPage";
+import FaqPage from "../pages/faqPage/FaqPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -155,6 +156,8 @@ const Routes = () => {
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
         <Route path={ROUTES.QUOTES} element={<Quote />} />
+        <Route path={ROUTES.FAQPAGE} element={<FaqPage />} />
+
 
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.EMAIL} element={<EmailTemplateList />} />
