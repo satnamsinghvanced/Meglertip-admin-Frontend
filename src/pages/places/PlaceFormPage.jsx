@@ -64,7 +64,7 @@ const PlaceFormPage = () => {
 
   const { selectedPlace } = useSelector((state) => state.places || {});
   const { counties } = useSelector((state) => state.counties);
-
+console.log(counties,"test")
   const [form, setForm] = useState({
     name: "",
     countyId: "",
@@ -86,7 +86,7 @@ const PlaceFormPage = () => {
     return () => dispatch(clearSelectedPlace());
   }, [dispatch, isEditMode, placeId]);
   useEffect(() => {
-    console.log("DISPATCHING FROM PLACE FORM");
+    // console.log("DISPATCHING FROM PLACE FORM");
     dispatch(getCountiesForPlace({}));
   }, []);
   useEffect(() => {
@@ -139,7 +139,7 @@ const PlaceFormPage = () => {
 
   const buildPayload = () => ({
     name: form.name?.trim() || "",
-    countyId: form.countyId._id || "",
+    countyId: form.countyId || "",
     slug: form.slug?.trim() || "",
     excerpt: form.excerpt || "",
     title: form.title || "",
