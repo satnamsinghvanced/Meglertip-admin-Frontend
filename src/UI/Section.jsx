@@ -1,5 +1,5 @@
 const Section = ({ title, children, onSave, loading }) => (
-  <div className="min-h-screen bg-gray-100 space-y-10">
+  <div className="min-h-screen space-y-10">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold dark:text-white">{title}</h1>
       <button

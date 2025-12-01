@@ -4,9 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import {
-  getCountiesForPlace,
-} from "../../store/slices/countySlice";
+import { getCountiesForPlace } from "../../store/slices/countySlice";
 import {
   clearSelectedPlace,
   createPlace,
@@ -14,6 +12,7 @@ import {
   updatePlace,
 } from "../../store/slices/placeSlice";
 import { toast } from "react-toastify";
+import ImageUploader from "../../UI/ImageUpload";
 
 const quillModules = {
   toolbar: [
@@ -64,7 +63,7 @@ const PlaceFormPage = () => {
 
   const { selectedPlace } = useSelector((state) => state.places || {});
   const { counties } = useSelector((state) => state.counties);
-console.log(counties,"test")
+  console.log(counties, "test");
   const [form, setForm] = useState({
     name: "",
     countyId: "",
@@ -75,6 +74,32 @@ console.log(counties,"test")
     isRecommended: false,
     rank: 0,
     companiesId: [],
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+    metaImage: "",
+
+    canonicalUrl: "",
+    jsonLd: "",
+
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    ogType: "website",
+
+    publishedDate: "",
+    lastUpdatedDate: "",
+    showPublishedDate: false,
+    showLastUpdatedDate: false,
+
+    robots: {
+      noindex: false,
+      nofollow: false,
+      noarchive: false,
+      nosnippet: false,
+      noimageindex: false,
+      notranslate: false,
+    },
   });
 
   const [errors, setErrors] = useState({});
@@ -103,6 +128,25 @@ console.log(counties,"test")
         companiesId: Array.isArray(selectedPlace.companiesId)
           ? selectedPlace.companiesId
           : [],
+        metaTitle: selectedPlace.metaTitle || "",
+        metaDescription: selectedPlace.metaDescription || "",
+        metaKeywords: selectedPlace.metaKeywords || "",
+        metaImage: selectedPlace.metaImage || "",
+
+        canonicalUrl: selectedPlace.canonicalUrl || "",
+        jsonLd: selectedPlace.jsonLd || "",
+
+        ogTitle: selectedPlace.ogTitle || "",
+        ogDescription: selectedPlace.ogDescription || "",
+        ogImage: selectedPlace.ogImage || "",
+        ogType: selectedPlace.ogType || "website",
+
+        // publishedDate: selectedPlace.publishedDate ||"",
+        // lastUpdatedDate: selectedPlace.lastUpdatedDate ||"",
+        // showPublishedDate: selectedPlace.showPublishedDate ||false,
+        // showLastUpdatedDate: selectedPlace.showLastUpdatedDate ||false,
+
+        robots: selectedPlace.robots,
       });
     }
   }, [isEditMode, selectedPlace]);
@@ -147,6 +191,29 @@ console.log(counties,"test")
     isRecommended: form.isRecommended,
     rank: Number(form.rank) || 0,
     companiesId: form.companiesId,
+
+    metaTitle: form.metaTitle?.trim() || "",
+    metaDescription: form.metaDescription?.trim() || "",
+    metaKeywords: form.metaKeywords,
+    metaImage: form.metaImage || "",
+
+    canonicalUrl: form.canonicalUrl?.trim() || "",
+    jsonLd: form.jsonLd || "",
+
+    ogTitle: form.ogTitle?.trim() || "",
+    ogDescription: form.ogDescription?.trim() || "",
+    ogImage: form.ogImage || "",
+    ogType: form.ogType || "website",
+
+    // Robots
+    robots: {
+      noindex: !!form.robots.noindex,
+      nofollow: !!form.robots.nofollow,
+      noarchive: !!form.robots.noarchive,
+      nosnippet: !!form.robots.nosnippet,
+      noimageindex: !!form.robots.noimageindex,
+      notranslate: !!form.robots.notranslate,
+    },
   });
 
   const handleSubmit = async (e) => {
@@ -338,6 +405,153 @@ console.log(counties,"test")
             </div>
           </div>
 
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6 mt-6">
+            {/* SEO SECTION */}
+            <div className="pt-6">
+              <h2 className="text-xl font-bold mb-4">SEO Settings</h2>
+
+              {/* Meta Title */}
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Meta Title
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.metaTitle}
+                onChange={(e) =>
+                  setForm({ ...form, metaTitle: e.target.value })
+                }
+              />
+
+              {/* Meta Description */}
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Meta Description
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-24 focus:border-primary"
+                value={form.metaDescription}
+                onChange={(e) =>
+                  setForm({ ...form, metaDescription: e.target.value })
+                }
+              />
+
+              {/* Keywords */}
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Meta Keywords (comma separated)
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.metaKeywords}
+                onChange={(e) =>
+                  setForm({ ...form, metaKeywords: e.target.value })
+                }
+              />
+
+              {/* Meta Image */}
+              <ImageUploader
+                label="Meta Image"
+                value={form.metaImage}
+                onChange={(img) => setForm({ ...form, metaImage: img })}
+              />
+            </div>
+
+            {/* OG TAGS */}
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-bold mb-4">Open Graph (OG) Tags</h2>
+
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                OG Title
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.ogTitle}
+                onChange={(e) => setForm({ ...form, ogTitle: e.target.value })}
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                OG Description
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-24 focus:border-primary"
+                value={form.ogDescription}
+                onChange={(e) =>
+                  setForm({ ...form, ogDescription: e.target.value })
+                }
+              />
+
+              <ImageUploader
+                label="OG Image"
+                value={form.ogImage}
+                onChange={(img) => setForm({ ...form, ogImage: img })}
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                OG Type
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.ogType}
+                onChange={(e) => setForm({ ...form, ogType: e.target.value })}
+              />
+            </div>
+
+            {/* ADVANCED SEO */}
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-bold mb-4">Advanced SEO</h2>
+
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Canonical URL
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.canonicalUrl}
+                onChange={(e) =>
+                  setForm({ ...form, canonicalUrl: e.target.value })
+                }
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                JSON-LD Schema
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-28 focus:border-primary"
+                value={form.jsonLd}
+                onChange={(e) => setForm({ ...form, jsonLd: e.target.value })}
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Custom Head Tags
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-24 focus:border-primary"
+                value={form.customHead}
+                onChange={(e) =>
+                  setForm({ ...form, customHead: e.target.value })
+                }
+              />
+            </div>
+
+            {/* ROBOTS SETTINGS */}
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-bold mb-4">Robots Settings</h2>
+
+              {Object.keys(form.robots).map((key) => (
+                <label key={key} className="flex items-center gap-2">
+                  <input
+                    className="!relative"
+                    type="checkbox"
+                    checked={form.robots[key]}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        robots: { ...form.robots, [key]: e.target.checked },
+                      })
+                    }
+                  />
+                  <span className="capitalize">{key}</span>
+                </label>
+              ))}
+            </div>
+          </div>
           <div className="mt-8 flex justify-center">
             <button
               type="submit"

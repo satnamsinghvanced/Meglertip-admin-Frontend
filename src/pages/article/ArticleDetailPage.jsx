@@ -162,6 +162,105 @@ const ArticleDetailPage = () => {
               }}
             />
           </div>
+             <div className="rounded-xl mt-6 p-5 border border-slate-200 ">
+            <p className="text-xs font-semibold uppercase text-slate-600 mb-4">
+              SEO Information
+            </p>
+            <div className="grid gap-4 md:grid-cols-3">
+              {[
+                { label: "Meta Title", value: selectedArticle.metaTitle },
+                {
+                  label: "Meta Description",
+                  value: selectedArticle.metaDescription,
+                },
+                { label: "Meta Keywords", value: selectedArticle.metaKeywords },
+                { label: "Canonical URL", value: selectedArticle.canonicalUrl },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl bg-slate-50 p-4 border border-slate-100"
+                >
+                  <p className="text-xs font-semibold text-slate-500 uppercase">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-900 font-medium">
+                    {item.value || "N/A"}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Open Graph */}
+            <div className="grid gap-4 md:grid-cols-3">
+              {[
+                { label: "OG Title", value: selectedArticle.ogTitle },
+                {
+                  label: "OG Description",
+                  value: selectedArticle.ogDescription,
+                },
+                { label: "OG Type", value: selectedArticle.ogType },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl bg-slate-50 p-4 border border-slate-100"
+                >
+                  <p className="text-xs font-semibold text-slate-500 uppercase">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-900 font-medium">
+                    {item.value || "N/A"}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* JSON LD */}
+            <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner">
+              <p className="text-xs font-semibold uppercase text-slate-500">
+                JSON-LD
+              </p>
+              <pre className="mt-3 text-sm bg-slate-400 text-white p-3 rounded-md overflow-auto">
+                {selectedArticle.jsonLd || "No JSON-LD provided"}
+              </pre>
+            </div>
+
+            {/* Dates */}
+            {/* <div className="grid gap-4 md:grid-cols-3">
+          {[
+            { label: "Published Date", value: selectedArticle.publishedDate },
+            { label: "Last Updated Date", value: selectedArticle.lastUpdatedDate },
+            { label: "Show Published Date", value: selectedArticle.showPublishedDate ? "Yes" : "No" },
+            { label: "Show Updated Date", value: selectedArticle.showLastUpdatedDate ? "Yes" : "No" },
+          ].map((item, i) => (
+            <div key={i} className="rounded-xl bg-slate-50 p-4 border border-slate-100">
+              <p className="text-xs font-semibold text-slate-500 uppercase">{item.label}</p>
+              <p className="mt-1 text-sm text-slate-900 font-medium">{item.value || "N/A"}</p>
+            </div>
+          ))}
+        </div> */}
+
+            {/* Robots */}
+            <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
+              <p className="text-xs font-semibold text-slate-500 uppercase">
+                Robots
+              </p>
+              <div className="grid md:grid-cols-3 gap-2 mt-3 text-sm">
+                {Object.entries(selectedArticle.robots || {}).map(
+                  ([key, value], i) => (
+                    <div
+                      key={i}
+                      className="flex justify-between bg-white p-2 rounded border border-slate-200"
+                    >
+                      <span className="capitalize">{key}</span>
+                      <span className="font-medium">
+                        {value ? "Enabled" : "Disabled"}
+                      </span>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

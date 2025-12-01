@@ -709,7 +709,7 @@ const PartnerPage = () => {
           disabled={!isEditing}
         />
 
-        <h3 className="text-lg font-medium text-gray-700 mt-2">Sitemap Settings</h3>
+        {/* <h3 className="text-lg font-medium text-gray-700 mt-2">Sitemap Settings</h3>
         <div className="grid grid-cols-3 gap-4">
           <Checkbox
             label="Include in Sitemap"
@@ -726,7 +726,6 @@ const PartnerPage = () => {
             name="priority"
             disabled={!isEditing}
           />
-          {/* Note: In a real app, changefreq should be a dropdown */}
           <Input
             label="Change Frequency (e.g., weekly)"
             value={formData.changefreq}
@@ -734,11 +733,10 @@ const PartnerPage = () => {
             name="changefreq"
             disabled={!isEditing}
           />
-        </div>
+        </div> */}
       </Section>
       
-      {/* --- Redirect Settings (Simplified) --- */}
-      <Section title="Redirect Settings">
+      {/* <Section title="Redirect Settings">
         <Checkbox
           label="Enable Redirect"
           checked={getNestedValue(formData, "redirect.enabled")}
@@ -762,7 +760,6 @@ const PartnerPage = () => {
               name="redirect.to"
               disabled={!isEditing}
             />
-            {/* Note: In a real app, this should be a dropdown for 301/302 */}
             <Input
               label="Redirect Type (301 or 302)"
               type="number"
@@ -773,8 +770,7 @@ const PartnerPage = () => {
             />
           </div>
         )}
-      </Section>
-      {/* NOTE: Breadcrumbs fields are an array of objects and require a more complex, dedicated dynamic list component, similar to contactFields, which has been omitted for brevity here. */}
+      </Section> */}
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">

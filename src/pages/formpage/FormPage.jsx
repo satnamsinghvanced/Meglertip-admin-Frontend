@@ -3,17 +3,23 @@ import Section from "../../UI/Section";
 import Input from "../../UI/Input";
 import ImageUploader from "../../UI/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
-import { getFaqPage, updateFaqPage } from "../../store/slices/FaqPageSlice";
+import {
+  getFormPage,
+  updateFormPage,
+} from "../../store/slices/formPageSlice";
 import { toast } from "react-toastify";
 import { Description } from "@headlessui/react";
 
-const FaqPage = () => {
+const FormUIPage = () => {
   const dispatch = useDispatch();
-  const { faqPage, loading } = useSelector((state) => state.faqPage || {});
+  const { formPage, loading } = useSelector(
+    (state) => state.formPage || {}
+  );
 
   const [form, setForm] = useState({
-    title : "",
+    title: "",
     description: "",
+    categoriesHeading: "",
 
     metaTitle: "",
     metaDescription: "",
@@ -39,7 +45,7 @@ const FaqPage = () => {
       noarchive: false,
       nosnippet: false,
       noimageindex: false,
-      notranslate: false
+      notranslate: false,
     },
 
     customHead: "",
@@ -49,7 +55,7 @@ const FaqPage = () => {
       enabled: false,
       from: "",
       to: "",
-      type: 301
+      type: 301,
     },
 
     breadcrumbs: [],
@@ -66,21 +72,21 @@ const FaqPage = () => {
   });
 
   useEffect(() => {
-    dispatch(getFaqPage());
+    dispatch(getFormPage());
   }, [dispatch]);
 
   useEffect(() => {
-    if (faqPage) {
+    if (formPage) {
       setForm({
         ...form,
-        ...faqPage,
-        metaKeywords: faqPage.metaKeywords || "",
-        robots: faqPage.robots || form.robots,
-        redirect: faqPage.redirect || form.redirect,
-        breadcrumbs: faqPage.breadcrumbs || []
+        ...formPage,
+        metaKeywords: formPage.metaKeywords || "",
+        robots: formPage.robots || form.robots,
+        redirect: formPage.redirect || form.redirect,
+        breadcrumbs: formPage.breadcrumbs || [],
       });
     }
-  }, [faqPage]);
+  }, [formPage]);
 
   const handleBreadcrumbChange = (index, field, value) => {
     const updated = [...form.breadcrumbs];
@@ -102,15 +108,15 @@ const FaqPage = () => {
   };
 
   const handleSave = async () => {
-    const res = await dispatch(updateFaqPage(form));
+    const res = await dispatch(updateFormPage(form));
 
     res?.payload
-      ? toast.success("Faq Page Updated Successfully!")
-      : toast.error("Failed to update Faq Page");
+      ? toast.success("Form Page Updated Successfully!")
+      : toast.error("Failed to update Form Page");
   };
 
   return (
-    <Section title="Faq Page" onSave={handleSave} loading={loading}>
+    <Section title="Form Page" onSave={handleSave} loading={loading}>
       {loading ? (
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-gray-300 rounded w-1/3"></div>
@@ -118,58 +124,114 @@ const FaqPage = () => {
         </div>
       ) : (
         <div className="space-y-8">
+          <Input
+            label="Title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+          />
+          <Input
+            label="Description"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+          <Input
+            label="Categories Heading"
+            value={form.categoriesHeading}
+            onChange={(e) =>
+              setForm({ ...form, categoriesHeading: e.target.value })
+            }
+          />
 
-          <Input label="Title" value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })} />
-               <Input label="Description" value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        
           {/* SEO SECTION */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">SEO Settings</h2>
 
-            <Input label="Meta Title" value={form.metaTitle}
-              onChange={(e) => setForm({ ...form, metaTitle: e.target.value })} />
+            <Input
+              label="Meta Title"
+              value={form.metaTitle}
+              onChange={(e) => setForm({ ...form, metaTitle: e.target.value })}
+            />
 
-            <Input label="Meta Description" textarea value={form.metaDescription}
-              onChange={(e) => setForm({ ...form, metaDescription: e.target.value })} />
+            <Input
+              label="Meta Description"
+              textarea
+              value={form.metaDescription}
+              onChange={(e) =>
+                setForm({ ...form, metaDescription: e.target.value })
+              }
+            />
 
-            <Input label="Meta Keywords (comma separated)"
+            <Input
+              label="Meta Keywords (comma separated)"
               value={form.metaKeywords}
-              onChange={(e) => setForm({ ...form, metaKeywords: e.target.value })} />
+              onChange={(e) =>
+                setForm({ ...form, metaKeywords: e.target.value })
+              }
+            />
 
-            <ImageUploader label="Meta Image" value={form.metaImage}
-              onChange={(img) => setForm({ ...form, metaImage: img })} />
+            <ImageUploader
+              label="Meta Image"
+              value={form.metaImage}
+              onChange={(img) => setForm({ ...form, metaImage: img })}
+            />
           </div>
 
           {/* OG TAGS */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Open Graph (OG) Tags</h2>
 
-            <Input label="OG Title" value={form.ogTitle}
-              onChange={(e) => setForm({ ...form, ogTitle: e.target.value })} />
-            <Input label="OG Description" textarea value={form.ogDescription}
-              onChange={(e) => setForm({ ...form, ogDescription: e.target.value })} />
+            <Input
+              label="OG Title"
+              value={form.ogTitle}
+              onChange={(e) => setForm({ ...form, ogTitle: e.target.value })}
+            />
+            <Input
+              label="OG Description"
+              textarea
+              value={form.ogDescription}
+              onChange={(e) =>
+                setForm({ ...form, ogDescription: e.target.value })
+              }
+            />
 
-            <ImageUploader label="OG Image" value={form.ogImage}
-              onChange={(img) => setForm({ ...form, ogImage: img })} />
+            <ImageUploader
+              label="OG Image"
+              value={form.ogImage}
+              onChange={(img) => setForm({ ...form, ogImage: img })}
+            />
 
-            <Input label="OG Type" value={form.ogType}
-              onChange={(e) => setForm({ ...form, ogType: e.target.value })} />
+            <Input
+              label="OG Type"
+              value={form.ogType}
+              onChange={(e) => setForm({ ...form, ogType: e.target.value })}
+            />
           </div>
 
           {/* ADVANCED SEO */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Advanced SEO</h2>
 
-            <Input label="Canonical URL" value={form.canonicalUrl}
-              onChange={(e) => setForm({ ...form, canonicalUrl: e.target.value })} />
+            <Input
+              label="Canonical URL"
+              value={form.canonicalUrl}
+              onChange={(e) =>
+                setForm({ ...form, canonicalUrl: e.target.value })
+              }
+            />
 
-            <Input label="JSON-LD Schema" textarea value={form.jsonLd}
-              onChange={(e) => setForm({ ...form, jsonLd: e.target.value })} />
+            <Input
+              label="JSON-LD Schema"
+              textarea
+              value={form.jsonLd}
+              onChange={(e) => setForm({ ...form, jsonLd: e.target.value })}
+            />
 
-            <Input label="Custom Head Tags" textarea value={form.customHead}
-              onChange={(e) => setForm({ ...form, customHead: e.target.value })} />
+            <Input
+              label="Custom Head Tags"
+              textarea
+              value={form.customHead}
+              onChange={(e) => setForm({ ...form, customHead: e.target.value })}
+            />
           </div>
 
           {/* ROBOTS */}
@@ -398,4 +460,4 @@ const FaqPage = () => {
   );
 };
 
-export default FaqPage;
+export default FormUIPage;

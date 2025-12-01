@@ -62,7 +62,7 @@ export const deleteQuote = createAsyncThunk(
 );
 
 const quoteSlice = createSlice({
-  name: "quote",
+  name: "quotes",
   initialState: {
     quotes: null,
     loading: false,

@@ -24,7 +24,9 @@ import contactSlice from "./slices/contactUsSlice";
 import smtpSlice from "./slices/smtpSlice";
 import LeadLogsSlice from "./slices/leadLogsSlice";
 import leadTypeSlice from "./slices/leadTypeSlice";
-import faqSlice from "./slices/FaqPageSlice"
+import faqSlice from "./slices/FaqPageSlice";
+import articleSlice from  "./slices/articlePageSlice";
+import formPageSlice from "./slices/formPageSlice";
 export default configureStore({
   reducer: {
     user,
@@ -52,6 +54,9 @@ export default configureStore({
     smtp: smtpSlice,
     lead:LeadLogsSlice,
     leadType:leadTypeSlice,
-    faq:faqSlice
+    faqPage:faqSlice,
+    articlePage :articleSlice,
+    formPage :formPageSlice
+
   },
 });

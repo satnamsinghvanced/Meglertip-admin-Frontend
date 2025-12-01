@@ -10,7 +10,7 @@ const RealEstateAgentsPage = () => {
   const navigate = useNavigate();
 
   const { agents, loading } = useSelector((state) => state.agents);
-  console.log(agents);
+  // console.log(agents);
   useEffect(() => {
     dispatch(getAgents());
   }, [dispatch]);
@@ -116,6 +116,107 @@ const RealEstateAgentsPage = () => {
               }}
             />
           </div>
+          {/* META SEO */}
+          <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner space-y-3">
+            <h2 className="font-semibold text-lg">SEO Settings</h2>
+
+            <p>
+              <strong>Meta Title:</strong> {agent?.metaTitle || "N/A"}
+            </p>
+            <p>
+              <strong>Meta Description:</strong>{" "}
+              {agent?.metaDescription || "N/A"}
+            </p>
+            <p>
+              <strong>Meta Keywords:</strong> {agent?.metaKeywords || "N/A"}
+            </p>
+
+            {agent?.metaImage && (
+              <img
+                src={agent.metaImage}
+                alt="Meta"
+                className="h-32 w-auto rounded-md border"
+              />
+            )}
+          </div>
+
+          {/* OG TAGS */}
+          <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner space-y-3">
+            <h2 className="font-semibold text-lg">Open Graph (OG) Tags</h2>
+
+            <p>
+              <strong>OG Title:</strong> {agent?.ogTitle || "N/A"}
+            </p>
+            <p>
+              <strong>OG Description:</strong> {agent?.ogDescription || "N/A"}
+            </p>
+            <p>
+              <strong>OG Type:</strong> {agent?.ogType || "N/A"}
+            </p>
+
+            {agent?.ogImage && (
+              <img
+                src={agent.ogImage}
+                alt="OG"
+                className="h-32 w-auto rounded-md border"
+              />
+            )}
+          </div>
+
+          {/* ADVANCED SEO */}
+          <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner space-y-3">
+            <h2 className="font-semibold text-lg">Advanced SEO</h2>
+
+            <p>
+              <strong>Canonical URL:</strong> {agent?.canonicalUrl || "N/A"}
+            </p>
+
+            <p>
+              <strong>JSON-LD:</strong>
+            </p>
+            <pre className="bg-slate-100 p-3 rounded text-xs overflow-auto">
+              {agent?.jsonLd || "N/A"}
+            </pre>
+
+            <p>
+              <strong>Custom Head Code:</strong>
+            </p>
+            <pre className="bg-slate-100 p-3 rounded text-xs overflow-auto">
+              {agent?.customHead || "N/A"}
+            </pre>
+          </div>
+
+          {/* ROBOTS */}
+          <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner space-y-3">
+            <h2 className="font-semibold text-lg">Robots Settings</h2>
+
+            {Object.entries(agent?.robots || {}).map(([key, val]) => (
+              <p key={key}>
+                <strong>{key}:</strong> {val ? "Enabled" : "Disabled"}
+              </p>
+            ))}
+          </div>
+
+          {/* REDIRECT */}
+          {/* <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner space-y-3">
+            <h2 className="font-semibold text-lg">Redirect</h2>
+
+            <p>
+              <strong>Enabled:</strong>{" "}
+              {agent?.redirect?.enabled ? "Yes" : "No"}
+            </p>
+            <p>
+              <strong>From:</strong> {agent?.redirect?.from || "N/A"}
+            </p>
+            <p>
+              <strong>To:</strong> {agent?.redirect?.to || "N/A"}
+            </p>
+            <p>
+              <strong>Type:</strong> {agent?.redirect?.type || "301"}
+            </p>
+          </div> */}
+
+    
         </div>
       </div>
     </div>

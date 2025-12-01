@@ -26,7 +26,10 @@ import { FaQ } from "react-icons/fa6";
 import { TbLogs } from "react-icons/tb";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { MdOutlineContactSupport } from "react-icons/md";
+import { MdOutlineArticle } from "react-icons/md";
+import { SiReacthookform } from "react-icons/si";
 import { ROUTES } from "../consts/routes";
+
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   const location = useLocation();
@@ -46,6 +49,16 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       name: "About Page",
       icon: Info,
       href: ROUTES.ABOUT,
+    },
+     {
+      name: "Article Page",
+      icon: MdOutlineArticle ,
+      href: ROUTES.ARTICLEPAGE,
+    },
+    {
+      name: "Form Page",
+      icon: SiReacthookform ,
+      href: ROUTES.FORMPAGE,
     },
     {
       name: "Partner  Page",

@@ -10,8 +10,9 @@ import {
   updateCategory,
 } from "../../store/slices/articleCategoriesSlice";
 import { toast } from "react-toastify";
+import ImageUploader from "../../UI/ImageUpload";
 
-const requiredFields = ["name", "slug" , "categoryPosition", "description"];
+const requiredFields = ["name", "slug", "categoryPosition", "description"];
 
 function labelFor(name) {
   const map = {
@@ -36,6 +37,33 @@ const ArticleCategoryFormPage = () => {
     slug: "",
     categoryPosition: 0,
     description: "",
+
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+    metaImage: "",
+
+    canonicalUrl: "",
+    jsonLd: "",
+
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    ogType: "website",
+
+    publishedDate: "",
+    lastUpdatedDate: "",
+    showPublishedDate: false,
+    showLastUpdatedDate: false,
+
+    robots: {
+      noindex: false,
+      nofollow: false,
+      noarchive: false,
+      nosnippet: false,
+      noimageindex: false,
+      notranslate: false,
+    },
   });
 
   const [errors, setErrors] = useState({});
@@ -56,6 +84,25 @@ const ArticleCategoryFormPage = () => {
         slug: selectedCategory.slug || "",
         categoryPosition: selectedCategory.categoryPosition || 0,
         description: selectedCategory.description || "",
+        metaTitle: selectedCategory.metaTitle || "",
+        metaDescription: selectedCategory.metaDescription || "",
+        metaKeywords: selectedCategory.metaKeywords || "",
+        metaImage: selectedCategory.metaImage || "",
+
+        canonicalUrl: selectedCategory.canonicalUrl || "",
+        jsonLd: selectedCategory.jsonLd || "",
+
+        ogTitle: selectedCategory.ogTitle || "",
+        ogDescription: selectedCategory.ogDescription || "",
+        ogImage: selectedCategory.ogImage || "",
+        ogType: selectedCategory.ogType || "website",
+
+        // publishedDate: selectedCategory.publishedDate || "",
+        // lastUpdatedDate: selectedCategory.lastUpdatedDate || "",
+        // showPublishedDate: selectedCategory.showPublishedDate || false,
+        // showLastUpdatedDate: selectedCategory.showLastUpdatedDate || false,
+
+        robots: selectedCategory.robots,
       });
     }
   }, [isEditMode, selectedCategory]);
@@ -96,6 +143,35 @@ const ArticleCategoryFormPage = () => {
     categoryPosition: form.categoryPosition || 0,
     description: form.description?.trim() || "",
 
+    metaTitle: form.metaTitle?.trim() || "",
+    metaDescription: form.metaDescription?.trim() || "",
+    metaKeywords: form.metaKeywords || "",
+    metaImage: form.metaImage || "",
+
+    canonicalUrl: form.canonicalUrl?.trim() || "",
+    jsonLd: form.jsonLd || "",
+
+    // Open Graph
+    ogTitle: form.ogTitle?.trim() || "",
+    ogDescription: form.ogDescription?.trim() || "",
+    ogImage: form.ogImage || "",
+    ogType: form.ogType || "website",
+
+    // Dates
+    // publishedDate: form.publishedDate || "",
+    // lastUpdatedDate: form.lastUpdatedDate || "",
+    // showPublishedDate: form.showPublishedDate || false,
+    // showLastUpdatedDate: form.showLastUpdatedDate || false,
+
+    // Robots
+    robots: {
+      noindex: !!form.robots.noindex,
+      nofollow: !!form.robots.nofollow,
+      noarchive: !!form.robots.noarchive,
+      nosnippet: !!form.robots.nosnippet,
+      noimageindex: !!form.robots.noimageindex,
+      notranslate: !!form.robots.notranslate,
+    },
   });
 
   const handleSubmit = async (e) => {
@@ -138,7 +214,9 @@ const ArticleCategoryFormPage = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={isEditMode ? "Edit Article Category Details" : "Add Article Category"}
+        title={
+          isEditMode ? "Edit Article Category Details" : "Add Article Category"
+        }
         description={
           isEditMode
             ? "Update content for this Article Category."
@@ -158,14 +236,21 @@ const ArticleCategoryFormPage = () => {
         )}
       />
 
-      <form onSubmit={handleSubmit} className="rounded-2xl md:p-8   border bg-white border-slate-200 shadow-sm max-w-[800px] m-auto p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-2xl md:p-8   border bg-white border-slate-200 shadow-sm max-w-8xl m-auto p-4"
+      >
         <div className="">
           <div className="grid gap-4 md:grid-cols-2">
             {[
               { label: "Article Category Name", name: "name" },
               { label: "Slug", name: "slug" },
-                { label: "Category Position", name: "categoryPosition" , type: "number"},
-                { label: "Description", name: "description" },
+              {
+                label: "Category Position",
+                name: "categoryPosition",
+                type: "number",
+              },
+              { label: "Description", name: "description" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -194,7 +279,153 @@ const ArticleCategoryFormPage = () => {
               </div>
             ))}
           </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6 mt-6">
+            {/* SEO SECTION */}
+            <div className="pt-6">
+              <h2 className="text-xl font-bold mb-4">SEO Settings</h2>
 
+              {/* Meta Title */}
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Meta Title
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.metaTitle}
+                onChange={(e) =>
+                  setForm({ ...form, metaTitle: e.target.value })
+                }
+              />
+
+              {/* Meta Description */}
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Meta Description
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-24 focus:border-primary"
+                value={form.metaDescription}
+                onChange={(e) =>
+                  setForm({ ...form, metaDescription: e.target.value })
+                }
+              />
+
+              {/* Keywords */}
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Meta Keywords (comma separated)
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.metaKeywords}
+                onChange={(e) =>
+                  setForm({ ...form, metaKeywords: e.target.value })
+                }
+              />
+
+              {/* Meta Image */}
+              <ImageUploader
+                label="Meta Image"
+                value={form.metaImage}
+                onChange={(img) => setForm({ ...form, metaImage: img })}
+              />
+            </div>
+
+            {/* OG TAGS */}
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-bold mb-4">Open Graph (OG) Tags</h2>
+
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                OG Title
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.ogTitle}
+                onChange={(e) => setForm({ ...form, ogTitle: e.target.value })}
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                OG Description
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-24 focus:border-primary"
+                value={form.ogDescription}
+                onChange={(e) =>
+                  setForm({ ...form, ogDescription: e.target.value })
+                }
+              />
+
+              <ImageUploader
+                label="OG Image"
+                value={form.ogImage}
+                onChange={(img) => setForm({ ...form, ogImage: img })}
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                OG Type
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.ogType}
+                onChange={(e) => setForm({ ...form, ogType: e.target.value })}
+              />
+            </div>
+
+            {/* ADVANCED SEO */}
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-bold mb-4">Advanced SEO</h2>
+
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Canonical URL
+              </label>
+              <input
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-primary"
+                value={form.canonicalUrl}
+                onChange={(e) =>
+                  setForm({ ...form, canonicalUrl: e.target.value })
+                }
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                JSON-LD Schema
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-28 focus:border-primary"
+                value={form.jsonLd}
+                onChange={(e) => setForm({ ...form, jsonLd: e.target.value })}
+              />
+
+              <label className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Custom Head Tags
+              </label>
+              <textarea
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm h-24 focus:border-primary"
+                value={form.customHead}
+                onChange={(e) =>
+                  setForm({ ...form, customHead: e.target.value })
+                }
+              />
+            </div>
+
+            {/* ROBOTS SETTINGS */}
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-bold mb-4">Robots Settings</h2>
+
+              {Object.keys(form.robots).map((key) => (
+                <label key={key} className="flex items-center gap-2">
+                  <input
+                    className="!relative"
+                    type="checkbox"
+                    checked={form.robots[key]}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        robots: { ...form.robots, [key]: e.target.checked },
+                      })
+                    }
+                  />
+                  <span className="capitalize">{key}</span>
+                </label>
+              ))}
+            </div>
+          </div>
           <div className="mt-8 flex justify-center">
             <button
               type="submit"

@@ -8,6 +8,8 @@ export const ROUTES = {
   HELP_CENTER: "/helpcenter",
   FORMS: "/forms",
   FAQ: "/faqs",
+  ARTICLEPAGE:"/article-page",
+  FORMPAGE:"/form-page",
   ABOUT: "/about",
   ARTICLE: "/articles",
   ARTICLE_CREATE: "/articles/create",

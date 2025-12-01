@@ -19,7 +19,8 @@ export const Quote = () => {
       heading: "",
       description: "",
       points: "",
-      button: "",
+      buttonText: "",
+      ctaLink:""
     });
 
   useEffect(() => {
@@ -34,7 +35,8 @@ export const Quote = () => {
           heading: q.heading || "",
           description: q.description || "",
           points: q.points || "",
-          button: q.button || "",
+          buttonText: q.buttonText || "",
+          ctaLink: q.ctaLink || "",
         };
       });
       setFormData(initialData);
@@ -75,7 +77,9 @@ const handleAddQuote = async () => {
       !newCategory.heading ||
       !newCategory.description||
       !newCategory.points ||
-      !newCategory.button
+      !newCategory.buttonText ||
+      !newCategory.ctaLink
+      
     ) {
       alert("Please fill all fields");
       return;
@@ -85,16 +89,50 @@ const handleAddQuote = async () => {
       await dispatch(createQuote(newCategory));
       setAddingField(false);
         dispatch(fetchQuotes());
-      setNewCategory({ heading: quotes.heading, description: quotes.description, points:quotes.points, button: quotes.button });
+      setNewCategory({ heading: quotes.heading, description: quotes.description, points:quotes.points, buttonText: quotes.buttonText, ctaLink:quotes.ctaLink });
 
     } catch (err) {
       console.error("Error adding quote:", err);
       toast.error(err?.message || "Failed to add category");
-      setNewCategory({ heading: "", description: "", points: "", button: "" });
+      setNewCategory({ heading: "", description: "", points: "", buttonText: "" ,ctaLink :""});
     }
   };
   if (loading || !quotes || quotes.length === 0) {
-    return <p className="p-6 text-gray-600">Loading quote data...</p>;
+    return <div className="space-y-6 p-6">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm animate-pulse"
+        >
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="h-5 w-40 bg-gray-200 rounded"></div>
+            <div className="flex gap-3">
+              <div className="h-6 w-6 bg-gray-200 rounded"></div>
+              <div className="h-6 w-6 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+
+          {/* Fields */}
+          <div className="space-y-4">
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-20 w-full bg-gray-200 rounded"></div>
+
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-20 w-full bg-gray-200 rounded"></div>
+
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-20 w-full bg-gray-200 rounded"></div>
+
+            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+            <div className="h-10 w-full bg-gray-200 rounded"></div>
+
+            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+            <div className="h-10 w-full bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      ))}
+    </div>;
   }
 
   return (
@@ -175,17 +213,26 @@ const handleAddQuote = async () => {
                 className="p-2 border border-slate-300 rounded-lg w-full"
               />
 
-              <label className="block text-sm font-medium mb-1 text-gray-600">Button</label>
+              <label className="block text-sm font-medium mb-1 text-gray-600">Button Text</label>
               <input
                 type="text"
                 disabled={!isEditing}
-                value={formData[quote._id]?.button || ""}
-                onChange={(e) => handleChange(e, quote._id, "button")}
+                value={formData[quote._id]?.buttonText || ""}
+                onChange={(e) => handleChange(e, quote._id, "buttonText")}
+                className="w-full border border-slate-300 rounded-lg p-2 "
+              />
+
+              <label className="block text-sm font-medium mb-1 mt-2 text-gray-600">CTA Link</label>
+              <input
+                type="text"
+                disabled={!isEditing}
+                value={formData[quote._id]?.ctaLink || ""}
+                onChange={(e) => handleChange(e, quote._id, "ctaLink")}
                 className="w-full border border-slate-300 rounded-lg p-2 "
               />
             </div>
       {/* Adding new Quote */}
-{addingField && (
+{/* {addingField && (
   <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
     <div className="bg-white dark:bg-blue-950 p-6 rounded-xl shadow-lg w-[350px]">
       <h3 className="text-lg font-semibold mb-4 text-center dark:text-white">
@@ -242,7 +289,7 @@ const handleAddQuote = async () => {
       </div>
     </div>
   </div>
-)}
+)} */}
 
             {/* Delete*/}
             {showDelete === quote._id && (

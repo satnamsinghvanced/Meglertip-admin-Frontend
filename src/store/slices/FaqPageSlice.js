@@ -17,8 +17,8 @@ export const updateFaqPage = createAsyncThunk("faq/update", async (body) => {
 });
 
 const faqSlice = createSlice({
-  name: "faq",
-  initialState: { faq: null, loading: false },
+  name: "faqPage",
+  initialState: { faqPage: null, loading: false },
   extraReducers: (builder) => {
     builder
       .addCase(getFaqPage.pending, (state) => {
@@ -26,11 +26,11 @@ const faqSlice = createSlice({
       })
       .addCase(getFaqPage.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.faq = payload;
+        state.faqPage = payload;
       })
       .addCase(updateFaqPage.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.faq = payload;
+        state.faqPage = payload;
       })
       .addCase(updateFaqPage.pending, (state) => {
         state.loading = true;

@@ -58,6 +58,8 @@ import EditCategory from "../pages/faqCategories/EditCategory";
 import Dashboard from "../pages/dashboard/dashboard";
 import LeadLogs from "../pages/leadLogs/leadLogsPage";
 import FaqPage from "../pages/faqPage/FaqPage";
+import ArticleUIPage from "../pages/ArticlePage/ArticlePage";
+import FormUIPage from "../pages/formpage/FormPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -157,6 +159,8 @@ const Routes = () => {
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
         <Route path={ROUTES.QUOTES} element={<Quote />} />
         <Route path={ROUTES.FAQPAGE} element={<FaqPage />} />
+        <Route path={ROUTES.ARTICLEPAGE} element={<ArticleUIPage />} />
+        <Route path={ROUTES.FORMPAGE} element={<FormUIPage />} />
 
 
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />

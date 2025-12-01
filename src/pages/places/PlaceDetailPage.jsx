@@ -14,12 +14,8 @@ const PlaceDetailPage = () => {
   const { selectedPlace, loading } = useSelector((state) => state.places);
 
   useEffect(() => {
-    if (placeId) {
-      dispatch(getPlaceById(placeId));
-    }
-    return () => {
-      dispatch(clearSelectedPlace());
-    };
+    if (placeId) dispatch(getPlaceById(placeId));
+    return () => dispatch(clearSelectedPlace());
   }, [dispatch, placeId]);
 
   const headerButtons = [
@@ -41,31 +37,54 @@ const PlaceDetailPage = () => {
 
   const renderValue = (label, value) => {
     if (label === "isRecommended") {
-      if (value === true) {
-        return (
-          <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-0.5 text-sm font-medium text-green-800">
-            Yes
-          </span>
-        );
-      }
-      return (
+      return value ? (
+        <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-0.5 text-sm font-medium text-green-800">
+          Yes
+        </span>
+      ) : (
         <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-0.5 text-sm font-medium text-red-800">
-            No
+          No
         </span>
       );
     }
-    if (value === null || value === undefined || value === "") {
-        return "N/A";
-    }
+
+    if (value === null || value === undefined || value === "") return "N/A";
     return String(value);
   };
-  
+
   const detailItems = [
     { label: "slug", value: selectedPlace?.slug },
-    { label: "County", value: selectedPlace?.countyId?.name }, 
+    { label: "County", value: selectedPlace?.countyId?.name },
     { label: "isRecommended", value: selectedPlace?.isRecommended },
     { label: "title", value: selectedPlace?.title },
     { label: "rank", value: selectedPlace?.rank },
+  ];
+
+  const seoItems = [
+    { label: "Meta Title", value: selectedPlace?.metaTitle },
+    { label: "Meta Description", value: selectedPlace?.metaDescription },
+    { label: "Meta Keywords", value: selectedPlace?.metaKeywords },
+    { label: "Canonical URL", value: selectedPlace?.canonicalUrl },
+
+    { label: "OG Title", value: selectedPlace?.ogTitle },
+    { label: "OG Description", value: selectedPlace?.ogDescription },
+    { label: "OG Type", value: selectedPlace?.ogType },
+
+    { label: "JSON-LD", value: selectedPlace?.jsonLd },
+    // { label: "Include in Sitemap", value: selectedPlace?.includeInSitemap ? "Yes" : "No" },
+    // { label: "Priority", value: selectedPlace?.priority },
+    // { label: "Change Frequency", value: selectedPlace?.changefreq },
+
+    // { label: "Published Date", value: selectedPlace?.publishedDate },
+    // { label: "Last Updated", value: selectedPlace?.lastUpdatedDate },
+
+    { label: "Robots (noindex)", value: selectedPlace?.robots?.noindex ? "Yes" : "No" },
+    { label: "Robots (nofollow)", value: selectedPlace?.robots?.nofollow ? "Yes" : "No" },
+    { label: "Robots (noarchive)", value: selectedPlace?.robots?.noarchive ? "Yes" : "No" },
+    { label: "Robots (nosnippet)", value: selectedPlace?.robots?.nosnippet ? "Yes" : "No" },
+    { label: "Robots (noimageindex)", value: selectedPlace?.robots?.noimageindex ? "Yes" : "No" },
+    { label: "Robots (notranslate)", value: selectedPlace?.robots?.notranslate ? "Yes" : "No" },
+
   ];
 
   if (loading && !selectedPlace) {
@@ -102,16 +121,12 @@ const PlaceDetailPage = () => {
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="space-y-6 p-6">
-          
+
+          {/* BASIC DETAILS */}
           <div className="grid gap-4 md:grid-cols-3">
             {detailItems.map((item, i) => (
-              <div
-                key={i}
-                className="rounded-xl bg-slate-50 p-4 border border-slate-100"
-              >
-                <p className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
-                  {item.label}
-                </p>
+              <div key={i} className="rounded-xl bg-slate-50 p-4 border border-slate-100">
+                <p className="text-xs font-semibold text-slate-500 uppercase">{item.label}</p>
                 <p className="mt-1 text-sm text-slate-900 font-medium">
                   {renderValue(item.label, item.value)}
                 </p>
@@ -119,30 +134,38 @@ const PlaceDetailPage = () => {
             ))}
           </div>
 
+          {/* EXCERPT */}
           {selectedPlace.excerpt && (
             <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
-              <p className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
-                Excerpt
-              </p>
-              <p className="mt-2 text-sm text-slate-700 leading-relaxed">
-                {selectedPlace.excerpt}
-              </p>
+              <p className="text-xs font-semibold text-slate-500 uppercase">Excerpt</p>
+              <p className="mt-2 text-sm text-slate-700">{selectedPlace.excerpt}</p>
             </div>
           )}
 
+          {/* DESCRIPTION */}
           <div className="rounded-xl p-5 border border-slate-100 bg-white shadow-inner">
-            <p className="text-xs font-semibold uppercase text-slate-500 tracking-wide">
-              Description
-            </p>
-
+            <p className="text-xs font-semibold uppercase text-slate-500">Description</p>
             <div
               className="prose mt-3 max-w-none text-slate-700"
               dangerouslySetInnerHTML={{
-                __html:
-                  selectedPlace.description ||
-                  "<p>No description provided.</p>",
+                __html: selectedPlace.description || "<p>No description provided.</p>",
               }}
             />
+          </div>
+
+          {/* SEO SECTION */}
+          <div className="rounded-xl mt-6 p-5 border border-slate-200 bg-slate-50">
+            <p className="text-xs font-semibold uppercase text-slate-600 mb-4">SEO Information</p>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {seoItems.map((item, i) => (
+                <div key={i} className="rounded-xl bg-white p-4 border border-slate-200">
+                  <p className="text-xs font-semibold text-slate-500 uppercase">{item.label}</p>
+                  <p className="mt-1 text-sm text-slate-900">{renderValue(item.label, item.value)}</p>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
       </div>
