@@ -13,6 +13,7 @@ const initialState = {
     "why-choose": null,
     city: null,
     pros: null,
+    seo : null
   },
 };
 
@@ -91,7 +92,8 @@ export const fetchAllHomepageSections = () => async (dispatch) => {
     "why-choose",
     "city",
     "pros",
-    "faq"
+    "faq", 
+    "seo"
   ];
 
   for (const section of sections) {

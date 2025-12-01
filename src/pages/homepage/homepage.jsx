@@ -57,7 +57,25 @@ const HomePageEditor = () => {
       buttonText: "",
     },
   ]);
-
+  const [form, setForm] = useState({
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+    metaImage: "",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    ogType: "",
+    canonicalUrl: "",
+    jsonLd: "",
+    customHead: "",
+    robots: {
+      index: true,
+      follow: true,
+      noindex: false,
+      nofollow: false,
+    },
+  });
   useEffect(() => {
     dispatch(fetchAllHomepageSections());
     return () => dispatch(clearMessages());
@@ -89,9 +107,9 @@ const HomePageEditor = () => {
       });
     if (sections.faq)
       setFaq({
-        title: sections.faq.title || ""
+        title: sections.faq.title || "",
       });
-       if (sections.city)
+    if (sections.city)
       setCity({
         title: sections.city.title || "",
         description: sections.city.description || "",
@@ -113,6 +131,27 @@ const HomePageEditor = () => {
               },
             ]
       );
+    if (sections.seo) {
+      setForm({
+        metaTitle: sections.seo.metaTitle || "",
+        metaDescription: sections.seo.metaDescription || "",
+        metaKeywords: sections.seo.metaKeywords || "",
+        metaImage: sections.seo.metaImage || "",
+        ogTitle: sections.seo.ogTitle || "",
+        ogDescription: sections.seo.ogDescription || "",
+        ogImage: sections.seo.ogImage || "",
+        ogType: sections.seo.ogType || "",
+        canonicalUrl: sections.seo.canonicalUrl || "",
+        jsonLd: sections.seo.jsonLd || "",
+        customHead: sections.seo.customHead || "",
+        robots: sections.seo.robots || {
+          index: true,
+          follow: true,
+          noindex: false,
+          nofollow: false,
+        },
+      });
+    }
   }, [sections]);
 
   const saveHero = () => dispatch(updateHomepageSection("hero", hero));
@@ -130,6 +169,7 @@ const HomePageEditor = () => {
   };
   const saveCity = () => dispatch(updateHomepageSection("city", city));
   const saveFaq = () => dispatch(updateHomepageSection("faq", faq));
+  const saveSEOSetitngs = () => dispatch(updateHomepageSection("seo", {seoSection: form}));
   const savePros = () =>
     dispatch(updateHomepageSection("pros", { prosSection: pros }));
 
@@ -311,13 +351,11 @@ const HomePageEditor = () => {
               }
             />
           </Section>
-           <Section title="FAQ Section" onSave={saveFaq}>
+          <Section title="FAQ Section" onSave={saveFaq}>
             <Input
               label="Title"
               value={faq.title}
-              onChange={(e) =>
-                setFaq(() => ({  title: e.target.value }))
-              }
+              onChange={(e) => setFaq(() => ({ title: e.target.value }))}
             />
           </Section>
           <Section title="Pros Section" onSave={savePros}>
@@ -469,55 +507,100 @@ const HomePageEditor = () => {
             />
           </Section>
           {/* SEO SECTION */}
-          {/* <div className="border-t pt-6">
+          <Section title="SEO Section" onSave={saveSEOSetitngs}>
+          <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">SEO Settings</h2>
 
-            <Input label="Meta Title" value={form.metaTitle}
-              onChange={(e) => setForm({ ...form, metaTitle: e.target.value })} />
+            <Input
+              label="Meta Title"
+              value={form.metaTitle}
+              onChange={(e) => setForm({ ...form, metaTitle: e.target.value })}
+            />
 
-            <Input label="Meta Description" textarea value={form.metaDescription}
-              onChange={(e) => setForm({ ...form, metaDescription: e.target.value })} />
+            <Input
+              label="Meta Description"
+              textarea
+              value={form.metaDescription}
+              onChange={(e) =>
+                setForm({ ...form, metaDescription: e.target.value })
+              }
+            />
 
-            <Input label="Meta Keywords (comma separated)"
+            <Input
+              label="Meta Keywords (comma separated)"
               value={form.metaKeywords}
-              onChange={(e) => setForm({ ...form, metaKeywords: e.target.value })} />
+              onChange={(e) =>
+                setForm({ ...form, metaKeywords: e.target.value })
+              }
+            />
 
-            <ImageUploader label="Meta Image" value={form.metaImage}
-              onChange={(img) => setForm({ ...form, metaImage: img })} />
-          </div> */}
+            <ImageUploader
+              label="Meta Image"
+              value={form.metaImage}
+              onChange={(img) => setForm({ ...form, metaImage: img })}
+            />
+          </div>
 
           {/* OG TAGS */}
-          {/* <div className="border-t pt-6">
+          <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Open Graph (OG) Tags</h2>
 
-            <Input label="OG Title" value={form.ogTitle}
-              onChange={(e) => setForm({ ...form, ogTitle: e.target.value })} />
-            <Input label="OG Description" textarea value={form.ogDescription}
-              onChange={(e) => setForm({ ...form, ogDescription: e.target.value })} />
+            <Input
+              label="OG Title"
+              value={form.ogTitle}
+              onChange={(e) => setForm({ ...form, ogTitle: e.target.value })}
+            />
+            <Input
+              label="OG Description"
+              textarea
+              value={form.ogDescription}
+              onChange={(e) =>
+                setForm({ ...form, ogDescription: e.target.value })
+              }
+            />
 
-            <ImageUploader label="OG Image" value={form.ogImage}
-              onChange={(img) => setForm({ ...form, ogImage: img })} />
+            <ImageUploader
+              label="OG Image"
+              value={form.ogImage}
+              onChange={(img) => setForm({ ...form, ogImage: img })}
+            />
 
-            <Input label="OG Type" value={form.ogType}
-              onChange={(e) => setForm({ ...form, ogType: e.target.value })} />
-          </div> */}
+            <Input
+              label="OG Type"
+              value={form.ogType}
+              onChange={(e) => setForm({ ...form, ogType: e.target.value })}
+            />
+          </div>
 
           {/* ADVANCED SEO */}
-          {/* <div className="border-t pt-6">
+          <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Advanced SEO</h2>
 
-            <Input label="Canonical URL" value={form.canonicalUrl}
-              onChange={(e) => setForm({ ...form, canonicalUrl: e.target.value })} />
+            <Input
+              label="Canonical URL"
+              value={form.canonicalUrl}
+              onChange={(e) =>
+                setForm({ ...form, canonicalUrl: e.target.value })
+              }
+            />
 
-            <Input label="JSON-LD Schema" textarea value={form.jsonLd}
-              onChange={(e) => setForm({ ...form, jsonLd: e.target.value })} />
+            <Input
+              label="JSON-LD Schema"
+              textarea
+              value={form.jsonLd}
+              onChange={(e) => setForm({ ...form, jsonLd: e.target.value })}
+            />
 
-            <Input label="Custom Head Tags" textarea value={form.customHead}
-              onChange={(e) => setForm({ ...form, customHead: e.target.value })} />
-          </div> */}
+            <Input
+              label="Custom Head Tags"
+              textarea
+              value={form.customHead}
+              onChange={(e) => setForm({ ...form, customHead: e.target.value })}
+            />
+          </div>
 
           {/* ROBOTS */}
-          {/* <div className="border-t pt-6">
+          <div className="border-t pt-6">
             <h2 className="text-xl font-bold mb-4">Robots Settings</h2>
 
             {Object.keys(form.robots).map((key) => (
@@ -536,7 +619,8 @@ const HomePageEditor = () => {
                 {key}
               </label>
             ))}
-          </div> */}
+          </div>
+          </Section>
         </>
       )}
     </div>
