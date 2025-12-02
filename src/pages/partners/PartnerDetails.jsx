@@ -24,16 +24,14 @@ export const PartnerDetailPage = () => {
   const p = partnerDetail;
 
   // Format postal codes
-  const postalExact = p.postalCodes?.exact?.map((e) => e.code).join(", ") || "-";
+  const postalExact =
+    p.postalCodes?.exact?.map((e) => e.code).join(", ") || "-";
   const postalRanges =
-    p.postalCodes?.ranges
-      ?.map((r) => `${r.from} - ${r.to}`)
-      .join(", ") || "-";
+    p.postalCodes?.ranges?.map((r) => `${r.from} - ${r.to}`).join(", ") || "-";
 
   return (
     <div className="relative z-10 h-[calc(100vh-4.5rem)] overflow-y-auto">
       <div className="mx-auto max-w-8xl p-4">
-
         {/* HEADER */}
         <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
           <div className="flex justify-between items-center">
@@ -62,20 +60,31 @@ export const PartnerDetailPage = () => {
 
         {/* BASIC INFO */}
         <div className="bg-white rounded-xl shadow-sm p-5 grid sm:grid-cols-2 gap-5 mb-6">
-
           <InfoCard title="City" value={p.city} />
           <InfoCard title="Address" value={p.address || "-"} />
 
           <InfoCard title="Postal Codes (Exact)" value={postalExact} />
           <InfoCard title="Postal Code Ranges" value={postalRanges} />
 
-          <InfoCard title="Premium" value={p.isPremium ? "Yes" : "No"} badge={p.isPremium} />
-          <InfoCard title="Status" value={p.isActive ? "Active" : "Inactive"} badge={p.isActive} />
+          <InfoCard
+            title="Premium"
+            value={p.isPremium ? "Yes" : "No"}
+            badge={p.isPremium}
+          />
+          <InfoCard
+            title="Status"
+            value={p.isActive ? "Active" : "Inactive"}
+            badge={p.isActive}
+          />
 
-
-          <InfoCard title="Created At" value={new Date(p.createdAt).toLocaleString()} />
-          <InfoCard title="Updated At" value={new Date(p.updatedAt).toLocaleString()} />
-
+          <InfoCard
+            title="Created At"
+            value={new Date(p.createdAt).toLocaleString()}
+          />
+          <InfoCard
+            title="Updated At"
+            value={new Date(p.updatedAt).toLocaleString()}
+          />
         </div>
 
         {/* LEAD TYPES */}
@@ -85,9 +94,15 @@ export const PartnerDetailPage = () => {
           {p.leadTypes?.length ? (
             <div className="space-y-2">
               {p.leadTypes.map((lt, i) => (
-                <div key={i} className="bg-gray-50 p-3 rounded-lg border border-slate-200">
+                <div
+                  key={i}
+                  className="bg-gray-50 p-3 rounded-lg border border-slate-200"
+                >
                   <p className="text-sm font-medium">
-                    {lt.name} — <span className="text-primary font-semibold">₹{lt.price}</span>
+                    {lt.name} —{" "}
+                    <span className="text-primary font-semibold">
+                      ₹{lt.price}
+                    </span>
                   </p>
                   {/* <p className="text-xs text-gray-600">Type ID: {lt.typeId}</p> */}
                 </div>
@@ -121,7 +136,10 @@ export const PartnerDetailPage = () => {
                     {i + 1}. {w.question}
                   </p>
                   <p className="text-xs text-gray-600 mt-1">
-                    <span className="font-semibold">Answer:</span> {w.expectedAnswer || "-"}
+                    <span className="font-semibold">Answer:</span>{" "}
+                    {Array.isArray(w.expectedAnswer)
+                      ? w.expectedAnswer.join(", ")
+                      : w.expectedAnswer}
                   </p>
                 </div>
               ))}
@@ -130,7 +148,6 @@ export const PartnerDetailPage = () => {
             <p className="text-gray-500 text-sm">No wishes added.</p>
           )}
         </div>
-
       </div>
     </div>
   );
