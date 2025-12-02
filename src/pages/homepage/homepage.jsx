@@ -584,16 +584,17 @@ const HomePageEditor = () => {
               }
             />
 
-            <Input
+            <Textarea
               label="JSON-LD Schema"
-              textarea
+             
+              
               value={form.jsonLd}
               onChange={(e) => setForm({ ...form, jsonLd: e.target.value })}
             />
 
-            <Input
+            <Textarea
               label="Custom Head Tags"
-              textarea
+              // textarea
               value={form.customHead}
               onChange={(e) => setForm({ ...form, customHead: e.target.value })}
             />
@@ -660,13 +661,13 @@ const Section = ({ title, children, onSave }) => (
   </div>
 );
 
-const Input = ({ label, value, onChange, disabled }) => (
+const Input = ({ label, type, value, onChange, disabled }) => (
   <div>
     <label className="block text-sm font-medium text-gray-600 mb-1">
       {label}
     </label>
     <input
-      type="text"
+      type={type }
       value={value}
       onChange={onChange}
       disabled={disabled}
