@@ -134,13 +134,13 @@ const FormUIPage = () => {
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
-          <Input
+          {/* <Input
             label="Categories Heading"
             value={form.categoriesHeading}
             onChange={(e) =>
               setForm({ ...form, categoriesHeading: e.target.value })
             }
-          />
+          /> */}
 
           {/* SEO SECTION */}
           <div className="border-t pt-6">

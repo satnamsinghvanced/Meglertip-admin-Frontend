@@ -149,19 +149,19 @@ const Routes = () => {
           element={<CreateFooterArticlePage />}
         />
         <Route path={ROUTES.FOOTER_EDIT} element={<EditFooterItemPage />} />
+        {/* <Route path="/footer/edit/:tab" element={<EditFooterItemPage />} /> */}
         <Route
           path="/footer/create/:tab/select"
           element={<CreateFooterSelectPage />}
         />
 
-        <Route path={ROUTES.HOME} element={<Dashboard/>} />
+        <Route path={ROUTES.HOME} element={<Dashboard />} />
         <Route path={ROUTES.TERM_OF_SERVICE} element={<TermOfServicePage />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
         <Route path={ROUTES.QUOTES} element={<Quote />} />
         <Route path={ROUTES.FAQPAGE} element={<FaqPage />} />
         <Route path={ROUTES.ARTICLEPAGE} element={<ArticleUIPage />} />
         <Route path={ROUTES.FORMPAGE} element={<FormUIPage />} />
-
 
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.EMAIL} element={<EmailTemplateList />} />
@@ -185,8 +185,7 @@ const Routes = () => {
         <Route path={ROUTES.CONTACTUS_VIEW} element={<ContactUsViewPage />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
 
-        <Route path={ROUTES.LEAD_LOGS} element={<LeadLogs/>} />
-
+        <Route path={ROUTES.LEAD_LOGS} element={<LeadLogs />} />
       </Route>
     </RouteWrapper>
   );

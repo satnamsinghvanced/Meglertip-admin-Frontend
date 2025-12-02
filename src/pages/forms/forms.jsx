@@ -6,6 +6,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../UI/ConfirmDeleteModal";
+import PageHeader from "../../components/PageHeader";
 
 const AdminFormBuilder = () => {
   const dispatch = useDispatch();
@@ -450,6 +451,7 @@ const AdminFormBuilder = () => {
                                         className="border border-gray-300 rounded-md px-2 py-1 w-full"
                                       >
                                         <option value="text">Text</option>
+                                        <option value="file">File</option>
                                         <option value="email">Email</option>
                                         <option value="number">Number</option>
                                         <option value="date">Date</option>

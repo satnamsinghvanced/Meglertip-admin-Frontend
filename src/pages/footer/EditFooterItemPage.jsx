@@ -19,10 +19,13 @@ const EditFooterItemPage = () => {
   }, [dispatch, footer]);
 
   useEffect(() => {
-    if (footer) {
+    if (tab === "address") {
+      setForm(footer.address || {});
+    } else {
       const arr = footer[tab] || [];
       const idx = parseInt(index, 10);
       const item = arr[idx];
+
       if (!item) {
         toast.error("Item not found");
         navigate("/footer");
@@ -56,27 +59,67 @@ const EditFooterItemPage = () => {
           {["articles", "places", "companies"].includes(tab) && (
             <>
               <label className="block text-sm">Title</label>
-              <input className="w-full rounded-lg border px-3 py-2" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.title || ""}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+              />
 
               <label className="block text-sm">Href</label>
-              <input className="w-full rounded-lg border px-3 py-2" value={form.href || ""} onChange={(e) => setForm({ ...form, href: e.target.value })} />
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.href || ""}
+                onChange={(e) => setForm({ ...form, href: e.target.value })}
+              />
             </>
           )}
 
           {["exploreLinks", "footerLinks"].includes(tab) && (
             <>
               <label className="block text-sm">Text</label>
-              <input className="w-full rounded-lg border px-3 py-2" value={form.text || ""} onChange={(e) => setForm({ ...form, text: e.target.value })} />
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.text || ""}
+                onChange={(e) => setForm({ ...form, text: e.target.value })}
+              />
 
               <label className="block text-sm">Href</label>
-              <input className="w-full rounded-lg border px-3 py-2" value={form.href || ""} onChange={(e) => setForm({ ...form, href: e.target.value })} />
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.href || ""}
+                onChange={(e) => setForm({ ...form, href: e.target.value })}
+              />
+            </>
+          )}
+          {["footerText"].includes(tab) && (
+            <>
+              <label className="block text-sm">Text</label>
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.text || ""}
+                onChange={(e) => setForm({ ...form, text: e.target.value })}
+              />
+            </>
+          )}
+          {["address"].includes(tab) && (
+            <>
+              <label className="block text-sm">Address</label>
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.text || ""}
+                onChange={(e) => setForm({ ...form, text: e.target.value })}
+              />
             </>
           )}
 
           {tab === "socialLinks" && (
             <>
               <label className="block text-sm">Icon</label>
-              <select className="w-full rounded-lg border px-3 py-2" value={form.icon || ""} onChange={(e) => setForm({ ...form, icon: e.target.value })}>
+              <select
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.icon || ""}
+                onChange={(e) => setForm({ ...form, icon: e.target.value })}
+              >
                 <option value="">Select Icon</option>
                 <option value="facebook">Facebook</option>
                 <option value="instagram">Instagram</option>
@@ -86,11 +129,25 @@ const EditFooterItemPage = () => {
               </select>
 
               <label className="block text-sm">Href</label>
-              <input className="w-full rounded-lg border px-3 py-2" value={form.href || ""} onChange={(e) => setForm({ ...form, href: e.target.value })} />
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.href || ""}
+                onChange={(e) => setForm({ ...form, href: e.target.value })}
+              />
 
               <div className="flex items-center gap-2">
-                <input id="newpage" type="checkbox" className="!relative" checked={form.newPage || false} onChange={(e) => setForm({ ...form, newPage: e.target.checked })} />
-                <label htmlFor="newpage" className="text-sm">Open in new page</label>
+                <input
+                  id="newpage"
+                  type="checkbox"
+                  className="!relative"
+                  checked={form.newPage || false}
+                  onChange={(e) =>
+                    setForm({ ...form, newPage: e.target.checked })
+                  }
+                />
+                <label htmlFor="newpage" className="text-sm">
+                  Open in new page
+                </label>
               </div>
             </>
           )}
@@ -98,7 +155,11 @@ const EditFooterItemPage = () => {
           {tab === "contactInfo" && (
             <>
               <label className="block text-sm">Type</label>
-              <select className="w-full rounded-lg border px-3 py-2" value={form.type || ""} onChange={(e) => setForm({ ...form, type: e.target.value })}>
+              <select
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.type || ""}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+              >
                 <option value="">Select Type</option>
                 <option value="phone">Phone</option>
                 <option value="email">Email</option>
@@ -106,22 +167,50 @@ const EditFooterItemPage = () => {
               </select>
 
               <label className="block text-sm">Value</label>
-              <input className="w-full rounded-lg border px-3 py-2" value={form.value || ""} onChange={(e) => setForm({ ...form, value: e.target.value })} />
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.value || ""}
+                onChange={(e) => setForm({ ...form, value: e.target.value })}
+              />
 
               <label className="block text-sm">Href</label>
-              <input className="w-full rounded-lg border px-3 py-2" value={form.href || ""} onChange={(e) => setForm({ ...form, href: e.target.value })} />
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.href || ""}
+                onChange={(e) => setForm({ ...form, href: e.target.value })}
+              />
 
               <div className="flex items-center gap-2">
-                <input id="contact-newpage" type="checkbox" className="!relative" checked={form.newPage || false} onChange={(e) => setForm({ ...form, newPage: e.target.checked })} />
-                <label htmlFor="contact-newpage" className="text-sm">Open in new page</label>
+                <input
+                  id="contact-newpage"
+                  type="checkbox"
+                  className="!relative"
+                  checked={form.newPage || false}
+                  onChange={(e) =>
+                    setForm({ ...form, newPage: e.target.checked })
+                  }
+                />
+                <label htmlFor="contact-newpage" className="text-sm">
+                  Open in new page
+                </label>
               </div>
             </>
           )}
         </div>
 
         <div className="flex justify-end gap-3 mt-6">
-          <button className="rounded-full border px-4 py-2" onClick={() => navigate("/footer")}>Cancel</button>
-          <button className="rounded-full bg-primary px-4 py-2 text-white" onClick={handleSaveHandler}>Save</button>
+          <button
+            className="rounded-full border px-4 py-2"
+            onClick={() => navigate("/footer")}
+          >
+            Cancel
+          </button>
+          <button
+            className="rounded-full bg-primary px-4 py-2 text-white"
+            onClick={handleSaveHandler}
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>
@@ -129,11 +218,16 @@ const EditFooterItemPage = () => {
 
   async function handleSaveHandler() {
     try {
-      const arr = [...(footer[tab] || [])];
-      arr[parseInt(index, 10)] = form;
-      const working = { ...(footer || {}), [tab]: arr };
-            console.log(working)
-      await dispatch(updateFooter({body:working})).unwrap();
+      let working = { ...(footer || {}) };
+
+      if (tab === "address") {
+        working.address = form;
+      } else {
+        const arr = [...(footer[tab] || [])];
+        arr[parseInt(index, 10)] = form;
+        working[tab] = arr;
+      }
+      await dispatch(updateFooter({ body: working })).unwrap();
       toast.success("Updated");
       navigate("/footer");
     } catch (err) {

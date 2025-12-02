@@ -8,6 +8,7 @@ import {
   fetchPartnerById,
   updatePartner,
 } from "../../store/slices/partnersSlice";
+import MultiSelect from "../../UI/MultiSelect";
 
 export const PartnerEditPage = () => {
   const { id } = useParams();
@@ -78,7 +79,14 @@ export const PartnerEditPage = () => {
         expectedAnswer: w.expectedAnswer || "",
       })) || [{ question: "", expectedAnswer: "" }]
     );
+    partnerDetail.wishes?.forEach(async (w, index) => {
+      const question =
+        typeof w.question === "object" ? w.question.question : w.question;
 
+      if (question) {
+        await fetchOptionsForQuestion(question, index);
+      }
+    });
     if (partnerDetail.leadTypes?.length) {
       setLeadTypes(
         partnerDetail.leadTypes.map((lt) => ({
@@ -113,7 +121,24 @@ export const PartnerEditPage = () => {
     const { name, value, checked, type } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
+  const fetchOptionsForQuestion = async (question, index) => {
+    if (!question) return;
 
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/partners/anwser?question=${question}`
+      );
+
+      const options = res.data?.options || [];
+
+      // Attach options to that wish
+      const updated = [...wishes];
+      updated[index].options = options;
+setWishes(updated);
+    } catch (err) {
+      console.error("Failed to load options:", err);
+    }
+  };
   const handleLeadTypeChange = (index, field, value) => {
     const updated = [...leadTypes];
     updated[index][field] = field === "price" ? Number(value) : value;
@@ -263,7 +288,7 @@ export const PartnerEditPage = () => {
                 className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
-              <div>
+            <div>
               <label className="text-sm font-semibold text-slate-700">
                 Total Leads
               </label>
@@ -455,13 +480,15 @@ export const PartnerEditPage = () => {
                   <label className="text-sm font-medium">Question</label>
                   <select
                     value={wish.question}
-                    onChange={(e) =>
-                      handleWishChange(index, "question", e.target.value)
-                    }
+                    onChange={async (e) => {
+                      const selectedQuestion = e.target.value;
+                      handleWishChange(index, "question", selectedQuestion);
+                      await fetchOptionsForQuestion(selectedQuestion, index);
+                    }}
                     className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
                   >
                     <option value="">Select question</option>
-                    <option value="postalCode">Postal Code</option>
+                    {/* <option value="postalCode">Postal Code</option> */}
 
                     {allQuestions.map((q, i) => (
                       <option key={i} value={q.question}>
@@ -471,8 +498,19 @@ export const PartnerEditPage = () => {
                   </select>
                 </div>
 
-                <div className="mb-3">
-                  <label className="text-sm font-medium">Expected Answer</label>
+                {wish.options && wish.options.length > 1 ? (
+                  <MultiSelect
+                    options={wish.options}
+                    value={
+                      Array.isArray(wish.expectedAnswer)
+                        ? wish.expectedAnswer
+                        : []
+                    }
+                    onChange={(selectedValues) =>
+                      handleWishChange(index, "expectedAnswer", selectedValues)
+                    }
+                  />
+                ) : (
                   <input
                     type="text"
                     value={wish.expectedAnswer}
@@ -482,7 +520,7 @@ export const PartnerEditPage = () => {
                     placeholder="Enter expected answer"
                     className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
                   />
-                </div>
+                )}
               </div>
             ))}
 

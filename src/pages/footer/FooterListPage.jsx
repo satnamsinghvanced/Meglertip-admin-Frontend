@@ -19,6 +19,9 @@ const TABS = [
   "socialLinks",
   "contactInfo",
   "footerLinks",
+  "footerText",
+  "address",
+
 ];
 
 const FooterListPage = () => {
@@ -34,7 +37,10 @@ const FooterListPage = () => {
     dispatch(fetchFooter());
   }, [dispatch]);
 
-  const items = footer?.[activeTab] || [];
+const items =
+  activeTab === "address"
+    ? [footer?.address || {}] 
+    : footer?.[activeTab] || [];
   const totalPages = Math.max(1, Math.ceil(items.length / limit));
   const paginated = items.slice((page - 1) * limit, (page - 1) * limit + limit);
 
@@ -64,6 +70,8 @@ const FooterListPage = () => {
             "socialLinks",
             "contactInfo",
             "footerLinks",
+            "footerText",
+            // "address"
           ].includes(activeTab)
             ? [
                 {
@@ -141,6 +149,19 @@ const FooterListPage = () => {
                     <th className="px-6 py-3">Text</th>
                     <th className="px-6 py-3">Href</th>
                     <th className="px-6 py-3">Actions</th>
+                  </>
+                )}
+                {["footerText"].includes(activeTab) && (
+                  <>
+                    <th className="px-6 py-3">Text</th>
+                    {/* <th className="px-6 py-3">Href</th> */}
+                    <th className="px-6 py-3 ">Actions</th>
+                  </>
+                )}
+                {["address"].includes(activeTab) && (
+                  <>
+                    <th className="px-6 py-3">Address</th>
+                    <th className="px-6 py-3 ">Actions</th>
                   </>
                 )}
                 {activeTab === "socialLinks" && (
@@ -253,7 +274,64 @@ const FooterListPage = () => {
                         </td>
                       </>
                     )}
-
+                    {["footerText"].includes(activeTab) && (
+                      <>
+                        <td className="px-6 py-4 font-medium text-slate-900">
+                          {item.text}
+                        </td>
+                      
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-start gap-2">
+                            <button
+                              className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
+                              onClick={() =>
+                                navigate(
+                                  `/footer/edit/${activeTab}/${
+                                    (page - 1) * limit + idx
+                                  }`
+                                )
+                              }
+                            >
+                              <AiTwotoneEdit size={16} />
+                            </button>
+                            <button
+                              className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
+                              onClick={() => handleDelete(idx)}
+                            >
+                              <RiDeleteBin5Line size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
+                     {["address"].includes(activeTab) && (
+                      <>
+                        <td className="px-6 py-4 font-medium text-slate-900">
+                          {item.text}
+                        </td>
+                      
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-start gap-2">
+                            <button
+                              className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
+                              onClick={() =>
+                                navigate(
+                                  `/footer/edit/${activeTab}`
+                                )
+                              }
+                            >
+                              <AiTwotoneEdit size={16} />
+                            </button>
+                            <button
+                              className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
+                              onClick={() => handleDelete(idx)}
+                            >
+                              <RiDeleteBin5Line size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
                     {activeTab === "socialLinks" && (
                       <>
                         <td className="px-6 py-4 font-medium text-slate-900">
