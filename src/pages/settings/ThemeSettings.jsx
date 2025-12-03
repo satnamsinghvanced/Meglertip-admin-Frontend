@@ -162,38 +162,49 @@ const ThemeSettings = () => {
   //   setRemovedLogos((prev) => ({ ...prev, [field]: true }));
   // };
 
-  const saveLogos = async () => {
-    if (!themeId) return toast.error("Theme ID not found!");
+const saveLogos = async () => {
+  if (!themeId) return toast.error("Theme ID not found!");
 
-    const formData = new FormData();
-    Object.keys(logoFiles).forEach((key) => {
-      if (logoFiles[key]) formData.append(key, logoFiles[key]);
-      if (removedLogos[key]) formData.append(`remove_${key}`, true);
+  const formData = new FormData();
+
+  Object.keys(logoFiles).forEach((key) => {
+    if (logoFiles[key]) formData.append(key, logoFiles[key]);
+    if (removedLogos[key]) formData.append(`remove_${key}`, true);
+  });
+
+  if (wordmarkText.wordmark)
+    formData.append("wordmarkText", wordmarkText.wordmark);
+
+  if (wordmarkText.wordmarkDark)
+    formData.append("wordmarkDarkText", wordmarkText.wordmarkDark);
+
+  // DEBUG LOG
+  console.log("------ FormData Payload ------");
+  for (const pair of formData.entries()) {
+    console.log(pair[0], pair[1]);
+  }
+  console.log("--------------------------------");
+
+  try {
+    await dispatch(uploadLogos({ id: themeId, files: formData })).unwrap();
+    toast.success("Logos updated successfully!");
+
+    setRemovedLogos({});
+    setLogoFiles({
+      logo: null,
+      logoDark: null,
+      wordmark: null,
+      wordmarkDark: null,
+      lettermark: null,
+      tagline: null,
     });
 
-    if (wordmarkText.wordmark)
-      formData.append("wordmarkText", wordmarkText.wordmark);
-    if (wordmarkText.wordmarkDark)
-      formData.append("wordmarkDarkText", wordmarkText.wordmarkDark);
+    dispatch(fetchTheme());
+  } catch (err) {
+    toast.error(err.message || "Failed to update logos");
+  }
+};
 
-    try {
-      await dispatch(uploadLogos({ id: themeId, files: formData })).unwrap();
-      toast.success("Logos updated successfully!");
-      setEditingLogos(false);
-      setRemovedLogos({});
-      setLogoFiles({
-        logo: null,
-        logoDark: null,
-        wordmark: null,
-        wordmarkDark: null,
-        lettermark: null,
-        tagline: null,
-      });
-      dispatch(fetchTheme());
-    } catch (err) {
-      toast.error(err.message || "Failed to update logos");
-    }
-  };
 
   if (loading || !localTheme)
     return <p className="p-10 text-center">Loading theme...</p>;
@@ -205,15 +216,15 @@ const ThemeSettings = () => {
       <div className="bg-white rounded-2xl p-8 shadow-md relative space-y-8">
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h4 className="font-bold text-xl">Logos Settings</h4>
-            {!editingLogos && (
+            <h4 className="font-bold text-xl">Logo's Settings</h4>
+            {/* {!editingLogos && (
               <button
                 onClick={() => setEditingLogos(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-500"
               >
                 <AiTwotoneEdit className="w-5 h-5" />
               </button>
-            )}
+            )} */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -290,7 +301,7 @@ const ThemeSettings = () => {
                           <RiDeleteBin5Line />
                         </button>
                       )} */}
-                    {editingLogos && (
+                    {/* {editingLogos && (
                       <input
                         type="file"
                         accept="image/*"
@@ -299,7 +310,7 @@ const ThemeSettings = () => {
                           handleLogoChange(key, e.target.files[0])
                         }
                       />
-                    )}
+                    )} */}
                     <input
                       type="file"
                       className="w-full"
@@ -325,7 +336,7 @@ const ThemeSettings = () => {
             ))}
           </div>
 
-          {editingLogos && (
+          {/* {editingLogos && (
             <div className="flex gap-4 mt-4">
               <button
                 onClick={saveLogos}
@@ -340,7 +351,7 @@ const ThemeSettings = () => {
                 Cancel
               </button>
             </div>
-          )}
+          )} */}
           <button
             onClick={saveLogos}
             className="mt-4 px-6 py-3 bg-[#161925] text-white rounded-xl hover:bg-black transition w-full md:w-75"
