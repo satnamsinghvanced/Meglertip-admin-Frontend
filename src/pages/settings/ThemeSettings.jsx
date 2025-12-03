@@ -198,7 +198,7 @@ const ThemeSettings = () => {
   if (loading || !localTheme)
     return <p className="p-10 text-center">Loading theme...</p>;
 
-  const IMAGE_URL = "http://localhost:9090/";
+  const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
   return (
     <div>
