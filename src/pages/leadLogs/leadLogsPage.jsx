@@ -138,7 +138,13 @@ const LeadLogs = () => {
                     <td className="px-6 py-4">{lead.dynamicFields?.name}</td>
                     <td className="px-6 py-4">{lead.dynamicFields?.email}</td>
                     <td className="px-6 py-4">{lead.dynamicFields?.phone}</td>
-                    <td className="px-6 py-4">{lead.partner?.name || "-"}</td>
+                    <td className="px-6 py-4">
+                      {lead.partnerIds?.length
+                        ? lead.partnerIds.map((p, i) => (
+                            <div key={i}>{p.name}</div>
+                          ))
+                        : "-"}
+                    </td>
 
                     <td className="px-6 py-4">
                       <span
