@@ -31,11 +31,21 @@ import { MdOutlineArticle } from "react-icons/md";
 import { SiReacthookform } from "react-icons/si";
 import { ROUTES } from "../consts/routes";
 import { MdOutlineDynamicFeed } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTheme } from "../store/slices/website_settingsSlice";
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   const location = useLocation();
+  console.log(location.pathname);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { logos } = useSelector((state) => state.settings);
+  // console.log(logos);
+  useEffect(() => {
+    dispatch(fetchTheme());
+  }, [dispatch]);
+
   const [openDropdown, setOpenDropdown] = useState(null);
   const adminRoutes = [
     {
@@ -48,56 +58,50 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: MdOutlineDynamicFeed,
       isDropdown: true,
       children: [
-        { name: "Homepage", href: ROUTES.HOMEPAGE, icon: Home },
-        { name: "About Page", href: ROUTES.ABOUT, icon: Info},
-        { name: "Article Page", href: ROUTES.ARTICLEPAGE, icon: MdOutlineArticle},
-        { name: "Form Page", href: ROUTES.FORMPAGE, icon: SiReacthookform},
-        { name: "Partner  Page", href: ROUTES.PARTNER , icon: UserPlus},
-        { name: "Quotes Section", href: ROUTES.QUOTES , icon: Quote},
-        { name: "Faq Page", href: ROUTES.FAQPAGE, icon: FaQ},
-        { name: "Real Estate Agents", href: ROUTES.REAL_ESTATE_AGENTS ,  icon: MdOutlineRealEstateAgent},
+        {
+          name: "Homepage",
+          href: ROUTES.HOMEPAGE,
+          icon: Home,
+        },
+        { name: "About Page", href: ROUTES.ABOUT, icon: Info },
+        {
+          name: "Article Page",
+          href: ROUTES.ARTICLEPAGE,
+          icon: MdOutlineArticle,
+        },
+        {
+          name: "Form Page",
+          href: ROUTES.FORMPAGE,
+          icon: SiReacthookform,
+        },
+        {
+          name: "Partner Page",
+          href: ROUTES.PARTNER,
+          icon: UserPlus,
+        },
+        {
+          name: "Quotes Section",
+          href: ROUTES.QUOTES,
+          icon: Quote,
+        },
+        {
+          name: "Faq Page",
+          href: ROUTES.FAQPAGE,
+          icon: FaQ,
+        },
+        {
+          name: "Real Estate Agents",
+          href: ROUTES.REAL_ESTATE_AGENTS,
+          icon: MdOutlineRealEstateAgent,
+        },
+        {
+          name: "Footer",
+          icon: MdOutlineFindInPage,
+          href: ROUTES.FOOTER,
+        },
       ],
     },
-    // {
-    //   name: "Homepage",
-    //   icon: Home,
-    //   href: ROUTES.HOMEPAGE,
-    // },
-    // {
-    //   name: "About Page",
-    //   icon: Info,
-    //   href: ROUTES.ABOUT,
-    // },
-    // {
-    //   name: "Article Page",
-    //   icon: MdOutlineArticle,
-    //   href: ROUTES.ARTICLEPAGE,
-    // },
-    // {
-    //   name: "Form Page",
-    //   icon: SiReacthookform,
-    //   href: ROUTES.FORMPAGE,
-    // },
-    // {
-    //   name: "Partner  Page",
-    //   icon: UserPlus,
-    //   href: ROUTES.PARTNER,
-    // },
-    // {
-    //   name: "Quotes Section",
-    //   icon: Quote,
-    //   href: ROUTES.QUOTES,
-    // },
-    // {
-    //   name: "Faq Page",
-    //   icon: FaQ,
-    //   href: ROUTES.FAQPAGE,
-    // },
-    // {
-    //   name: "Real Estate Agents Page",
-    //   icon: MdOutlineRealEstateAgent,
-    //   href: ROUTES.REAL_ESTATE_AGENTS,
-    // },
+
     {
       name: "Forms",
       icon: FileSpreadsheet,
@@ -119,11 +123,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.FAQ,
     },
 
-    {
-      name: "Footer",
-      icon: MdOutlineFindInPage,
-      href: ROUTES.FOOTER,
-    },
     {
       name: "Articles",
       icon: BookOpenText,
@@ -152,7 +151,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     {
       name: "Email Templates",
       icon: Mail,
-      href: ROUTES.EMAIL,
+      href: ROUTES.EMAIL_TEMPLATES,
     },
     {
       name: "Term of Service",
@@ -176,7 +175,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.SETTINGS,
     },
   ];
-
+  const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   const navigationRoutes = adminRoutes;
 
   return (
@@ -197,12 +196,21 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       >
         <div className="flex items-center justify-between px-4 py-5">
           {isMiniSidebarOpen && (
-            <Link to="/homepage" className="flex items-center gap-2">
-              <img
-                src="/images/boligtip.png"
-                alt="logo"
-                className="h-8 w-auto object-contain"
-              />
+            <Link to="/" className="flex items-center gap-2">
+              {logos?.logoDark && (
+                <img
+                  src={`${IMAGE_URL}${logos.logoDark}`}
+                  alt="Logo Dark"
+                  className="h-8 w-auto object-contain"
+                />
+              )}
+              {logos?.wordmarkDark && (
+                <img
+                  src={`${IMAGE_URL}${logos.wordmarkDark}`}
+                  alt="Wordmark Dark"
+                  className="h-8 w-auto object-contain"
+                />
+              )}
             </Link>
           )}
           <button
@@ -228,6 +236,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
             <ul className="space-y-1">
               {navigationRoutes.map((item, index) => {
                 const isActive = location.pathname === item.href;
+                // console.log(item.href )
 
                 // ----- DROPDOWN ITEM -----
                 if (item.isDropdown) {
@@ -237,9 +246,11 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                     <li key={index}>
                       <button
                         className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition
-    text-slate-600 hover:bg-slate-100 ${
-      isMiniSidebarOpen ? "justify-between" : "justify-center"
-    }`}
+                                   text-slate-600 hover:bg-slate-100 ${
+                                     isMiniSidebarOpen
+                                       ? "justify-between"
+                                       : "justify-center"
+                                   }`}
                         onClick={() =>
                           setOpenDropdown(isOpen ? null : item.name)
                         }

@@ -23,7 +23,7 @@ export const ROUTES = {
   PARTNER: "/partner",
   TERM_OF_SERVICE: "/term-of-service",
   PRIVACY_POLICY: "/privacy-policy",
-  EMAIL: "email-templates",
+  EMAIL_TEMPLATES: "/email-templates",
   COUNTY: "/counties",
   COUNTY_CREATE: "/counties/create",
   COUNTY_VIEW: "/county/:countyId",
