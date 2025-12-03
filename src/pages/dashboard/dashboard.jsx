@@ -118,7 +118,7 @@ const Dashboard = () => {
   const [endDate, setEndDate] = useState(
     dayjs().endOf("month").format("YYYY-MM-DD")
   );
-const [range, setRange] = useState("");
+  const [range, setRange] = useState("");
   const fetchStats = () => {
     axios
       .get(
@@ -188,43 +188,43 @@ const [range, setRange] = useState("");
               Quick Range
             </label>
             <select
-  className="border border-slate-200 p-2 rounded w-40"
-  value={range}
-  onChange={(e) => {
-    setRange(e.target.value);
-    const today = dayjs();
-    let start, end;
+              className="border border-slate-200 p-2 rounded w-40"
+              value={range}
+              onChange={(e) => {
+                setRange(e.target.value);
+                const today = dayjs();
+                let start, end;
 
-    switch (e.target.value) {
-      case "today":
-        start = today.format("YYYY-MM-DD");
-        end = today.format("YYYY-MM-DD");
-        break;
-      case "7days":
-        start = today.subtract(6, "day").format("YYYY-MM-DD");
-        end = today.format("YYYY-MM-DD");
-        break;
-      case "15days":
-        start = today.subtract(14, "day").format("YYYY-MM-DD");
-        end = today.format("YYYY-MM-DD");
-        break;
-      case "30days":
-        start = today.subtract(29, "day").format("YYYY-MM-DD");
-        end = today.format("YYYY-MM-DD");
-        break;
-      case "month":
-        start = today.startOf("month").format("YYYY-MM-DD");
-        end = today.format("YYYY-MM-DD");
-        break;
+                switch (e.target.value) {
+                  case "today":
+                    start = today.format("YYYY-MM-DD");
+                    end = today.format("YYYY-MM-DD");
+                    break;
+                  case "7days":
+                    start = today.subtract(6, "day").format("YYYY-MM-DD");
+                    end = today.format("YYYY-MM-DD");
+                    break;
+                  case "15days":
+                    start = today.subtract(14, "day").format("YYYY-MM-DD");
+                    end = today.format("YYYY-MM-DD");
+                    break;
+                  case "30days":
+                    start = today.subtract(29, "day").format("YYYY-MM-DD");
+                    end = today.format("YYYY-MM-DD");
+                    break;
+                  case "month":
+                    start = today.startOf("month").format("YYYY-MM-DD");
+                    end = today.format("YYYY-MM-DD");
+                    break;
 
-      default:
-        return;
-    }
+                  default:
+                    return;
+                }
 
-    setStartDate(start);
-    setEndDate(end);
-  }}
->
+                setStartDate(start);
+                setEndDate(end);
+              }}
+            >
               <option value="">Select Range</option>
               <option value="today">Today</option>
               <option value="7days">Last 7 Days</option>
@@ -294,9 +294,8 @@ const [range, setRange] = useState("");
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Total Leads Box */}
         <div className="rounded-xl border border-slate-200 bg-white p-6">
-       
           <p className="text-sm text-slate-500">Total Leads Sent</p>
-               <p className="mt-4"> </p> 
+          <p className="mt-4"> </p>
           <p className="text-3xl font-bold text-slate-900">
             {statsType?.totalLeads || 0}
           </p>
