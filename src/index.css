@@ -122,3 +122,6 @@ body.dark .darkModelogo {
   border:none;
   
 }
+.divide-y > * {
+  border-bottom-width: 0 !important;
+}
