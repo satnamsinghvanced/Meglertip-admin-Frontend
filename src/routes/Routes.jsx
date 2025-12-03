@@ -60,6 +60,7 @@ import LeadLogs from "../pages/leadLogs/leadLogsPage";
 import FaqPage from "../pages/faqPage/FaqPage";
 import ArticleUIPage from "../pages/articlePage/ArticlePage";
 import FormUIPage from "../pages/formpage/FormPage";
+import FormManagePage from "../pages/forms/FormTypeSelectionPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ const Routes = () => {
         <Route path={ROUTES.FORMS} element={<FormPage />} />
         <Route
           path="/admin/form-selection"
-          element={<FormTypeSelectionPage />}
+          element={<FormManagePage />}
         />
 
         <Route
@@ -164,7 +165,7 @@ const Routes = () => {
         <Route path={ROUTES.FORMPAGE} element={<FormUIPage />} />
 
         <Route path={ROUTES.LOGIN} element={<LoginForm />} />
-        <Route path={ROUTES.EMAIL} element={<EmailTemplateList />} />
+        <Route path={ROUTES.EMAIL_TEMPLATES} element={<EmailTemplateList />} />
         <Route path="/email/create" element={<CreateEmailTemplate />} />
         <Route
           path="/email/edit/:templateId"
