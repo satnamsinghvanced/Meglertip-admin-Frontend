@@ -118,7 +118,7 @@ const Dashboard = () => {
   const [endDate, setEndDate] = useState(
     dayjs().endOf("month").format("YYYY-MM-DD")
   );
-
+const [range, setRange] = useState("");
   const fetchStats = () => {
     axios
       .get(
@@ -188,45 +188,43 @@ const Dashboard = () => {
               Quick Range
             </label>
             <select
-              className="border border-slate-200 p-2 rounded w-40"
-              onChange={(e) => {
-                const today = dayjs();
-                let start, end;
+  className="border border-slate-200 p-2 rounded w-40"
+  value={range}
+  onChange={(e) => {
+    setRange(e.target.value);
+    const today = dayjs();
+    let start, end;
 
-                switch (e.target.value) {
-                  case "today":
-                    start = today.format("YYYY-MM-DD");
-                    end = today.format("YYYY-MM-DD");
-                    break;
+    switch (e.target.value) {
+      case "today":
+        start = today.format("YYYY-MM-DD");
+        end = today.format("YYYY-MM-DD");
+        break;
+      case "7days":
+        start = today.subtract(6, "day").format("YYYY-MM-DD");
+        end = today.format("YYYY-MM-DD");
+        break;
+      case "15days":
+        start = today.subtract(14, "day").format("YYYY-MM-DD");
+        end = today.format("YYYY-MM-DD");
+        break;
+      case "30days":
+        start = today.subtract(29, "day").format("YYYY-MM-DD");
+        end = today.format("YYYY-MM-DD");
+        break;
+      case "month":
+        start = today.startOf("month").format("YYYY-MM-DD");
+        end = today.format("YYYY-MM-DD");
+        break;
 
-                  case "7days":
-                    start = today.subtract(6, "day").format("YYYY-MM-DD");
-                    end = today.format("YYYY-MM-DD");
-                    break;
+      default:
+        return;
+    }
 
-                  case "15days":
-                    start = today.subtract(14, "day").format("YYYY-MM-DD");
-                    end = today.format("YYYY-MM-DD");
-                    break;
-
-                  case "30days":
-                    start = today.subtract(29, "day").format("YYYY-MM-DD");
-                    end = today.format("YYYY-MM-DD");
-                    break;
-
-                  case "month":
-                    start = today.startOf("month").format("YYYY-MM-DD");
-                    end = today.format("YYYY-MM-DD");
-                    break;
-
-                  default:
-                    return;
-                }
-
-                setStartDate(start);
-                setEndDate(end);
-              }}
-            >
+    setStartDate(start);
+    setEndDate(end);
+  }}
+>
               <option value="">Select Range</option>
               <option value="today">Today</option>
               <option value="7days">Last 7 Days</option>
