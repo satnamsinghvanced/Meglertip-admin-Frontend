@@ -19,6 +19,7 @@ const FormUIPage = () => {
   const [form, setForm] = useState({
     title: "",
     description: "",
+    multipleSelect: false,
     categoriesHeading: "",
 
     metaTitle: "",
@@ -134,6 +135,24 @@ const FormUIPage = () => {
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
+          <div className="flex items-center gap-3">
+  <label className="font-medium">Form Type (Multiple Select)</label>
+  <div
+    onClick={() =>
+      setForm({ ...form, multipleSelect: !form.multipleSelect })
+    }
+    className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
+      form.multipleSelect ? "bg-primary/80" : "bg-gray-300"
+    }`}
+  >
+    <div
+      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+        form.multipleSelect ? "translate-x-6" : ""
+      }`}
+    ></div>
+  </div>
+</div>
+
           {/* <Input
             label="Categories Heading"
             value={form.categoriesHeading}
