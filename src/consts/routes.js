@@ -1,5 +1,5 @@
 export const ROUTES = {
-  HOME: "/",
+  HOME: "/dashboard",
   ME: "/me",
   LOGIN: "/login",
   LOGIN_PAGE: "/",
@@ -25,7 +25,7 @@ export const ROUTES = {
   PRIVACY_POLICY: "/privacy-policy",
   EMAIL_TEMPLATES: "/email-templates",
   COUNTY: "/counties",
-  COUNTY_CREATE: "/counties/create",
+  COUNTY_CREATE: "/county/create",
   COUNTY_VIEW: "/county/:countyId",
   COUNTY_EDIT: "/county/:countyId/Edit",
   CITIES: "/counties",

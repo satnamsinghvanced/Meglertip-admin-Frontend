@@ -23,7 +23,6 @@ import { MdOutlineFindInPage } from "react-icons/md";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
 import { FaQ } from "react-icons/fa6";
 import { HiChevronDown, HiChevronRight } from "react-icons/hi";
-
 import { TbLogs } from "react-icons/tb";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { MdOutlineContactSupport } from "react-icons/md";
@@ -37,16 +36,41 @@ import { fetchTheme } from "../store/slices/website_settingsSlice";
 
 const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   const location = useLocation();
-  console.log(location.pathname);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { logos } = useSelector((state) => state.settings);
-  // console.log(logos);
+
   useEffect(() => {
     dispatch(fetchTheme());
   }, [dispatch]);
 
   const [openDropdown, setOpenDropdown] = useState(null);
+
+  // ⭐ UNIVERSAL ACTIVE CHECK FUNCTION ⭐
+  const getIsActive = (href) => {
+    if (!href) return false;
+
+    const path = location.pathname;
+
+    // Exact match
+    if (path === href) return true;
+
+    // Nested routes
+    if (path.startsWith(href + "/")) return true;
+
+    // Handle singular ↔ plural auto-match
+    // counties -> county, categories -> category
+    const singular = href.replace(/ies$/, "y").replace(/s$/, "");
+    const plural = singular.endsWith("y")
+      ? singular.slice(0, -1) + "ies"
+      : singular + "s";
+
+    if (path.startsWith("/" + singular)) return true;
+    if (path.startsWith("/" + plural)) return true;
+
+    return false;
+  };
+
   const adminRoutes = [
     {
       name: "Dashboard",
@@ -101,7 +125,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
         },
       ],
     },
-
     {
       name: "Forms",
       icon: FileSpreadsheet,
@@ -122,7 +145,6 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       icon: HelpCircle,
       href: ROUTES.FAQ,
     },
-
     {
       name: "Articles",
       icon: BookOpenText,
@@ -175,6 +197,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       href: ROUTES.SETTINGS,
     },
   ];
+
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   const navigationRoutes = adminRoutes;
 
@@ -182,9 +205,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     <>
       <div
         className={`${
-          isMiniSidebarOpen
-            ? "bg-black/40 w-full h-full fixed inset-0 z-30"
-            : ""
+          isMiniSidebarOpen ? "bg-black/40 w-full h-full fixed inset-0 z-30" : ""
         } md:hidden`}
         onClick={onCloseSidebar}
       />
@@ -196,7 +217,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
       >
         <div className="flex items-center justify-between px-4 py-5">
           {isMiniSidebarOpen && (
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/dashboard" className="flex items-center gap-2">
               {logos?.logoDark && (
                 <img
                   src={`${IMAGE_URL}${logos.logoDark}`}
@@ -227,30 +248,20 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
 
         <div className="mt-2 flex flex-1 flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto px-3">
-            <p
-              className={`mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 ${
-                isMiniSidebarOpen ? "pl-2" : "text-center"
-              }`}
-            ></p>
-
             <ul className="space-y-1">
               {navigationRoutes.map((item, index) => {
-                const isActive = location.pathname === item.href;
-                // console.log(item.href )
+                const isActive = getIsActive(item.href);
 
-                // ----- DROPDOWN ITEM -----
+                // ------- DROPDOWN -------
                 if (item.isDropdown) {
                   const isOpen = openDropdown === item.name;
 
                   return (
                     <li key={index}>
                       <button
-                        className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition
-                                   text-slate-600 hover:bg-slate-100 ${
-                                     isMiniSidebarOpen
-                                       ? "justify-between"
-                                       : "justify-center"
-                                   }`}
+                        className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition text-slate-600 hover:bg-slate-100 ${
+                          isMiniSidebarOpen ? "justify-between" : "justify-center"
+                        }`}
                         onClick={() =>
                           setOpenDropdown(isOpen ? null : item.name)
                         }
@@ -259,39 +270,28 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                           <span className="flex h-6 w-6 items-center justify-center text-slate-500">
                             <item.icon size={18} />
                           </span>
-                          {isMiniSidebarOpen && (
-                            <span className="truncate">{item.name}</span>
-                          )}
+                          {isMiniSidebarOpen && <span>{item.name}</span>}
                         </div>
 
-                        {/* DROPDOWN ARROW */}
                         {isMiniSidebarOpen &&
                           (isOpen ? (
-                            <HiChevronDown
-                              size={16}
-                              className="text-slate-500"
-                            />
+                            <HiChevronDown size={16} className="text-slate-500" />
                           ) : (
-                            <HiChevronRight
-                              size={16}
-                              className="text-slate-500"
-                            />
+                            <HiChevronRight size={16} className="text-slate-500" />
                           ))}
                       </button>
 
-                      {/* CHILDREN DROPDOWN LIST */}
                       {isOpen && (
                         <ul className="ml-3 space-y-1">
                           {item.children.map((child, i) => (
                             <li key={i}>
                               <button
                                 onClick={() => navigate(child.href)}
-                                className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm transition 
-                      ${
-                        location.pathname === child.href
-                          ? "bg-slate-900 text-white"
-                          : "text-slate-600 hover:bg-slate-100"
-                      }`}
+                                className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm transition ${
+                                  location.pathname === child.href
+                                    ? "bg-slate-900 text-white"
+                                    : "text-slate-600 hover:bg-slate-100"
+                                }`}
                               >
                                 {child.icon && (
                                   <span
@@ -314,7 +314,7 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                   );
                 }
 
-                // ----- NORMAL MENU ITEM -----
+                // ------- NORMAL ITEMS -------
                 return (
                   <li key={index}>
                     <button

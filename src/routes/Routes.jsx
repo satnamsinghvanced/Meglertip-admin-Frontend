@@ -72,9 +72,15 @@ const Routes = () => {
     }
 
     if (token && window.location.pathname === "/login") {
-      navigate("/homepage", { replace: true });
+      navigate("/dashboard", { replace: true });
     }
   }, [token]);
+
+useEffect(() => {
+  if (token && window.location.pathname === "/") {
+    navigate("/dashboard");
+  }
+}, [token, navigate]);
   return (
     <RouteWrapper>
       <Route element={token ? <Layout /> : <AuthLayout />}>

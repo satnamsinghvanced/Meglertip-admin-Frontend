@@ -154,8 +154,8 @@ const CountiesFormPage = () => {
         )}
       />
 
-      <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-1">
-        <div className="rounded-2xl md:p-8  space-y-6 border bg-white border-slate-200 shadow-sm max-w-[800px] m-auto p-4">
+      <form onSubmit={handleSubmit} className="">
+        <div className="rounded-2xl md:p-8  space-y-6 border bg-white border-slate-200 shadow-sm max-w-8xl m-auto p-4">
           <div className="grid gap-4 md:grid-cols-2">
             {[
               { label: "County Name", name: "name" },
