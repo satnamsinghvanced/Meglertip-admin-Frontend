@@ -43,7 +43,7 @@ export const PartnerEditPage = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/lead-type`)
+      .get(`${import.meta.env.VITE_API_URL}/form-select`)
       .then((res) => setLeadTypesList(res.data?.data || []))
       .catch((err) => console.error("Error fetching lead types:", err));
   }, []);
@@ -444,7 +444,7 @@ setWishes(updated);
                 key={idx}
                 className="flex gap-3 mb-3 items-center p-3 rounded-xl"
               >
-                <label className="w-1/2 font-medium">{lt.name}</label>
+                <label className="w-1/2 font-medium">{lt.formTitle}</label>
                 <input
                   type="number"
                   value={lt.price}

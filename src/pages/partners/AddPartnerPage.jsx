@@ -40,14 +40,14 @@ export const AddPartnerPage = () => {
   }, []);
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/lead-type`)
+      .get(`${import.meta.env.VITE_API_URL}/form-select`)
       .then((res) => {
         const list = res.data?.data || [];
         setLeadTypesList(list);
 
         const defaultLeadTypes = list.slice(0, 2).map((type) => ({
           typeId: type._id,
-          name: type.name,
+          formTitle: type.formTitle,
           price: type.price || 0,
         }));
         setLeadTypes(defaultLeadTypes);
@@ -410,7 +410,7 @@ export const AddPartnerPage = () => {
                 key={idx}
                 className="flex gap-3 mb-3 items-center p-3 rounded-xl"
               >
-                <label className="w-1/2 font-medium">{lt.name}</label>
+                <label className="w-1/2 font-medium">{lt.formTitle}</label>
                 <input
                   type="number"
                   value={lt.price}

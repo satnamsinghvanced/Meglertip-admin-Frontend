@@ -119,7 +119,7 @@ const FormManagePage = () => {
     <div className="space-y-6">
       {/* PAGE HEADER */}
       <PageHeader
-        title="Form Manager"
+        title="Form/Lead Manager"
         description="Create, edit, and manage multi-step forms."
         buttonsList={headerButtons}
       />
