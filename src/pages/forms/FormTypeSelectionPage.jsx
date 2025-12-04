@@ -1,157 +1,249 @@
-import React, { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AiTwotoneEdit } from "react-icons/ai";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { LuPlus, LuListChecks } from "react-icons/lu";
 import { toast } from "react-toastify";
-import api from "../../api/axios"; // axios instance
+
+import {
+  getForms,
+  createForm,
+  updateForm,
+  deleteForm,
+} from "../../store/slices/formSelectSlice";
+
+import PageHeader from "../../components/PageHeader";
 import StepsBuilderForm from "./StepsBuilderForm";
+import Pagination from "../../UI/pagination";
+import { useNavigate } from "react-router";
 
 const FormManagePage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { forms, loading } = useSelector((state) => state.formSelect);
+
+  const [page, setPage] = useState(1);
+  const limit = 10;
+  const totalPages = 1; // adjust if backend supports pagination
+
+  // Form fields
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
-  const [forms, setForms] = useState([]);
-  const [loading, setLoading] = useState(false);
-const [selectedForm, setSelectedForm] = useState(null);
-  // Fetch all forms
-  const fetchForms = async () => {
-    try {
-      const { data } = await api.get("/form-select");
-      setForms(data.data || []);
-    } catch (err) {
-      toast.error("Failed to load forms");
-    }
-  };
+  const [editId, setEditId] = useState(null);
+
+  const [selectedForm, setSelectedForm] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [formToDelete, setFormToDelete] = useState(null);
 
   useEffect(() => {
-    fetchForms();
-  }, []);
+    dispatch(getForms());
+  }, [dispatch]);
 
-  const handleCreateForm = async () => {
-    if (!formTitle.trim()) return toast.error("Form Title is required!");
-
-    try {
-      setLoading(true);
-
-      await api.post("/form-select", {
-        formId: formTitle.toLowerCase().replace(/\s+/g, "-"),
-        formTitle,
-        formDescription,
-      });
-
-      toast.success("Form created successfully!");
-
-      setFormTitle("");
-      setFormDescription("");
-
-      fetchForms();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Error creating form");
-    } finally {
-      setLoading(false);
-    }
+  // Reset fields
+  const clearFields = () => {
+    setFormTitle("");
+    setFormDescription("");
+    setEditId(null);
   };
 
-  const deleteForm = async (id) => {
-    try {
-      await api.delete(`/form-select/${id}`);
-      toast.success("Form deleted");
-      fetchForms();
-    } catch (err) {
-      toast.error("Failed to delete");
-    }
+  // Save Form (Create / Update)
+  const handleSave = async () => {
+    if (!formTitle.trim()) return toast.error("Form title is required!");
+
+    const payload = {
+      formId: formTitle.toLowerCase().replace(/\s+/g, "-"),
+      formTitle,
+      formDescription,
+    };
+
+    const action = editId
+      ? updateForm({ id: editId, payload })
+      : createForm(payload);
+
+    const res = await dispatch(action);
+
+    if (res.meta.requestStatus === "fulfilled") {
+      toast.success(editId ? "Form updated!" : "Form created!");
+      clearFields();
+      dispatch(getForms());
+    } else toast.error(res.payload || "Something went wrong");
   };
-if (selectedForm) {
+
+  const handleEdit = (form) => {
+    setEditId(form._id);
+    setFormTitle(form.formTitle);
+    setFormDescription(form.formDescription);
+  };
+
+  const handleDeleteClick = (form) => {
+    setFormToDelete(form);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteForm = async () => {
+    if (!formToDelete) return;
+    const res = await dispatch(deleteForm(formToDelete._id));
+
+    if (res.meta.requestStatus === "fulfilled") {
+      toast.success("Form deleted!");
+      dispatch(getForms());
+    } else toast.error(res.payload);
+
+    setShowDeleteModal(false);
+    setFormToDelete(null);
+  };
+
+  const headerButtons = [
+    {
+      value: "Create Form",
+      variant: "primary",
+      icon: <LuPlus size={18} />,
+      className:
+        "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
+      onClick: () => navigate("/forms/create"),
+    },
+  ];
+
+  // If steps mode active
+  if (selectedForm) {
+    return (
+      <StepsBuilderForm
+        form={selectedForm}
+        onBack={() => setSelectedForm(null)}
+      />
+    );
+  }
+
   return (
-    <StepsBuilderForm
-      form={selectedForm}
-      onBack={() => setSelectedForm(null)}
-    />
-  );
-}
-  return (
-    <div className="min-h-screen  ">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Manage Forms</h1>
+    <div className="space-y-6">
+      {/* PAGE HEADER */}
+      <PageHeader
+        title="Form Manager"
+        description="Create, edit, and manage multi-step forms."
+        buttonsList={headerButtons}
+      />
 
-      {/* Create Form */}
-      <div className="bg-white p-4 rounded-2xl shadow-md border border-slate-200 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Create New Form</h2>
-
-        <div className="grid grid-cols-1 gap-4">
-          <input
-            type="text"
-            placeholder="Form Title"
-            value={formTitle}
-            onChange={(e) => setFormTitle(e.target.value)}
-            className="border border-slate-200 p-3 rounded-lg w-full"
-          />
-
-          <textarea
-            placeholder="Form Description"
-            value={formDescription}
-            onChange={(e) => setFormDescription(e.target.value)}
-            className="border border-slate-200 p-3 rounded-lg w-full"
-            rows="2"
-          />
-
-          <button
-            onClick={handleCreateForm}
-            disabled={loading}
-            className="px-4 py-2 bg-[#161925] text-white rounded-lg hover:bg-black transition"
-          >
-            {loading ? "Saving..." : "Create Form"}
-          </button>
+      {/* LIST ALL FORMS */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="px-6 py-4 border border-slate-200">
+          <p className="font-semibold text-slate-900 text-sm">Forms Overview</p>
+          <p className="text-xs text-slate-500">
+            {loading ? "Loading..." : `${forms.length} items`}
+          </p>
         </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y text-sm">
+            <thead className="bg-slate-50 text-xs uppercase text-slate-500  ">
+              <tr>
+                <th className="px-6 py-3 ">#</th>
+                <th className="px-6 py-3 ">Title</th>
+                <th className="px-6 py-3">Description</th>
+                <th className="px-6 py-3">Price</th>
+                <th className="px-6 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y">
+              {loading ? (
+                [...Array(8)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-slate-100 rounded" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-slate-100 rounded" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-slate-100 rounded" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-slate-100 rounded" />
+                    </td>
+                  </tr>
+                ))
+              ) : forms.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="text-center py-6 text-slate-500">
+                    No forms found
+                  </td>
+                </tr>
+              ) : (
+                forms.map((form, index) => (
+                  <tr key={form._id} className="hover:bg-slate-50">
+                    <td className="px-6 py-4 text-slate-500">{index + 1}</td>
+
+                    <td className="px-6 py-4 font-medium text-slate-900">
+                      {form.formTitle}
+                    </td>
+
+                    <td className="px-6 py-4 text-slate-600">
+                      {form.formDescription || "—"}
+                    </td>
+                    <td className="px-6 py-4 text-slate-600">
+                      {form.price || 0}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          className="p-2 border rounded-full text-slate-600 hover:text-black"
+                          onClick={() => navigate(`/forms/${form._id}/edit`)}
+                        >
+                          <AiTwotoneEdit size={16} />
+                        </button>
+
+                        <button
+                          className="p-2 border rounded-full text-blue-600 hover:bg-blue-50"
+                          onClick={() => setSelectedForm(form)}
+                        >
+                          <LuListChecks size={16} />
+                        </button>
+
+                        <button
+                          className="p-2 border rounded-full text-red-500 hover:bg-red-50"
+                          onClick={() => handleDeleteClick(form)}
+                        >
+                          <RiDeleteBin5Line size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination — optional */}
+        {forms.length > 10 && (
+          <div className="border-t px-6 py-4">
+            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+          </div>
+        )}
       </div>
 
-      <h2 className="text-2xl font-bold mb-4">All Forms</h2>
+      {/* DELETE CONFIRM MODAL */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-sm shadow-xl">
+            <p className="font-semibold mb-6 text-center">Delete this form?</p>
 
-      {forms.length === 0 ? (
-        <p>No forms created yet.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {forms.map((form) => (
-            <div
-              key={form._id}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition"
-            >
-              {/* Header */}
-              <div className="flex justify-between items-start">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  {form.formTitle}
-                </h3>
-
-                <span className="text-sm bg-gray-100 px-2 py-1 rounded-lg text-gray-600">
-                  #{form.formNumber}
-                </span>
-              </div>
-
-              {/* Description */}
-              <p className="text-gray-600 mt-3 text-sm leading-relaxed">
-                {form.formDescription || "No description provided."}
-              </p>
-
-              {/* Action Buttons */}
-              <div className="mt-6 flex flex-col gap-3">
-                <button
-                  className="w-full px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition"
-                  onClick={() => toast.info("Edit functionality coming soon")}
-                >
-                  Edit Form
-                </button>
-
-                <button
-                  className="w-full px-4 py-2 bg-[#23395B] text-white rounded-lg text-sm hover:bg-[#18283f] transition"
-                 onClick={() => setSelectedForm(form)}
-                >
-                  Add Steps
-                </button>
-
-                {/* <button
-                  className="w-full px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition"
-                  onClick={() => deleteForm(form._id)}
-                >
-                  Delete
-                </button> */}
-              </div>
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 rounded-full border"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded-full bg-red-600 text-white"
+                onClick={handleDeleteForm}
+              >
+                Delete
+              </button>
             </div>
-          ))}
+          </div>
         </div>
       )}
     </div>

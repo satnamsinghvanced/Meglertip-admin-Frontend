@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AiTwotoneEdit } from "react-icons/ai";
@@ -8,41 +7,43 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
-import { getCounties, deleteCounty } from "../../store/slices/countySlice";
 import { ROUTES } from "../../consts/routes";
+import { getCounties, deleteCounty } from "../../store/slices/countySlice";
 
 export const CountyPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { counties, loading, error } = useSelector((state) => state.counties);
+
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [countyToDelete, setCountyToDelete] = useState(null);
+  const [search, setSearch] = useState("");
+
+  const fetchCounties = async () => {
+    try {
+      const res = await dispatch(getCounties({ page, limit, search })).unwrap();
+      setTotalPages(res.totalPages || 1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    const fetchCounties = async () => {
-      try {
-        const res = await dispatch(getCounties({ page, limit })).unwrap();
-        setTotalPages(res.totalPages || 1);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchCounties();
-  }, [dispatch, page, limit]);
+  }, [dispatch, page, limit, search]);
 
   const handleDeleteCounty = async () => {
     if (!countyToDelete) return;
-
     try {
-      const res = await dispatch(deleteCounty(countyToDelete._id)).unwrap();
-      toast.success(res.message || "County deleted");
+      await dispatch(deleteCounty(countyToDelete._id)).unwrap();
+      toast.success("County deleted successfully");
       setShowDeleteModal(false);
-      dispatch(getCounties({ page, limit }));
+      fetchCounties();
     } catch (err) {
-      toast.error("Failed to delete");
+      toast.error("Failed to delete county");
     }
   };
 
@@ -58,7 +59,6 @@ export const CountyPage = () => {
   ];
 
   const totalCounties = counties?.length || 0;
-  console;
 
   return (
     <div className="space-y-6">
@@ -69,15 +69,24 @@ export const CountyPage = () => {
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between  px-6 py-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-4 gap-3">
           <div>
-            <p className="text-sm font-semibold text-slate-900">
-              Counties overview
-            </p>
+            <p className="text-sm font-semibold text-slate-900">Counties overview</p>
             <p className="text-xs text-slate-500">
               {loading ? "Loading..." : `${totalCounties} items`}
             </p>
           </div>
+
+          <input
+            type="text"
+            placeholder="Search counties..."
+            value={search}
+            onChange={(e) => {
+              setPage(1); // reset to first page on search
+              setSearch(e.target.value);
+            }}
+            className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
         </div>
 
         <div className="overflow-x-auto">
@@ -87,9 +96,7 @@ export const CountyPage = () => {
                 <th className="px-6 py-4">#</th>
                 <th className="px-6 py-4">County Name</th>
                 <th className="px-6 py-4">Slug</th>
-                <th className="px-6 py-4 flex items-center justify-center">
-                  Actions
-                </th>
+                <th className="px-6 py-4 text-center">Actions</th>
               </tr>
             </thead>
 
@@ -97,7 +104,7 @@ export const CountyPage = () => {
               {loading ? (
                 [...Array(10)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    {[...Array(10)].map((__, idx) => (
+                    {[...Array(4)].map((__, idx) => (
                       <td key={idx} className="px-6 py-4">
                         <div className="h-4 bg-slate-100 rounded"></div>
                       </td>
@@ -106,10 +113,7 @@ export const CountyPage = () => {
                 ))
               ) : error ? (
                 <tr>
-                  <td
-                    className="px-6 py-6 text-center text-red-500"
-                    colSpan="5"
-                  >
+                  <td colSpan="4" className="px-6 py-6 text-center text-red-500">
                     {error}
                   </td>
                 </tr>
@@ -119,9 +123,7 @@ export const CountyPage = () => {
                     <td className="px-6 py-4 text-slate-500">
                       {(page - 1) * limit + index + 1}
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-900">
-                      {county.name}
-                    </td>
+                    <td className="px-6 py-4 font-medium text-slate-900">{county.name}</td>
                     <td className="px-6 py-4">{county.slug}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
@@ -146,10 +148,7 @@ export const CountyPage = () => {
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan="5"
-                    className="px-6 py-6 text-center text-slate-500"
-                  >
+                  <td colSpan="4" className="px-6 py-6 text-center text-slate-500">
                     No counties found
                   </td>
                 </tr>
@@ -164,6 +163,7 @@ export const CountyPage = () => {
           </div>
         )}
       </div>
+
       {showDeleteModal && (
         <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl">

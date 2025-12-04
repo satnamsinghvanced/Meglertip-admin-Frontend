@@ -3,62 +3,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa";
-import { LuFolderPlus, LuPlus } from "react-icons/lu";
+import { LuPlus } from "react-icons/lu";
 import { toast } from "react-toastify";
-import { getArticles, deleteArticle } from "../../store/slices/articleSlice";
-import { createCategory } from "../../store/slices/articleCategoriesSlice";
-import Pagination from "../../UI/pagination";
 import { useNavigate } from "react-router";
 import PageHeader from "../../components/PageHeader";
+import Pagination from "../../UI/pagination";
+import { getArticles, deleteArticle } from "../../store/slices/articleSlice";
 
 const ArticlePage = () => {
   const dispatch = useDispatch();
-  const { articles, loading, error } = useSelector((state) => state.articles);
   const navigate = useNavigate();
+  const { articles, loading, error } = useSelector((state) => state.articles);
 
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
-  const [newCategory, setNewCategory] = useState({
-    title: "",
-    slug: "",
-    description: "",
-    language: "",
-  });
+  const [search, setSearch] = useState("");
+
+  const fetchArticles = async () => {
+    try {
+      const res = await dispatch(getArticles({ page, limit, search })).unwrap();
+      setTotalPages(res.pagination.pages || 1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const res = await dispatch(getArticles({ page, limit })).unwrap();
-        setTotalPages(res.pagination.pages || 1);
-      } catch (err) {
-        console.error("Error fetching articles:", err);
-      }
-    };
     fetchArticles();
-  }, [dispatch, page, limit]);
-
-  const handleDeleteClick = (article) => {
-    setArticleToDelete(article);
-    setShowDeleteModal(true);
-  };
+  }, [dispatch, page, limit, search]); // <-- search dependency added
 
   const handleDeleteArticle = async () => {
     if (!articleToDelete) return;
     try {
-      const response = await dispatch(deleteArticle(articleToDelete._id));
-      if (response?.payload?.message) {
-        toast.success(response.payload.message);
-      } else {
-        toast.success("Article deleted");
-      }
+      await dispatch(deleteArticle(articleToDelete._id)).unwrap();
       setShowDeleteModal(false);
-      setArticleToDelete(null);
-      dispatch(getArticles({ page, limit }));
+      fetchArticles();
+      toast.success("Article deleted successfully");
     } catch (err) {
-      console.error("Error deleting article:", err);
       toast.error("Failed to delete article");
     }
   };
@@ -85,35 +69,47 @@ const ArticlePage = () => {
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-6 py-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-4 gap-3">
           <div>
-            <p className="text-sm font-semibold text-slate-900">
-              Articles overview
-            </p>
+            <p className="text-sm font-semibold text-slate-900">Articles overview</p>
             <p className="text-xs text-slate-500">
-              {loading ? "Loading articles..." : `${totalArticles} items`}
+              {loading ? "Loading..." : `${totalArticles} items`}
             </p>
           </div>
+
+          {/* Search Input */}
+          <input
+            type="text"
+            placeholder="Search articles..."
+            value={search}
+            onChange={(e) => {
+              setPage(1); // reset to first page on new search
+              setSearch(e.target.value);
+            }}
+            className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
         </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-100 text-sm">
-            <thead className="bg-slate-50 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <thead className="bg-slate-50 text-left text-[11px] font-semibold uppercase text-slate-500">
               <tr>
-                <th className="px-6 py-3">#</th>
-                <th className="px-6 py-3">Title</th>
-                <th className="px-6 py-3">Category</th>
-                <th className="px-6 py-3">Author</th>
-                <th className="px-6 py-3">Created</th>
-                <th className="px-6 py-3 text-center">Actions</th>
+                <th className="px-6 py-4">#</th>
+                <th className="px-6 py-4">Title</th>
+                <th className="px-6 py-4">Category</th>
+                <th className="px-6 py-4">Author</th>
+                <th className="px-6 py-4">Created</th>
+                <th className="px-6 py-4 flex items-center justify-center">Actions</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-slate-100 text-slate-600">
               {loading ? (
                 [...Array(10)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    {[...Array(10)].map((__, idx) => (
+                    {[...Array(6)].map((__, idx) => (
                       <td key={idx} className="px-6 py-4">
-                        <div className="h-4 rounded bg-slate-100" />
+                        <div className="h-4 bg-slate-100 rounded"></div>
                       </td>
                     ))}
                   </tr>
@@ -121,49 +117,37 @@ const ArticlePage = () => {
               ) : error ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-6 text-center text-red-500">
-                    {error || "Something went wrong while loading articles."}
+                    {error}
                   </td>
                 </tr>
               ) : totalArticles > 0 ? (
                 articles.data.map((article, index) => (
-                  <tr key={article._id} className="hover:bg-slate-50/60">
-                    <td className="px-6 py-4 text-slate-500">
-                      {(page - 1) * limit + index + 1}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-slate-900">
-                      {article.title}
-                    </td>
-                    <td className="px-6 py-4">
-                      {article.categoryId?.title || "N/A"}
-                    </td>
-                    <td className="px-6 py-4">
-                      {article.createdBy?.username || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      {new Date(article.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
+                  <tr key={article._id} className="hover:bg-slate-50">
+                    <td className="px-6 py-4 text-slate-500">{(page - 1) * limit + index + 1}</td>
+                    <td className="px-6 py-4 font-medium text-slate-900">{article.title}</td>
+                    <td className="px-6 py-4">{article.categoryId?.title || "N/A"}</td>
+                    <td className="px-6 py-4">{article.createdBy?.username || "N/A"}</td>
+                    <td className="px-6 py-4 text-sm">{new Date(article.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
                         <button
-                          className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
+                          className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
                           onClick={() => navigate(`/articles/${article._id}`)}
-                          title="Preview"
                         >
                           <FaRegEye size={16} />
                         </button>
                         <button
-                          className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() =>
-                            navigate(`/articles/${article._id}/edit`)
-                          }
-                          title="Edit article"
+                          className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
+                          onClick={() => navigate(`/articles/${article._id}/edit`)}
                         >
                           <AiTwotoneEdit size={16} />
                         </button>
                         <button
                           className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
-                          onClick={() => handleDeleteClick(article)}
-                          title="Delete"
+                          onClick={() => {
+                            setArticleToDelete(article);
+                            setShowDeleteModal(true);
+                          }}
                         >
                           <RiDeleteBin5Line size={16} />
                         </button>
@@ -181,28 +165,29 @@ const ArticlePage = () => {
             </tbody>
           </table>
         </div>
+
         {totalArticles > 0 && (
-          <div className="border-t border-slate-100 px-6 py-4">
+          <div className="px-6 py-4">
             <Pagination totalPages={totalPages} page={page} setPage={setPage} />
           </div>
         )}
       </div>
 
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4">
-          <div className="w-full max-w-sm rounded-2xl border border-slate-100 bg-white p-6 text-center shadow-2xl">
-            <p className="mb-6 text-base font-semibold text-slate-900">
+        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl text-center">
+            <p className="mb-6 text-lg font-semibold text-slate-900">
               Are you sure you want to delete this article?
             </p>
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex justify-end gap-3">
               <button
-                className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:border-slate-300"
+                className="px-4 py-2 border rounded-full"
                 onClick={() => setShowDeleteModal(false)}
               >
                 Cancel
               </button>
               <button
-                className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                className="px-4 py-2 bg-red-600 text-white rounded-full"
                 onClick={handleDeleteArticle}
               >
                 Delete

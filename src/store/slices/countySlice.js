@@ -3,9 +3,11 @@ import api from "../../api/axios";
 
 export const getCounties = createAsyncThunk(
   "county/getCounties",
-  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, search = "" } = {}, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`/counties?page=${page}&limit=${limit}`);
+      const { data } = await api.get(
+        `/counties?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+      );
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

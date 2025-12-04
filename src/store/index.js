@@ -27,6 +27,7 @@ import leadTypeSlice from "./slices/leadTypeSlice";
 import faqSlice from "./slices/FaqPageSlice";
 import articleSlice from  "./slices/articlePageSlice";
 import formPageSlice from "./slices/formPageSlice";
+import formSelectSlice from "./slices/formSelectSlice";
 export default configureStore({
   reducer: {
     user,
@@ -56,7 +57,8 @@ export default configureStore({
     leadType:leadTypeSlice,
     faqPage:faqSlice,
     articlePage :articleSlice,
-    formPage :formPageSlice
+    formPage :formPageSlice,
+    formSelect :formSelectSlice
 
   },
 });

@@ -11,9 +11,9 @@ const fixImageUrl = (url) => {
 
 export const getArticles = createAsyncThunk(
   "articles/getArticles",
-  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10,search ="" } = {}, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${BASE_URL}/article?page=${page}&limit=${limit}`);
+      const res = await axios.get(`${BASE_URL}/article?page=${page}&limit=${limit}&search=${search}`);
       return {
         data: res.data.data.map((item) => ({
           ...item,

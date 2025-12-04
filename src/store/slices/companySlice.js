@@ -1,11 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
+const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
+
+const fixImageUrl = (url) => {
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${IMAGE_URL}${url}`;
+};
 
 export const getCompanies = createAsyncThunk(
   "companies/getCompanies",
-  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, search = "" } = {}, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`/companies?page=${page}&limit=${limit}`);
+      const { data } = await api.get(
+        `/companies?page=${page}&limit=${limit}&search=${search}`
+      );
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -17,8 +25,12 @@ export const getCompanyById = createAsyncThunk(
   "companies/getCompanyById",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`/companies/detail/${id}`);
-      return data;
+      const res = await api.get(`/companies/detail/${id}`);
+      // return data;
+      return {
+        ...res.data.data,
+        companyImage: fixImageUrl(res.data.data.companyImage),
+      };
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }

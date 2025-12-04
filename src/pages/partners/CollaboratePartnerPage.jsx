@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 import { fetchPartners, deletePartner } from "../../store/slices/partnersSlice";
+import api from "../../api/axios";
 
 export const CollaboratePartnerPage = () => {
   const navigate = useNavigate();
@@ -160,6 +161,41 @@ export const CollaboratePartnerPage = () => {
             }}
             onKeyDown={(e) => e.key === "Enter" && applyFilters(filters, 1)}
           />
+          <label htmlFor="limit" className="flex items-center gap-2">
+            Partner Limit for leads
+          </label>
+          <input
+            id="limit"
+            type="number"
+            className="p-2 border border-slate-300 rounded-lg min-w-[150px]"
+            value={filters.limit || ""}
+            onChange={(e) => {
+              const updated = { ...filters, limit: e.target.value };
+              setFilters(updated);
+              fetchWithDelay(updated);
+            }}
+            placeholder="Enter Limit"
+          />
+          <button
+            onClick={async () => {
+            if (!filters.limit || filters.limit <= 0){
+                return toast.error("Please enter a valid limit");
+              }
+
+              try {
+                const { data } = await api.post("/partners/limit", {
+                  limit: Number(partnerLimit),
+                });
+
+                toast.success("Partner limit updated successfully");
+              } catch (error) {
+                toast.error("Failed to update partner limit");
+              }
+            }}
+            className="px-[9px] py-1  bg-primary text-white rounded-lg"
+          >
+          ✓
+          </button>
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">
@@ -241,11 +277,11 @@ export const CollaboratePartnerPage = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center gap-2">
                           <button
-                              className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                              onClick={() => navigate(`/partners/${p._id}`)}
-                            >
-                              <FaRegEye size={16} />
-                            </button>
+                            className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
+                            onClick={() => navigate(`/partners/${p._id}`)}
+                          >
+                            <FaRegEye size={16} />
+                          </button>
                           <button
                             className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
                             onClick={() => navigate(`/partners/${p._id}/edit`)}

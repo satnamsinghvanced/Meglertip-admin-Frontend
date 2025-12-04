@@ -31,6 +31,7 @@ export const Company = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [companyToDelete, setCompanyToDelete] = useState(null);
   const [showUploadingFileLoader, setShowUploadingFileLoader] = useState(false);
+  const [search, setSearch] = useState("");
   const [manualCompany, setManualCompany] = useState({
     name: "",
     slug: "",
@@ -45,14 +46,14 @@ export const Company = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const res = await dispatch(getCompanies({ page, limit })).unwrap();
+        const res = await dispatch(getCompanies({ page, limit, search })).unwrap();
         setTotalPages(res.totalPages || 1);
       } catch (err) {
         console.error(err);
       }
     };
     fetchCompanies();
-  }, [dispatch, page, limit]);
+  }, [dispatch, page, limit, search]);
 
   const handleDeleteCompany = async () => {
     if (!companyToDelete) return;
@@ -206,7 +207,7 @@ export const Company = () => {
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between  px-6 py-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-4">
           <div className="ml-4">
             <p className="text-sm font-semibold text-slate-900">
               Companies overview
@@ -215,6 +216,16 @@ export const Company = () => {
               {loading ? "Loading..." : `${totalCompanies} items`}
             </p>
           </div>
+          <input
+          type="text"
+          placeholder="Search companies..."
+          value={search}
+          onChange={(e) => {
+            setPage(1); // reset to first page
+            setSearch(e.target.value);
+          }}
+          className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
         </div>
 
         <div className="overflow-x-auto">

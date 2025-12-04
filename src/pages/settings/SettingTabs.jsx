@@ -29,11 +29,11 @@ const SettingTabs = () => {
       title: "Theme",
       content: <ThemeSettings/>,
     },
-     {
-      icon: MdSettingsSuggest ,
-      title: "Lead Settings",
-      content: <LeadProfitSettingsPage/>,
-    },
+    //  {
+    //   icon: MdSettingsSuggest ,
+    //   title: "Lead Settings",
+    //   content: <LeadProfitSettingsPage/>,
+    // },
     {
       icon: TfiEmail ,
       title: "Email SMTP",

@@ -3,52 +3,50 @@ import { useDispatch, useSelector } from "react-redux";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuFileUp, LuPlus } from "react-icons/lu";
+import { FaRegEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 import { ROUTES } from "../../consts/routes";
-import {
-  getPlaces,
-  importPlaces,
-  deletePlace,
-} from "../../store/slices/placeSlice";
-import { FaRegEye } from "react-icons/fa";
+import { getPlaces, importPlaces, deletePlace } from "../../store/slices/placeSlice";
 
 export const Places = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const { places, loading, error } = useSelector((state) => state.places);
+
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUploadingFileLoader, setShowUploadingFileLoader] = useState(false);
   const [placeToDelete, setPlaceToDelete] = useState(null);
- 
   const [uploadFile, setUploadFile] = useState(null);
+  const [showUploadingFileLoader, setShowUploadingFileLoader] = useState(false);
+  const [search, setSearch] = useState("");
+
+  // Fetch places with search support
+  const fetchPlaces = async () => {
+    try {
+      const res = await dispatch(getPlaces({ page, limit, search })).unwrap();
+      setTotalPages(res.totalPages || 1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
-        const res = await dispatch(getPlaces({ page, limit })).unwrap();
-        setTotalPages(res.totalPages || 1);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchPlaces();
-  }, [dispatch, page, limit]);
+  }, [dispatch, page, limit, search]);
 
   const handleDeletePlace = async () => {
     if (!placeToDelete) return;
-
     try {
       const res = await dispatch(deletePlace(placeToDelete._id)).unwrap();
-      toast.success(res.message || "City deleted");
+      toast.success(res.message || "Place deleted");
       setShowDeleteModal(false);
-      dispatch(getPlaces({ page, limit }));
+      fetchPlaces();
     } catch (err) {
       toast.error("Failed to delete");
     }
@@ -56,13 +54,10 @@ export const Places = () => {
 
   const isValidFileExtension = (file) => {
     if (!file) return false;
-
     const fileName = file.name.toLowerCase();
-    if (fileName.endsWith(".csv") || fileName.endsWith(".xlsx")) {
-      return true;
-    }
-    return false;
+    return fileName.endsWith(".csv") || fileName.endsWith(".xlsx");
   };
+
   const handleImportPlaces = async () => {
     if (!uploadFile) return toast.error("Select a file first");
 
@@ -72,37 +67,33 @@ export const Places = () => {
 
     try {
       const result = await dispatch(importPlaces(formData)).unwrap();
-
       const { placesInserted, placesSkipped } = result;
 
-      let successMessage = "";
-
       if (placesInserted > 0 && placesSkipped === 0) {
-        successMessage = `Import successful! ${placesInserted} total records created.`;
-        toast.success(successMessage);
+        toast.success(`Import successful! ${placesInserted} records created.`);
       } else if (placesInserted > 0 && placesSkipped > 0) {
-        successMessage = `Import successful with mixed results. ${placesInserted} inserted, ${placesSkipped} skipped.`;
-        toast.warn(successMessage);
+        toast.warn(
+          `Import successful with mixed results. ${placesInserted} inserted, ${placesSkipped} skipped.`
+        );
       } else if (placesInserted === 0 && placesSkipped > 0) {
-        const details = `${placesSkipped} total records skipped due to duplicates.`;
-        toast.info(`Import process complete: ${details}`);
+        toast.info(`${placesSkipped} records skipped due to duplicates.`);
       } else {
-        toast.info("Import completed, but no records were processed.");
+        toast.info("Import completed, no records processed.");
       }
+
       setUploadFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
-      dispatch(getPlaces({ page, limit }));
+      fetchPlaces();
     } catch (err) {
       toast.error("Import failed");
     } finally {
       setShowUploadingFileLoader(false);
     }
   };
+
   useEffect(() => {
-    if (uploadFile) {
-      handleImportPlaces();
-    }
-  }, [uploadFile, dispatch, page, limit]);
+    if (uploadFile) handleImportPlaces();
+  }, [uploadFile]);
 
   const headerButtons = [
     {
@@ -142,21 +133,15 @@ export const Places = () => {
 
       <input
         ref={fileInputRef}
-        id="place-import-input"
         type="file"
         className="hidden"
         accept=".csv, .xlsx"
         onChange={(e) => {
           const selectedFile = e.target.files[0];
-
           if (selectedFile) {
-            if (isValidFileExtension(selectedFile)) {
-              setUploadFile(selectedFile);
-            } else {
-              toast.error(
-                "Invalid file type. Only CSV (.csv) and Excel (.xlsx) files are allowed."
-              );
-
+            if (isValidFileExtension(selectedFile)) setUploadFile(selectedFile);
+            else {
+              toast.error("Invalid file type. Only CSV and XLSX allowed.");
               e.target.value = "";
               setUploadFile(null);
             }
@@ -165,15 +150,22 @@ export const Places = () => {
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between  px-6 py-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-4 gap-3">
           <div>
-            <p className="text-sm font-semibold text-slate-900">
-              Place overview
-            </p>
-            <p className="text-xs text-slate-500">
-              {loading ? "Loading..." : `${totalPlaces} items`}
-            </p>
+            <p className="text-sm font-semibold text-slate-900">Places overview</p>
+            <p className="text-xs text-slate-500">{loading ? "Loading..." : `${totalPlaces} items`}</p>
           </div>
+
+          <input
+            type="text"
+            placeholder="Search places..."
+            value={search}
+            onChange={(e) => {
+              setPage(1); // Reset to first page
+              setSearch(e.target.value);
+            }}
+            className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
         </div>
 
         <div className="overflow-x-auto">
@@ -194,7 +186,7 @@ export const Places = () => {
               {loading ? (
                 [...Array(10)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    {[...Array(10)].map((__, idx) => (
+                    {[...Array(7)].map((__, idx) => (
                       <td key={idx} className="px-6 py-4">
                         <div className="h-4 bg-slate-100 rounded"></div>
                       </td>
@@ -203,44 +195,25 @@ export const Places = () => {
                 ))
               ) : error ? (
                 <tr>
-                  <td
-                    className="px-6 py-6 text-center text-red-500"
-                    colSpan="5"
-                  >
+                  <td colSpan="7" className="px-6 py-6 text-center text-red-500">
                     {error}
                   </td>
                 </tr>
               ) : totalPlaces > 0 ? (
                 places.data.map((place, index) => (
                   <tr key={place._id} className="hover:bg-slate-50">
-                    <td className="px-6 py-4 text-slate-500">
-                      {(page - 1) * limit + index + 1}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-slate-900">
-                      {place.name}
-                    </td>
-
+                    <td className="px-6 py-4 text-slate-500">{(page - 1) * limit + index + 1}</td>
+                    <td className="px-6 py-4 font-medium text-slate-900">{place.name}</td>
                     <td className="px-6 py-4">{place.slug}</td>
+                    <td className="px-6 py-4">{place.title?.length > 20 ? place.title.slice(0, 20) + "..." : place.title}</td>
+                    <td className="px-6 py-4 line-clamp-1 break-words">{place.description}</td>
                     <td className="px-6 py-4">
-                      {place.title?.length > 20
-                        ? place.title.slice(0, 20) + "..."
-                        : place.title}
-                    </td>
-                    <td className="px-6 py-4 line-clamp-1 break-words">
-                      {place.description}
-                    </td>
-                    <td className=" py-1">
                       {place.isRecommended ? (
-                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                          Recommended
-                        </span>
+                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Recommended</span>
                       ) : (
-                        <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700  ">
-                          Not Recommended
-                        </span>
+                        <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700">Not Recommended</span>
                       )}
                     </td>
-
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -271,11 +244,8 @@ export const Places = () => {
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan="5"
-                    className="px-6 py-6 text-center text-slate-500"
-                  >
-                    No Places found
+                  <td colSpan="7" className="px-6 py-6 text-center text-slate-500">
+                    No places found
                   </td>
                 </tr>
               )}

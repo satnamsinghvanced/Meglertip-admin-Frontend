@@ -3,23 +3,19 @@ import Section from "../../UI/Section";
 import Input from "../../UI/Input";
 import ImageUploader from "../../UI/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getFormPage,
-  updateFormPage,
-} from "../../store/slices/formPageSlice";
+import { getFormPage, updateFormPage } from "../../store/slices/formPageSlice";
 import { toast } from "react-toastify";
 import { Description } from "@headlessui/react";
 
 const FormUIPage = () => {
   const dispatch = useDispatch();
-  const { formPage, loading } = useSelector(
-    (state) => state.formPage || {}
-  );
+  const { formPage, loading } = useSelector((state) => state.formPage || {});
 
   const [form, setForm] = useState({
     title: "",
     description: "",
     multipleSelect: false,
+    privacyText: "",
     categoriesHeading: "",
 
     metaTitle: "",
@@ -135,23 +131,28 @@ const FormUIPage = () => {
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
+           <Input
+            label="Privacy Text"
+            value={form.privacyText}
+            onChange={(e) => setForm({ ...form, privacyText: e.target.value })}
+          />
           <div className="flex items-center gap-3">
-  <label className="font-medium">Form Type (Multiple Select)</label>
-  <div
-    onClick={() =>
-      setForm({ ...form, multipleSelect: !form.multipleSelect })
-    }
-    className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
-      form.multipleSelect ? "bg-primary/80" : "bg-gray-300"
-    }`}
-  >
-    <div
-      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
-        form.multipleSelect ? "translate-x-6" : ""
-      }`}
-    ></div>
-  </div>
-</div>
+            <label className="font-medium">Form Type (Multiple Select)</label>
+            <div
+              onClick={() =>
+                setForm({ ...form, multipleSelect: !form.multipleSelect })
+              }
+              className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
+                form.multipleSelect ? "bg-primary/80" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+                  form.multipleSelect ? "translate-x-6" : ""
+                }`}
+              ></div>
+            </div>
+          </div>
 
           {/* <Input
             label="Categories Heading"

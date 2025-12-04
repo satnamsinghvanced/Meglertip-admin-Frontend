@@ -3,9 +3,9 @@ import api from "../../api/axios";
 
 export const getPlaces = createAsyncThunk(
   "places/getPlaces",
-  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, search = ""} = {}, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`/places?page=${page}&limit=${limit}`);
+      const { data } = await api.get(`/places?page=${page}&limit=${limit}&search=${search}`);
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

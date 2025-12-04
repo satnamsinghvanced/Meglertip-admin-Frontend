@@ -6,10 +6,12 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const getCategories = createAsyncThunk(
   "categories/getCategories",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, search = "" }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BASE_URL}/article-categories/`);
-      return response.data.data;
+      const response = await axios.get(`${BASE_URL}/article-categories`, {
+        params: { page, limit, search },
+      });
+      return response.data; // contains data + pagination info
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -80,6 +82,7 @@ const categorySlice = createSlice({
     selectedCategory: null,
     loading: false,
     error: null,
+    pagination: { total: 0, page: 1, pages: 1, limit: 10 },
   },
   reducers: {
     clearSelectedCategory: (state) => {
@@ -88,20 +91,19 @@ const categorySlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-
     setCategories: (state, action) => {
       state.categories = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-
       .addCase(getCategories.pending, (state) => {
         state.loading = true;
       })
       .addCase(getCategories.fulfilled, (state, action) => {
         state.loading = false;
-        state.categories = action.payload;
+        state.categories = action.payload.data;
+        state.pagination = action.payload.pagination;
       })
       .addCase(getCategories.rejected, (state, action) => {
         state.loading = false;

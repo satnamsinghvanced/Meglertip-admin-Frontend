@@ -47,7 +47,7 @@ import SitemapFormPage from "../pages/sitemap/SitemapFormPage";
 import ContactUsListPage from "../pages/contact-us/ContactUs";
 import ContactUsViewPage from "../pages/contact-us/ContactUsViewPage ";
 import SMTPSettings from "../pages/settings/EmailConfiguration";
-import FormTypeSelectionPage from "../pages/forms/FormTypeSelectionPage";
+// import FormTypeSelectionPage from "../pages/forms/FormManagePage";
 import AdminFormBuilder from "../pages/forms/forms";
 import Faqs from "../pages/helpcenter/Faq";
 import AddFaq from "../pages/helpcenter/AddFaq";
@@ -60,7 +60,10 @@ import LeadLogs from "../pages/leadLogs/leadLogsPage";
 import FaqPage from "../pages/faqPage/FaqPage";
 import ArticleUIPage from "../pages/articlePage/ArticlePage";
 import FormUIPage from "../pages/formpage/FormPage";
+
+import FormCreateEditPage from "../pages/forms/FormPage";
 import FormManagePage from "../pages/forms/FormTypeSelectionPage";
+import StepsBuilderForm from "../pages/forms/StepsBuilderForm";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -125,11 +128,14 @@ useEffect(() => {
           element={<RealEstateAgentsFormPage />}
         />
 
-        <Route path={ROUTES.FORMS} element={<FormPage />} />
+        <Route path={ROUTES.FORMS} element={<FormManagePage  />} />
         <Route
           path="/admin/form-selection"
           element={<FormManagePage />}
         />
+<Route path="/forms/create" element={<FormCreateEditPage />} />
+<Route path="/forms/:id/edit" element={<FormCreateEditPage />} />
+<Route path="/forms/:id/steps" element={<StepsBuilderForm />} />
 
         <Route
           path="/admin/form-builder/:formType"

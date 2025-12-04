@@ -19,26 +19,28 @@ export const ArticleCategoryPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [search, setSearch] = useState(""); // <-- search state
+
+  const fetchCategories = async () => {
+    try {
+      const res = await dispatch(getCategories({ page, limit, search })).unwrap();
+      setTotalPages(res.totalPages || 1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await dispatch(getCategories({ page, limit })).unwrap();
-        setTotalPages(res.totalPages || 1);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchCategories();
-  }, [dispatch, page, limit]);
+  }, [dispatch, page, limit, search]); // <-- add search dependency
 
   const handleDeleteCategory = async () => {
     if (!categoryToDelete) return;
     try {
-      const res = await dispatch(deleteArticleCategory(categoryToDelete._id)).unwrap();
-    //   toast.success(res.message || "Category deleted");
+      await dispatch(deleteArticleCategory(categoryToDelete._id)).unwrap();
       setShowDeleteModal(false);
-      dispatch(getCategories({ page, limit }));
+      fetchCategories();
+      toast.success("Category deleted successfully");
     } catch (err) {
       toast.error("Failed to delete");
     }
@@ -56,7 +58,6 @@ export const ArticleCategoryPage = () => {
   ];
 
   const totalCategories = categories?.length || 0;
-  console;
 
   return (
     <div className="space-y-6">
@@ -67,7 +68,7 @@ export const ArticleCategoryPage = () => {
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between  px-6 py-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-4 ">
           <div>
             <p className="text-sm font-semibold text-slate-900">
               Article Categories overview
@@ -76,6 +77,18 @@ export const ArticleCategoryPage = () => {
               {loading ? "Loading..." : `${totalCategories} items`}
             </p>
           </div>
+
+          {/* Search Input */}
+          <input
+            type="text"
+            placeholder="Search categories..."
+            value={search}
+            onChange={(e) => {
+              setPage(1); // reset to first page on new search
+              setSearch(e.target.value);
+            }}
+            className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
         </div>
 
         <div className="overflow-x-auto">
@@ -162,6 +175,7 @@ export const ArticleCategoryPage = () => {
           </div>
         )}
       </div>
+
       {showDeleteModal && (
         <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl">
