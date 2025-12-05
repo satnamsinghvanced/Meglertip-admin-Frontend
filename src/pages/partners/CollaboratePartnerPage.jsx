@@ -176,38 +176,40 @@ export const CollaboratePartnerPage = () => {
             }}
             onKeyDown={(e) => e.key === "Enter" && applyFilters(filters, 1)}
           />
-          <label htmlFor="limit" className="flex items-center gap-2">
-            Partner Limit for leads
-          </label>
-          <input
-            id="limit"
-            type="number"
-            className="p-2 border border-slate-300 rounded-lg w-7"
-            value={partnerLimit}
-            onChange={(e) => setPartnerLimit(e.target.value)}
-            placeholder="Enter Limit"
-          />
-
-          <button
-            onClick={async () => {
-              if (!partnerLimit || partnerLimit <= 0) {
-                return toast.error("Please enter a valid limit");
-              }
-
-              try {
-                const { data } = await api.put("/partners/limit", {
-                  limit: Number(partnerLimit),
-                });
-
-                toast.success("Partner limit updated successfully");
-              } catch (error) {
-                toast.error("Failed to update partner limit");
-              }
-            }}
-            className="px-[9px] py-1 bg-primary text-white rounded-lg"
-          >
-            ✓
-          </button>
+          <div className="flex items-center gap-2 grow justify-end">
+            <label
+              htmlFor="limit"
+              className="text-sm font-medium text-slate-700"
+            >
+              Partner Limit:
+            </label>
+            <input
+              id="limit"
+              type="number"
+              className="p-2 border border-slate-300 rounded-lg w-20"
+              value={partnerLimit}
+              onChange={(e) => setPartnerLimit(e.target.value)}
+              placeholder="Enter Limit"
+            />
+            <button
+              onClick={async () => {
+                if (!partnerLimit || partnerLimit <= 0) {
+                  return toast.error("Please enter a valid limit");
+                }
+                try {
+                  await api.put("/partners/limit", {
+                    limit: Number(partnerLimit),
+                  });
+                  toast.success("Partner limit updated successfully");
+                } catch (error) {
+                  toast.error("Failed to update partner limit");
+                }
+              }}
+              className="px-3 py-1 bg-primary text-white rounded-lg hover:bg-primary/80"
+            >
+              ✓
+            </button>
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">

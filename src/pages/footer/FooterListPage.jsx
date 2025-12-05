@@ -88,7 +88,7 @@ const items =
       />
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex gap-2 border-b px-6 py-3">
+        <div className="flex gap-2 border-b border-slate-200 px-6 py-3">
           {TABS.map((t) => (
             <button
               key={t}

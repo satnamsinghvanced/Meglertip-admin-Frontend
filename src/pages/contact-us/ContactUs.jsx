@@ -10,13 +10,15 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import ConfirmModal from "../../UI/ConfirmDeleteModal";
 
 const ContactUsListPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const contactState = useSelector((state) => state.contact);
   const { data, loading } = contactState;
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   const entries = data?.items || [];
   const total = data?.total || 0;
 
@@ -29,20 +31,29 @@ const ContactUsListPage = () => {
 
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this message?"))
-      return;
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setModalOpen(true);
+  };
 
+  const handleConfirmDelete = async () => {
     try {
-      await dispatch(deleteContact(id)).unwrap();
+      await dispatch(deleteContact(selectedId)).unwrap();
       toast.success("Deleted successfully");
       dispatch(fetchContacts({ page, limit }));
     } catch (err) {
       console.error(err);
       toast.error("Delete failed");
+    } finally {
+      setModalOpen(false);
+      setSelectedId(null);
     }
   };
 
+  const handleCancelDelete = () => {
+    setModalOpen(false);
+    setSelectedId(null);
+  };
   return (
     <div className="space-y-6">
       <PageHeader
@@ -108,7 +119,7 @@ const ContactUsListPage = () => {
                       <div className="flex items-center gap-3 text-center">
                         <button
                           title="View Details"
-                       onClick={() => navigate(`/contact/${item._id}`)}
+                          onClick={() => navigate(`/contact/${item._id}`)}
                           className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
                         >
                           <FaRegEye size={16} />
@@ -116,7 +127,7 @@ const ContactUsListPage = () => {
 
                         <button
                           title="Delete"
-                          onClick={() => handleDelete(item._id)}
+                           onClick={() => handleDeleteClick(item._id)}
                           className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
                         >
                           <RiDeleteBin5Line size={16} />
@@ -136,6 +147,13 @@ const ContactUsListPage = () => {
           </div>
         )}
       </div>
+      <ConfirmModal
+  isOpen={modalOpen}
+  title="Confirm Delete"
+  message="Are you sure you want to delete this message?"
+  onConfirm={handleConfirmDelete}
+  onCancel={handleCancelDelete}
+/>
     </div>
   );
 };

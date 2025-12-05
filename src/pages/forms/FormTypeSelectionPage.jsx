@@ -137,10 +137,10 @@ const FormManagePage = () => {
           <table className="min-w-full divide-y text-sm">
             <thead className="bg-slate-50 text-xs uppercase text-slate-500  ">
               <tr>
-                <th className="px-6 py-3 ">#</th>
-                <th className="px-6 py-3 ">Title</th>
-                <th className="px-6 py-3">Description</th>
-                <th className="px-6 py-3">Price</th>
+                <th className="px-6 py-3  text-left ">#</th>
+                <th className="px-6 py-3 text-left">Title</th>
+                <th className="px-6 py-3 text-left">Description</th>
+                <th className="px-6 py-3 text-left">Price</th>
                 <th className="px-6 py-3 text-center">Actions</th>
               </tr>
             </thead>

@@ -155,7 +155,30 @@ const Dashboard = () => {
         title="Dashboard"
         description="Overview of leads, performance, and partner ranking."
       />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Total Leads Box */}
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
+          <p className="text-sm text-slate-500">Total Leads Sent</p>
+          <p className="mt-4"> </p>
+          <p className="text-3xl font-bold text-slate-900">
+            {statsType?.totalLeads || 0}
+          </p>
+        </div>
 
+        {/* Dynamic Lead Types Boxes */}
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+          {Object.entries(statsType.data || {}).map(([label, value], index) => (
+            <div
+              key={index}
+              className="rounded-xl border border-slate-200 bg-white p-6"
+            >
+              <p>Total leads of type {index + 1} </p>
+              <p className="text-sm text-slate-500">{label}</p>
+              <p className="text-3xl font-bold text-slate-900">{value || 0}</p>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-4">
         <div className=" ">
           <h3 className="text-lg font-semibold">Filter by Date Range</h3>
@@ -291,30 +314,6 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Total Leads Box */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <p className="text-sm text-slate-500">Total Leads Sent</p>
-          <p className="mt-4"> </p>
-          <p className="text-3xl font-bold text-slate-900">
-            {statsType?.totalLeads || 0}
-          </p>
-        </div>
-
-        {/* Dynamic Lead Types Boxes */}
-        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-          {Object.entries(statsType.data || {}).map(([label, value], index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-slate-200 bg-white p-6"
-            >
-              <p>Total leads of type {index + 1} </p>
-              <p className="text-sm text-slate-500">{label}</p>
-              <p className="text-3xl font-bold text-slate-900">{value || 0}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       <div className="border border-slate-200 rounded-xl bg-white">
         <div className="border border-slate-200 px-6 py-4 rounded-xl">
@@ -332,40 +331,44 @@ const Dashboard = () => {
         </ul>
       </div>
 
-      <div className="border border-slate-200 rounded-xl bg-white">
+      <div className="border-slate-200 rounded-xl bg-white">
         <div className="border border-slate-200 px-6 py-4 rounded-xl">
           <h3 className="font-semibold text-lg">Growth From Last Month</h3>
           <p className="text-xs text-slate-500">Lead performance comparison</p>
         </div>
-
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border border-slate-200 bg-slate-50 text-left">
-              <th className="px-6 py-3">Partner Name</th>
-              <th className="px-6 py-3">Last Month</th>
-              <th className="px-6 py-3">This Month</th>
-              <th className="px-6 py-3">Growth</th>
-            </tr>
-          </thead>
-          <tbody>
-            {growthData?.map((row, i) => (
-              <tr key={i} className="border border-slate-200">
-                <td className="px-6 py-3">{row?.partnerName}</td>
-                <td className="px-6 py-3">{row?.lastMonth || 0}</td>
-                <td className="px-6 py-3">{row?.leadsThisMonth || 0}</td>
-                <td
-                  className={`px-6 py-3 font-semibold ${
-                    row?.growthPercent >= 0
-                      ? "text-emerald-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {row?.growthPercent}%
-                </td>
+        <div className="rounded-xl border border-slate-200">
+          <table className="w-full  border-collapse text-sm">
+            <thead>
+              <tr className=" text-left">
+                <th className="px-6 py-3">Partner Name</th>
+                <th className="px-6 py-3">Last Month</th>
+                <th className="px-6 py-3">This Month</th>
+                <th className="px-6 py-3">Growth</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {growthData?.map((row, i) => (
+                <tr
+                  key={i}
+                  className="border border-slate-200 border-x-0 border-b-0"
+                >
+                  <td className="px-6 py-3">{row?.partnerName}</td>
+                  <td className="px-6 py-3">{row?.lastMonth || 0}</td>
+                  <td className="px-6 py-3">{row?.leadsThisMonth || 0}</td>
+                  <td
+                    className={`px-6 py-3 font-semibold ${
+                      row?.growthPercent >= 0
+                        ? "text-emerald-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {row?.growthPercent}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
