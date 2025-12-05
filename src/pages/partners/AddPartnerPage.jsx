@@ -185,7 +185,7 @@ export const AddPartnerPage = () => {
         <div>
           <button
             onClick={() => navigate("/partners")}
-            className="btn btn-white btn-sm rounded-full border-slate-300 text-slate-700 px-6 py-2"
+            className="btn btn-white btn-sm rounded-lg border-slate-300 text-slate-700 px-6 py-2"
           >
             Back to Companies
           </button>

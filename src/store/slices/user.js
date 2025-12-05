@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import axios from "../../services/axios";
+import * as jwtDecodeModule from "jwt-decode";
+const jwt_decode = jwtDecodeModule.default;
+
+
 import { redirect } from "react-router";
 
 const userSlice = createSlice({
@@ -27,6 +31,30 @@ const userSlice = createSlice({
 
 export const { setLoading, setAuthUser, setToken } = userSlice.actions;
 
+export const decodeToken = (token) => {
+  try {
+    return jwt_decode(token);
+  } catch (error) {
+    return null;
+  }
+};
+// check token validity and logout if expired
+export const checkAuth = () => (dispatch, getState) => {
+  const { token } = getState().user;
+  if (!token) return;
+
+  const decoded = decodeToken(token);
+  if (!decoded || (decoded.exp && decoded.exp * 1000 < Date.now())) {
+    // Token expired, fully logout
+    dispatch(setAuthUser(null));
+    dispatch(setToken(null));
+    toast.info("Session expired. Please login again.");
+    window.location.replace("/login"); // full reload, clears history
+  } else {
+    // optional: sync auth_user from token payload
+    dispatch(setAuthUser(decoded));
+  }
+};
 
 export const signIn = (body) => async (dispatch) => {
   dispatch(setLoading(true));

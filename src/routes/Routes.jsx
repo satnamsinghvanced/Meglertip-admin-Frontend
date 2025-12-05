@@ -88,6 +88,8 @@ const Routes = () => {
   return (
     <RouteWrapper>
       <Route element={token ? <Layout /> : <AuthLayout />}>
+
+      
         <Route path={ROUTES.HOMEPAGE} element={<HomePage />} />
         <Route path={ROUTES.ABOUT} element={<AboutPage />} />
 

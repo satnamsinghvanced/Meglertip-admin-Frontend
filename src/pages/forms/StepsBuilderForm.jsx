@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import api from "../../api/axios";
 import PageHeader from "../../components/PageHeader";
+import { AiTwotoneEdit } from "react-icons/ai";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
 const StepsBuilderForm = ({ form, onBack }) => {
   const [steps, setSteps] = useState([]);
@@ -175,16 +177,18 @@ const StepsBuilderForm = ({ form, onBack }) => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => openStepForm(s)}
-                      className="px-3 py-1 bg-primary text-white rounded hover:bg-primary/90"
+                      className="p-2 border rounded-full text-slate-600 hover:text-black"
                     >
-                      Edit
+                        <AiTwotoneEdit size={16} />
                     </button>
+                   
                     <button
                       onClick={() => handleDeleteStep(i)}
-                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                     className="p-2 border rounded-full text-red-500 hover:bg-red-50"
                     >
-                      Delete
+                       <RiDeleteBin5Line size={16} />
                     </button>
+                   
                   </div>
                 </div>
 
@@ -245,13 +249,13 @@ const StepsBuilderForm = ({ form, onBack }) => {
           onChange={(e) => setCurrentStep({ ...currentStep, stepTitle: e.target.value })}
           className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
-        <textarea
+        {/* <textarea
           rows={3}
           placeholder="Step Description"
           value={currentStep.stepDescription}
           onChange={(e) => setCurrentStep({ ...currentStep, stepDescription: e.target.value })}
           className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        /> */}
         <input
           type="number"
           placeholder="Step Order"
@@ -339,7 +343,7 @@ const StepsBuilderForm = ({ form, onBack }) => {
             )}
 
             <label className="flex items-center gap-2 text-sm mt-1">
-              <input type="checkbox" checked={field.required} onChange={() => toggleRequired(index)} /> Required
+              <input type="checkbox" className="!relative" checked={field.required} onChange={() => toggleRequired(index)} /> Required
             </label>
           </div>
         ))}

@@ -30,9 +30,17 @@ export const PartnerDetailPage = () => {
     p.postalCodes?.ranges?.map((r) => `${r.from} - ${r.to}`).join(", ") || "-";
 
   return (
-    <div className="relative z-10 h-[calc(100vh-4.5rem)] overflow-y-auto">
+    <div className="relative z-10  overflow-y-auto">
       <div className="mx-auto max-w-8xl p-4">
         {/* HEADER */}
+        <div className="flex  w-full justify-end lg:items-center gap-5 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="btn btn-white btn-sm rounded-lg border-slate-300 text-slate-700 px-6 py-2"
+          >
+            Back to Companies
+          </button>
+        </div>
         <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
           <div className="flex justify-between items-center">
             <div>
@@ -42,17 +50,10 @@ export const PartnerDetailPage = () => {
 
             <div className="flex gap-2">
               <button
-                onClick={() => navigate(-1)}
-                className="px-3 py-1.5 text-sm rounded-lg bg-gray-100 hover:bg-gray-200"
-              >
-                Back
-              </button>
-
-              <button
-                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-black text-white rounded-lg hover:bg-gray-900"
+                className="flex items-center gap-1 p-2 border rounded-full text-slate-600 hover:text-black"
                 onClick={() => navigate(`/partners/${p._id}/edit`)}
               >
-                <AiTwotoneEdit size={14} /> Edit
+                <AiTwotoneEdit size={16} />
               </button>
             </div>
           </div>
@@ -76,14 +77,11 @@ export const PartnerDetailPage = () => {
             value={p.isActive ? "Active" : "Inactive"}
             badge={p.isActive}
           />
+          <InfoCard title="Total Leads" value={p.leads.total} />
 
           <InfoCard
             title="Created At"
             value={new Date(p.createdAt).toLocaleString()}
-          />
-          <InfoCard
-            title="Updated At"
-            value={new Date(p.updatedAt).toLocaleString()}
           />
         </div>
 

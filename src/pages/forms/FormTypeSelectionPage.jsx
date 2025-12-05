@@ -185,27 +185,43 @@ const FormManagePage = () => {
                       {form.price || 0}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          className="p-2 border rounded-full text-slate-600 hover:text-black"
-                          onClick={() => navigate(`/forms/${form._id}/edit`)}
-                        >
-                          <AiTwotoneEdit size={16} />
-                        </button>
+                      <div className="flex justify-center gap-4">
+                        <div className="relative group">
+                          <button
+                            className="p-2 border rounded-full text-slate-600 hover:text-black"
+                            onClick={() => navigate(`/forms/${form._id}/edit`)}
+                          >
+                            <AiTwotoneEdit size={16} />
+                          </button>
+                          <span className="absolute left-1/2 -translate-x-1/2 -top-8 w-[77px]  hidden group-hover:block bg-slate-800 text-white text-xs  px-2 py-1 rounded shadow">
+                            Edit Form
+                          </span>
+                        </div>
 
-                        <button
-                          className="p-2 border rounded-full text-blue-600 hover:bg-blue-50"
-                          onClick={() => setSelectedForm(form)}
-                        >
-                          <LuListChecks size={16} />
-                        </button>
+                        <div className="relative group">
+                          <button
+                            className="p-2 border rounded-full text-blue-600 hover:bg-blue-50"
+                            onClick={() => setSelectedForm(form)}
+                          >
+                            <LuListChecks size={16} />
+                          </button>
+                          <span className="absolute left-1/2 -translate-x-1/2 -top-8 w-[112px]  hidden group-hover:block bg-slate-800 text-white text-xs  px-2 py-1 rounded shadow">
+                            View/Add Steps
+                          </span>
+                        </div>
 
-                        <button
-                          className="p-2 border rounded-full text-red-500 hover:bg-red-50"
-                          onClick={() => handleDeleteClick(form)}
-                        >
-                          <RiDeleteBin5Line size={16} />
-                        </button>
+                        <div className="relative group">
+                          <button
+                            className="p-2 border rounded-full text-red-500 hover:bg-red-50"
+                            onClick={() => handleDeleteClick(form)}
+                          >
+                            <RiDeleteBin5Line size={16} />
+                          </button>
+
+                          <span className="absolute left-1/2 -translate-x-1/2 -top-8   hidden group-hover:block bg-slate-800 text-white text-xs  px-2 py-1 rounded shadow">
+                            Delete
+                          </span>
+                        </div>
                       </div>
                     </td>
                   </tr>
