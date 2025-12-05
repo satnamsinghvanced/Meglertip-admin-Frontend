@@ -64,6 +64,7 @@ import FormUIPage from "../pages/formpage/FormPage";
 import FormCreateEditPage from "../pages/forms/FormPage";
 import FormManagePage from "../pages/forms/FormTypeSelectionPage";
 import StepsBuilderForm from "../pages/forms/StepsBuilderForm";
+import LeadDetails from "../pages/leadLogs/LeadDetails";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -199,6 +200,7 @@ useEffect(() => {
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
 
         <Route path={ROUTES.LEAD_LOGS} element={<LeadLogs />} />
+        <Route path="/leads/:id" element={<LeadDetails />} />
       </Route>
     </RouteWrapper>
   );

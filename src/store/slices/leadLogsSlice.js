@@ -3,20 +3,60 @@ import api from "../../api/axios";
 
 export const getAllLeads = createAsyncThunk(
   "lead/getAllLeads",
-  async ({ page = 1, limit = 10, search = "", status = "" }, { rejectWithValue }) => {
+  async (
+    { page = 1, limit = 10, search = "", status = "" },
+    { rejectWithValue }
+  ) => {
     try {
       const params = new URLSearchParams();
-
       params.append("page", page);
       params.append("limit", limit);
       if (search) params.append("search", search);
       if (status) params.append("status", status);
 
       const res = await api.get(`lead-logs/all?${params.toString()}`);
-
-      return res.data; // return entire response
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Error fetching leads");
+    }
+  }
+);
+
+export const updateLeadStatus = createAsyncThunk(
+  "lead/updateStatus",
+  async ({ leadId, status }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.patch(`/lead-logs/status`, { leadId, status });
+      return data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to update status");
+    }
+  }
+);
+
+export const updateLeadProfit = createAsyncThunk(
+  "lead/updateProfit",
+  async ({ leadId, profit }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.patch(`/lead-logs/update-profit`, {
+        leadId,
+        profit,
+      });
+      return data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to update profit");
+    }
+  }
+);
+
+export const getLeadById = createAsyncThunk(
+  "lead/getLeadById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/lead-logs/details/${id}`);
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to fetch lead");
     }
   }
 );
@@ -31,14 +71,14 @@ const leadSlice = createSlice({
       limit: 10,
       pages: 1,
     },
+    selectedLead: null,
     loading: false,
     error: null,
   },
-
   reducers: {},
-
   extraReducers: (builder) => {
     builder
+
       .addCase(getAllLeads.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -51,6 +91,31 @@ const leadSlice = createSlice({
       .addCase(getAllLeads.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to load leads";
+      })
+
+      .addCase(updateLeadStatus.fulfilled, (state, action) => {
+        const updated = action.payload;
+        const index = state.leads.findIndex((l) => l._id === updated._id);
+        if (index !== -1) state.leads[index] = updated;
+      })
+
+      .addCase(updateLeadProfit.fulfilled, (state, action) => {
+        const updated = action.payload;
+        const index = state.leads.findIndex((l) => l._id === updated._id);
+        if (index !== -1) state.leads[index] = updated;
+      })
+
+      .addCase(getLeadById.pending, (state) => {
+        state.loading = true;
+        state.selectedLead = null;
+      })
+      .addCase(getLeadById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedLead = action.payload;
+      })
+      .addCase(getLeadById.rejected, (state) => {
+        state.loading = false;
+        state.selectedLead = null;
       });
   },
 });

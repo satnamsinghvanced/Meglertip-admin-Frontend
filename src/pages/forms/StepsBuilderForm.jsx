@@ -11,7 +11,9 @@ const StepsBuilderForm = ({ form, onBack }) => {
   const fetchSteps = async () => {
     try {
       const { data } = await api.get(`/forms/form-steps/${form._id}`);
-     setSteps((data?.data?.steps || []).sort((a, b) => a.stepOrder - b.stepOrder)); 
+      setSteps(
+        (data?.data?.steps || []).sort((a, b) => a.stepOrder - b.stepOrder)
+      );
     } catch (error) {
       console.log("No steps found yet");
       setSteps([]);
@@ -104,11 +106,14 @@ const StepsBuilderForm = ({ form, onBack }) => {
       for (let f of currentStep.fields)
         if (!f.label || !f.name)
           throw new Error("All fields must have label and name");
-
+      const stepOrder = currentStep._id
+        ? currentStep.stepOrder // keep existing order
+        : steps.length + 1;
       const payload = {
         stepTitle: currentStep.stepTitle,
         stepDescription: currentStep.stepDescription,
-        stepOrder: currentStep.length + 1,
+
+        stepOrder,
         fields: currentStep.fields.map((f) => ({
           label: f.label,
           name: f.name,

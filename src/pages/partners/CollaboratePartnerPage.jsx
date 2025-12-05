@@ -10,6 +10,7 @@ import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 import { fetchPartners, deletePartner } from "../../store/slices/partnersSlice";
 import api from "../../api/axios";
+import { LuLogs } from "react-icons/lu";
 
 export const CollaboratePartnerPage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ export const CollaboratePartnerPage = () => {
   const debounceTimer = useRef(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
+  const [partnerLimit, setPartnerLimit] = useState("");
 
   const applyFilters = (filterValues, requestPage = 1) => {
     const params = {
@@ -71,7 +73,20 @@ export const CollaboratePartnerPage = () => {
     setShowDeleteModal(false);
     setPartnerToDelete(null);
   };
+  useEffect(() => {
+    const fetchLimit = async () => {
+      try {
+        const { data } = await api.get("/partners/get-limit");
+        if (data?.success) {
+          setPartnerLimit(data.data.limit); // set limit from backend
+        }
+      } catch (error) {
+        toast.error("Failed to load partner limit");
+      }
+    };
 
+    fetchLimit();
+  }, []);
   const headerButtons = [
     {
       value: "+ Add Company",
@@ -167,23 +182,20 @@ export const CollaboratePartnerPage = () => {
           <input
             id="limit"
             type="number"
-            className="p-2 border border-slate-300 rounded-lg min-w-[150px]"
-            value={filters.limit || ""}
-            onChange={(e) => {
-              const updated = { ...filters, limit: e.target.value };
-              setFilters(updated);
-              fetchWithDelay(updated);
-            }}
+            className="p-2 border border-slate-300 rounded-lg w-7"
+            value={partnerLimit}
+            onChange={(e) => setPartnerLimit(e.target.value)}
             placeholder="Enter Limit"
           />
+
           <button
             onClick={async () => {
-            if (!filters.limit || filters.limit <= 0){
+              if (!partnerLimit || partnerLimit <= 0) {
                 return toast.error("Please enter a valid limit");
               }
 
               try {
-                const { data } = await api.post("/partners/limit", {
+                const { data } = await api.put("/partners/limit", {
                   limit: Number(partnerLimit),
                 });
 
@@ -192,9 +204,9 @@ export const CollaboratePartnerPage = () => {
                 toast.error("Failed to update partner limit");
               }
             }}
-            className="px-[9px] py-1  bg-primary text-white rounded-lg"
+            className="px-[9px] py-1 bg-primary text-white rounded-lg"
           >
-          ✓
+            ✓
           </button>
         </div>
 
@@ -276,18 +288,57 @@ export const CollaboratePartnerPage = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center gap-2">
-                          <button
-                            className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                            onClick={() => navigate(`/partners/${p._id}`)}
-                          >
-                            <FaRegEye size={16} />
-                          </button>
-                          <button
-                            className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                            onClick={() => navigate(`/partners/${p._id}/edit`)}
-                          >
-                            <AiTwotoneEdit size={16} />
-                          </button>
+                          {/* <div className="relative group">
+                            <button
+                              className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
+                              onClick={() => navigate(`/leads-logs/${p._id}`)}
+                            >
+                              <LuLogs size={16} />
+                            </button>
+
+                            <span
+                              className="absolute left-1/2 -translate-x-1/2 -top-8 
+                                  hidden group-hover:block 
+                                 bg-slate-800 text-white text-xs px-2 py-1 rounded shadow"
+                            >
+                              Logs
+                            </span>
+                          </div> */}
+
+                          <div className="relative group">
+                            <button
+                              className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
+                              onClick={() => navigate(`/partners/${p._id}`)}
+                            >
+                              <FaRegEye size={16} />
+                            </button>
+                            <span
+                              className="absolute left-1/2 -translate-x-1/2 -top-8 
+                                          hidden group-hover:block bg-slate-800 text-white text-xs 
+                                            px-2 py-1 rounded shadow"
+                            >
+                              View
+                            </span>
+                          </div>
+
+                          <div className="relative group">
+                            <button
+                              className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
+                              onClick={() =>
+                                navigate(`/partners/${p._id}/edit`)
+                              }
+                            >
+                              <AiTwotoneEdit size={16} />
+                            </button>
+                            <span
+                              className="absolute left-1/2 -translate-x-1/2 -top-8 
+                                            hidden group-hover:block bg-slate-800 text-white text-xs 
+                                            px-2 py-1 rounded shadow"
+                            >
+                              Edit
+                            </span>
+                          </div>
+
                           <button
                             className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
                             onClick={() => {
