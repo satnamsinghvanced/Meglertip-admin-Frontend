@@ -97,8 +97,8 @@ const ArticlePage = () => {
                 <th className="px-6 py-4">#</th>
                 <th className="px-6 py-4">Title</th>
                 <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Author</th>
-                <th className="px-6 py-4">Created</th>
+                {/* <th className="px-6 py-4">Author</th> */}
+                <th className="px-6 py-4">Created At</th>
                 <th className="px-6 py-4 flex items-center justify-center">Actions</th>
               </tr>
             </thead>
@@ -126,7 +126,7 @@ const ArticlePage = () => {
                     <td className="px-6 py-4 text-slate-500">{(page - 1) * limit + index + 1}</td>
                     <td className="px-6 py-4 font-medium text-slate-900">{article.title}</td>
                     <td className="px-6 py-4">{article.categoryId?.title || "N/A"}</td>
-                    <td className="px-6 py-4">{article.createdBy?.username || "N/A"}</td>
+                    {/* <td className="px-6 py-4">{article.createdBy?.username || "N/A"}</td> */}
                     <td className="px-6 py-4 text-sm">{new Date(article.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">

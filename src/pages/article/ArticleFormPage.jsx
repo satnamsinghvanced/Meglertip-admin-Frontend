@@ -13,7 +13,7 @@ import {
   getArticleById,
   updateArticle,
 } from "../../store/slices/articleSlice";
-import { getCategories } from "../../store/slices/articleCategoriesSlice";
+import { getCategories, getCategoriesAll } from "../../store/slices/articleCategoriesSlice";
 import { toast } from "react-toastify";
 import ImageUploader from "../../UI/ImageUpload";
 
@@ -50,8 +50,8 @@ const ArticleFormPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { selectedArticle } = useSelector((state) => state.articles);
-  const { categories } = useSelector((state) => state.categories);
-
+  const { categoriesAll  } = useSelector((state) => state.categories);
+// console.log(categoriesAll )
   const [form, setForm] = useState({
     title: "",
     slug: "",
@@ -95,7 +95,7 @@ const ArticleFormPage = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    dispatch(getCategories());
+    dispatch(getCategoriesAll());
   }, [dispatch]);
 
   useEffect(() => {
@@ -266,7 +266,7 @@ const ArticleFormPage = () => {
                 required
               >
                 <option value="">Select a category</option>
-                {categories.map((category) => (
+                {categoriesAll.map((category) => (
                   <option key={category._id} value={category._id}>
                     {category.title}
                   </option>

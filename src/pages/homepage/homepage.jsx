@@ -9,6 +9,7 @@ import { AiTwotoneEdit } from "react-icons/ai";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import ImageUploader from "../../UI/ImageUpload";
 import ConfirmModal from "../../UI/ConfirmDeleteModal";
+import { toast } from "react-toastify";
 
 const HomePageEditor = () => {
   const dispatch = useDispatch();
@@ -154,24 +155,86 @@ const HomePageEditor = () => {
     }
   }, [sections]);
 
-  const saveHero = () => dispatch(updateHomepageSection("hero", hero));
-  const saveHowItWorks = () => {
-    dispatch(updateHomepageSection("how-it-works", howItWorks));
-  };
+  const validateFields = (obj) => {
+  for (const key in obj) {
+    if (typeof obj[key] === "string" && obj[key].trim() === "") return false;
 
-  const saveArticles = () =>
-    dispatch(updateHomepageSection("category-heading", category));
-  const saveArticlesHeading = () =>
-    dispatch(updateHomepageSection("articles-heading", articles));
+    if (Array.isArray(obj[key])) {
+      if (obj[key].length === 0) return false;
+      for (const item of obj[key]) {
+        if (typeof item === "string" && item.trim() === "") return false;
+        if (typeof item === "object" && !validateFields(item)) return false;
+      }
+    }
 
-  const saveWhyChoose = () => {
-    dispatch(updateHomepageSection("why-choose", whyChoose));
-  };
-  const saveCity = () => dispatch(updateHomepageSection("city", city));
-  const saveFaq = () => dispatch(updateHomepageSection("faq", faq));
+    if (typeof obj[key] === "object" && !Array.isArray(obj[key]))
+      if (!validateFields(obj[key])) return false;
+  }
+  return true;
+};
+
+const saveHero = () => {
+  if (!validateFields(hero)) {
+    toast.error("Please fill all fields in Hero section");
+    return;
+  }
+  dispatch(updateHomepageSection("hero", hero));
+};
+
+ const saveHowItWorks = () => {
+  if (!validateFields(howItWorks)) {
+    toast.error("Please fill all fields in How It Works");
+    return;
+  }
+  dispatch(updateHomepageSection("how-it-works", howItWorks));
+};
+
+ const saveArticles = () => {
+  if (!validateFields(category)) {
+    toast.error("Category Heading is required");
+    return;
+  }
+  dispatch(updateHomepageSection("category-heading", category));
+};
+
+  const saveArticlesHeading = () => {
+  if (!validateFields(articles)) {
+    toast.error("Please fill all Article Heading fields");
+    return;
+  }
+  dispatch(updateHomepageSection("articles-heading", articles));
+};
+
+ const saveWhyChoose = () => {
+  if (!validateFields(whyChoose)) {
+    toast.error("Please fill all fields in Why Choose section");
+    return;
+  }
+  dispatch(updateHomepageSection("why-choose", whyChoose));
+};
+const saveCity = () => {
+  if (!validateFields(city)) {
+    toast.error("Please fill all City fields");
+    return;
+  }
+  dispatch(updateHomepageSection("city", city));
+};
+const saveFaq = () => {
+  if (!validateFields(faq)) {
+    toast.error("FAQ Title is required");
+    return;
+  }
+  dispatch(updateHomepageSection("faq", faq));
+};
+
   const saveSEOSetitngs = () => dispatch(updateHomepageSection("seo", {seoSection: form}));
-  const savePros = () =>
-    dispatch(updateHomepageSection("pros", { prosSection: pros }));
+ const savePros = () => {
+  if (!validateFields({ pros })) {
+    toast.error("Please fill all Pros section fields");
+    return;
+  }
+  dispatch(updateHomepageSection("pros", { prosSection: pros }));
+};
 
   return (
     <div className=" min-h-screen space-y-10">

@@ -17,6 +17,17 @@ export const getCategories = createAsyncThunk(
     }
   }
 );
+export const getCategoriesAll = createAsyncThunk(
+  "categories/getCategoriesAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/article-categories/all`);
+      return response.data; // contains data + pagination info
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
 export const getCategoryById = createAsyncThunk(
   "categories/getCategoryById",
   async (id, { rejectWithValue }) => {
@@ -79,6 +90,7 @@ const categorySlice = createSlice({
   name: "categories",
   initialState: {
     categories: [],
+    categoriesAll: [],
     selectedCategory: null,
     loading: false,
     error: null,
@@ -94,6 +106,9 @@ const categorySlice = createSlice({
     setCategories: (state, action) => {
       state.categories = action.payload;
     },
+    setCategoriesAll: (state, action) => {
+      state.categoriesAll = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,6 +121,17 @@ const categorySlice = createSlice({
         state.pagination = action.payload.pagination;
       })
       .addCase(getCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getCategoriesAll.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getCategoriesAll.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categoriesAll = action.payload.data;
+      })
+      .addCase(getCategoriesAll.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -167,7 +193,7 @@ const categorySlice = createSlice({
       });
   },
 });
-export const { clearSelectedCategory, clearError, setCategories } =
+export const { clearSelectedCategory, clearError, setCategories , setCategoriesAll } =
   categorySlice.actions;
 
 export default categorySlice.reducer;

@@ -90,14 +90,14 @@ const ArticleDetailPage = () => {
                 {selectedArticle.categoryId?.title || "N/A"}
               </p>
             </div>
-            <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+            {/* <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Author
               </p>
               <p className="mt-1 text-base font-semibold text-slate-900">
                 {selectedArticle.createdBy?.username || "N/A"}
               </p>
-            </div>
+            </div> */}
              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Article Position
