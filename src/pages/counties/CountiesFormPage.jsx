@@ -37,6 +37,7 @@ const CountiesFormPage = () => {
   const [form, setForm] = useState({
     name: "",
     slug: "",
+    excerpt:""
   });
 
   const [errors, setErrors] = useState({});
@@ -55,6 +56,7 @@ const CountiesFormPage = () => {
       setForm({
         name: selectedCounty.name || "",
         slug: selectedCounty.slug || "",
+        excerpt: selectedCounty.excerpt || "",
       });
     }
   }, [isEditMode, selectedCounty]);
@@ -92,6 +94,7 @@ const CountiesFormPage = () => {
   const buildPayload = () => ({
     name: form.name?.trim() || "",
     slug: form.slug?.trim() || "",
+    excerpt: form.excerpt?.trim() || ""
   });
 
   const handleSubmit = async (e) => {
@@ -160,6 +163,7 @@ const CountiesFormPage = () => {
             {[
               { label: "County Name", name: "name" },
               { label: "Slug", name: "slug" },
+              { label: "Excerpt", name: "excerpt" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">

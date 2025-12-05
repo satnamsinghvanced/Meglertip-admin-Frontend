@@ -131,7 +131,7 @@ const EmailTemplateList = () => {
                   Click a card to preview and manage details.
                 </p>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500 w-[70px]">
                 {templates.length} total
               </span>
             </div>
