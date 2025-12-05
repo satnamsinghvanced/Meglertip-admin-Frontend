@@ -11,7 +11,7 @@ const StepsBuilderForm = ({ form, onBack }) => {
   const fetchSteps = async () => {
     try {
       const { data } = await api.get(`/forms/form-steps/${form._id}`);
-      setSteps(data?.data?.steps || []);
+     setSteps((data?.data?.steps || []).sort((a, b) => a.stepOrder - b.stepOrder)); 
     } catch (error) {
       console.log("No steps found yet");
       setSteps([]);
@@ -29,6 +29,7 @@ const StepsBuilderForm = ({ form, onBack }) => {
       setCurrentStep({
         stepTitle: "",
         stepDescription: "",
+        stepOrder: steps.length + 1,
         fields: [
           {
             label: "",
@@ -107,6 +108,7 @@ const StepsBuilderForm = ({ form, onBack }) => {
       const payload = {
         stepTitle: currentStep.stepTitle,
         stepDescription: currentStep.stepDescription,
+        stepOrder: currentStep.length + 1,
         fields: currentStep.fields.map((f) => ({
           label: f.label,
           name: f.name,
@@ -190,6 +192,9 @@ const StepsBuilderForm = ({ form, onBack }) => {
                       {i + 1}. {s.stepTitle}
                     </h3>
                     <p className="text-gray-600">{s.stepDescription}</p>
+                    <p className="text-sm text-gray-500">
+                      Order: {s.stepOrder}
+                    </p>
                     <p className="text-sm text-gray-500 mb-2">
                       Total Fields: {s.fields.length}
                     </p>
@@ -289,6 +294,18 @@ const StepsBuilderForm = ({ form, onBack }) => {
           value={currentStep.stepDescription}
           onChange={(e) =>
             setCurrentStep({ ...currentStep, stepDescription: e.target.value })
+          }
+          className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        <input
+          type="number"
+          placeholder="Step Order"
+          value={currentStep.stepOrder || ""}
+          onChange={(e) =>
+            setCurrentStep({
+              ...currentStep,
+              stepOrder: Number(e.target.value),
+            })
           }
           className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
         />

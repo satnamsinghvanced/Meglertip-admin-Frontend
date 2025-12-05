@@ -60,7 +60,7 @@ export const AddPartnerPage = () => {
 
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/partners/anwser?question=${question}`
+        `${import.meta.env.VITE_API_URL}/partners/answer?question=${question}`
       );
 
       const options = res.data?.options || [];
@@ -456,6 +456,7 @@ export const AddPartnerPage = () => {
                   >
                     <option value="">Select question</option>
                     {/* <option value="postalCode">Postal Code</option> */}
+                    <option value="leadType">LeadType</option>
 
                     {allQuestions.map((q, i) => (
                       <option key={i} value={q.question}>
