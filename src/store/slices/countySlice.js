@@ -1,12 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
+const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
+
+const fixImageUrl = (url) => {
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${IMAGE_URL}${url}`;
+};
 
 export const getCounties = createAsyncThunk(
   "county/getCounties",
   async ({ page = 1, limit = 10, search = "" } = {}, { rejectWithValue }) => {
     try {
       const { data } = await api.get(
-        `/counties?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+        `/counties?page=${page}&limit=${limit}&search=${encodeURIComponent(
+          search
+        )}`
       );
       return data;
     } catch (err) {
@@ -16,7 +24,7 @@ export const getCounties = createAsyncThunk(
 );
 export const getCountiesForPlace = createAsyncThunk(
   "county/getCounties",
-  async ( { rejectWithValue }) => {
+  async ({ rejectWithValue }) => {
     try {
       const { data } = await api.get(`/counties/counties-for-place`);
       return data;
@@ -30,6 +38,12 @@ export const getCountyById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const { data } = await api.get(`/counties/detail/${id}`);
+
+      // --- FIX ICON URL ---
+      if (data?.data?.icon) {
+        data.data.icon = fixImageUrl(data.data.icon);
+      }
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -87,7 +101,6 @@ export const importCounties = createAsyncThunk(
   }
 );
 
-
 const countySlice = createSlice({
   name: "counties",
   initialState: {
@@ -98,7 +111,7 @@ const countySlice = createSlice({
     error: null,
     successMessage: null,
   },
-   reducers: {
+  reducers: {
     clearSelectedCounty: (state) => {
       state.selectedCounty = null;
     },
@@ -132,7 +145,6 @@ const countySlice = createSlice({
         state.counties = [];
       })
 
-
       .addCase(getCountyById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -145,7 +157,6 @@ const countySlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to fetch county";
       })
-
 
       .addCase(createCounty.pending, (state) => {
         state.loading = true;
@@ -160,7 +171,6 @@ const countySlice = createSlice({
         state.error = action.payload || "Failed to create county";
       })
 
-
       .addCase(updateCounty.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -173,7 +183,6 @@ const countySlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to update county";
       })
-
 
       .addCase(deleteCounty.pending, (state) => {
         state.loading = true;
@@ -205,9 +214,6 @@ const countySlice = createSlice({
       });
   },
 });
-export const {  clearSelectedCounty, clearError, setCounties } =
+export const { clearSelectedCounty, clearError, setCounties } =
   countySlice.actions;
 export default countySlice.reducer;
-
-
-

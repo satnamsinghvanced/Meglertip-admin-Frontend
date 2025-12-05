@@ -10,6 +10,7 @@ import {
   updateCounty,
 } from "../../store/slices/countySlice";
 import { toast } from "react-toastify";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
 const requiredFields = ["name", "slug"];
 
@@ -27,7 +28,7 @@ const CountiesFormPage = () => {
   const isEditMode = Boolean(countyId);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+ 
   const {
     counties,
     loading: citiesLoading,
@@ -37,9 +38,11 @@ const CountiesFormPage = () => {
   const [form, setForm] = useState({
     name: "",
     slug: "",
-    excerpt:""
+    excerpt:"",
+    icon :""
   });
-
+ const [imageFile, setImageFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState("");
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -58,6 +61,7 @@ const CountiesFormPage = () => {
         slug: selectedCounty.slug || "",
         excerpt: selectedCounty.excerpt || "",
       });
+        setPreviewImage(selectedCounty.icon || "");
     }
   }, [isEditMode, selectedCounty]);
 
@@ -91,45 +95,64 @@ const CountiesFormPage = () => {
     }
   };
 
-  const buildPayload = () => ({
+  const handleImageChange = (event) => {
+    const file = event.target.files?.[0];
+    setImageFile(file || null);
+    setPreviewImage(file ? URL.createObjectURL(file) : "");
+  };
+const buildPayload = () => {
+  const payload = {
     name: form.name?.trim() || "",
     slug: form.slug?.trim() || "",
-    excerpt: form.excerpt?.trim() || ""
-  });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateAll()) {
-      toast.error("Please fill required fields before saving.");
-      return;
-    }
-
-    setSubmitting(true);
-
-    try {
-      const payload = buildPayload();
-
-      if (isEditMode) {
-        await dispatch(
-          updateCounty({ id: countyId, countyData: payload })
-        ).unwrap();
-        toast.success("County updated!");
-      } else {
-        await dispatch(createCounty(payload)).unwrap();
-        toast.success("County created!");
-      }
-
-      navigate("/counties");
-    } catch (err) {
-      console.error(err);
-      toast.error(
-        err?.data?.message || err?.message || "Failed to save the place."
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    excerpt: form.excerpt?.trim() || "",
+    icon: form.icon || "",
   };
+
+  return payload;
+};
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!validateAll()) {
+    toast.error("Please fill required fields before saving.");
+    return;
+  }
+
+  setSubmitting(true);
+
+  try {
+    let payload;
+    let isFormData = false;
+
+    if (imageFile) {
+      isFormData = true;
+      payload = new FormData();
+      payload.append("name", form.name);
+      payload.append("slug", form.slug);
+      payload.append("excerpt", form.excerpt);
+      payload.append("icon", imageFile); // ✔ Upload file
+    } else {
+      payload = buildPayload(); // ✔ normal JSON
+    }
+
+    if (isEditMode) {
+      await dispatch(
+        updateCounty({ id: countyId, countyData: payload, isFormData })
+      ).unwrap();
+      toast.success("County updated!");
+    } else {
+      await dispatch(createCounty({ countyData: payload, isFormData })).unwrap();
+      toast.success("County created!");
+    }
+
+    navigate("/counties");
+  } catch (err) {
+    toast.error(err?.data?.message || err.message);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   const hasErrors = Object.values(errors).some(Boolean);
   const isDisabled = hasErrors || submitting;
@@ -192,7 +215,43 @@ const CountiesFormPage = () => {
               </div>
             ))}
           </div>
-
+  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm mt-4">
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Featured image
+            </label>
+            {previewImage ? (
+              <div className="mt-3 rounded-2xl border border-slate-100 bg-slate-50/60 p-3">
+                <div className="relative">
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="h-56 w-full rounded-xl object-cover"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-3 rounded-full bg-red-600 p-2 text-white shadow hover:bg-red-500"
+                    onClick={() => {
+                      setImageFile(null);
+                      setPreviewImage("");
+                    }}
+                    title="Remove image"
+                  >
+                    <RiDeleteBin5Line size={16} />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <label className="mt-3 flex h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 text-sm text-slate-500 hover:border-slate-300">
+                <span>Click to upload</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+              </label>
+            )}
+          </div>
           <div className="mt-8">
             <button
               type="submit"
