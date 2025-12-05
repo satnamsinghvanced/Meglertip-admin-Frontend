@@ -51,7 +51,7 @@ export const logOut = () => async (dispatch) => {
   dispatch(setToken(null));
   localStorage.removeItem("token");
   localStorage.removeItem("auth_user");
-  redirect("/login");
+ navigate("/login", { replace: true });
 };
 
 export const updateUserInfo = (id, body) => async (dispatch, getState) => {

@@ -78,13 +78,13 @@ const Routes = () => {
     if (token && window.location.pathname === "/login") {
       navigate("/dashboard", { replace: true });
     }
-  }, [token]);
+  }, [token, navigate]);
 
-useEffect(() => {
-  if (token && window.location.pathname === "/") {
-    navigate("/dashboard");
-  }
-}, [token, navigate]);
+  useEffect(() => {
+    if (token && window.location.pathname === "/") {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
   return (
     <RouteWrapper>
       <Route element={token ? <Layout /> : <AuthLayout />}>
@@ -129,14 +129,11 @@ useEffect(() => {
           element={<RealEstateAgentsFormPage />}
         />
 
-        <Route path={ROUTES.FORMS} element={<FormManagePage  />} />
-        <Route
-          path="/admin/form-selection"
-          element={<FormManagePage />}
-        />
-<Route path="/forms/create" element={<FormCreateEditPage />} />
-<Route path="/forms/:id/edit" element={<FormCreateEditPage />} />
-<Route path="/forms/:id/steps" element={<StepsBuilderForm />} />
+        <Route path={ROUTES.FORMS} element={<FormManagePage />} />
+        <Route path="/admin/form-selection" element={<FormManagePage />} />
+        <Route path="/forms/create" element={<FormCreateEditPage />} />
+        <Route path="/forms/:id/edit" element={<FormCreateEditPage />} />
+        <Route path="/forms/:id/steps" element={<StepsBuilderForm />} />
 
         <Route
           path="/admin/form-builder/:formType"
