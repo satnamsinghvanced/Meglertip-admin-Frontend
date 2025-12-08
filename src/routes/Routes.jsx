@@ -162,6 +162,7 @@ const Routes = () => {
           element={<CreateFooterArticlePage />}
         />
         <Route path={ROUTES.FOOTER_EDIT} element={<EditFooterItemPage />} />
+        <Route path={ROUTES.FOOTER_EDIT_FOR_HEADER_AND_ADDRESS} element={<EditFooterItemPage />} />
         {/* <Route path="/footer/edit/:tab" element={<EditFooterItemPage />} /> */}
         <Route
           path="/footer/create/:tab/select"

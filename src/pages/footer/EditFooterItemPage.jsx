@@ -10,38 +10,57 @@ const EditFooterItemPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { tab, index } = useParams();
-  const { footer } = useSelector((s) => s.footer || {});
 
+  const { footer } = useSelector((s) => s.footer || {});
   const [form, setForm] = useState(null);
 
+  const singleObjectTabs = ["address", "header"];
+
+  // --- Step 1: Load footer if not available
   useEffect(() => {
     if (!footer) dispatch(fetchFooter());
-  }, [dispatch, footer]);
+  }, [footer, dispatch]);
 
+  // --- Step 2: Prepare form value based on tab
   useEffect(() => {
-    if (tab === "address") {
-      setForm(footer.address || {});
-    } else {
-      const arr = footer[tab] || [];
-      const idx = parseInt(index, 10);
-      const item = arr[idx];
+    if (!footer) return;
 
-      if (!item) {
-        toast.error("Item not found");
-        navigate("/footer");
-        return;
-      }
-      setForm(item);
+    if (singleObjectTabs.includes(tab)) {
+      setForm(footer?.[tab] || {});
+      return;
     }
+
+    // For array-based tabs (articles, links, socialLinks…)
+    const arr = footer?.[tab] || [];
+    const idx = parseInt(index, 10);
+    const item = arr[idx];
+
+    if (!item) {
+      toast.error("Item not found");
+      navigate("/footer");
+      return;
+    }
+
+    setForm(item);
   }, [footer, tab, index, navigate]);
 
+  // --- Step 3: Handle save
   const handleSave = async () => {
     try {
-      const arr = [...(footer[tab] || [])];
-      arr[parseInt(index, 10)] = form;
-      const working = { ...(footer || {}), [tab]: arr };
-      await dispatch(updateFooter(working)).unwrap();
-      toast.success("Updated");
+      let working = { ...(footer || {}) };
+
+      if (singleObjectTabs.includes(tab)) {
+        // Address & Header are single objects
+        working[tab] = form;
+      } else {
+        // Array-based tabs
+        const arr = [...(footer?.[tab] || [])];
+        arr[parseInt(index, 10)] = form;
+        working[tab] = arr;
+      }
+
+      await dispatch(updateFooter({ body: working })).unwrap();
+      toast.success("Updated successfully");
       navigate("/footer");
     } catch (err) {
       console.error(err);
@@ -54,8 +73,11 @@ const EditFooterItemPage = () => {
   return (
     <div className="space-y-6">
       <PageHeader title={`Edit ${tab}`} description={`Edit ${tab} item`} />
+
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
         <div className="space-y-4">
+
+          {/* Articles / Places / Companies */}
           {["articles", "places", "companies"].includes(tab) && (
             <>
               <label className="block text-sm">Title</label>
@@ -74,6 +96,7 @@ const EditFooterItemPage = () => {
             </>
           )}
 
+          {/* Explore Links / Footer Links */}
           {["exploreLinks", "footerLinks"].includes(tab) && (
             <>
               <label className="block text-sm">Text</label>
@@ -91,7 +114,9 @@ const EditFooterItemPage = () => {
               />
             </>
           )}
-          {["footerText"].includes(tab) && (
+
+          {/* Footer Text */}
+          {tab === "footerText" && (
             <>
               <label className="block text-sm">Text</label>
               <input
@@ -101,7 +126,46 @@ const EditFooterItemPage = () => {
               />
             </>
           )}
-          {["address"].includes(tab) && (
+
+          {/* Header (single object) */}
+          {tab === "header" && (
+            <>
+              <label className="block text-sm">Title</label>
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.title || ""}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+              />
+
+              <label className="block text-sm">Description</label>
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.description || ""}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
+              />
+
+              <label className="block text-sm">Button Text</label>
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.button || ""}
+                onChange={(e) => setForm({ ...form, button: e.target.value })}
+              />
+
+              <label className="block text-sm">CTA Link</label>
+              <input
+                className="w-full rounded-lg border px-3 py-2"
+                value={form.buttonLink || ""}
+                onChange={(e) =>
+                  setForm({ ...form, buttonLink: e.target.value })
+                }
+              />
+            </>
+          )}
+
+          {/* Address (single object) */}
+          {tab === "address" && (
             <>
               <label className="block text-sm">Address</label>
               <input
@@ -112,6 +176,7 @@ const EditFooterItemPage = () => {
             </>
           )}
 
+          {/* Social Links */}
           {tab === "socialLinks" && (
             <>
               <label className="block text-sm">Icon</label>
@@ -139,7 +204,6 @@ const EditFooterItemPage = () => {
                 <input
                   id="newpage"
                   type="checkbox"
-                  className="!relative"
                   checked={form.newPage || false}
                   onChange={(e) =>
                     setForm({ ...form, newPage: e.target.checked })
@@ -152,6 +216,7 @@ const EditFooterItemPage = () => {
             </>
           )}
 
+          {/* Contact info */}
           {tab === "contactInfo" && (
             <>
               <label className="block text-sm">Type</label>
@@ -184,7 +249,6 @@ const EditFooterItemPage = () => {
                 <input
                   id="contact-newpage"
                   type="checkbox"
-                  className="!relative"
                   checked={form.newPage || false}
                   onChange={(e) =>
                     setForm({ ...form, newPage: e.target.checked })
@@ -207,7 +271,7 @@ const EditFooterItemPage = () => {
           </button>
           <button
             className="rounded-full bg-primary px-4 py-2 text-white"
-            onClick={handleSaveHandler}
+            onClick={handleSave}
           >
             Save
           </button>
@@ -215,26 +279,6 @@ const EditFooterItemPage = () => {
       </div>
     </div>
   );
-
-  async function handleSaveHandler() {
-    try {
-      let working = { ...(footer || {}) };
-
-      if (tab === "address") {
-        working.address = form;
-      } else {
-        const arr = [...(footer[tab] || [])];
-        arr[parseInt(index, 10)] = form;
-        working[tab] = arr;
-      }
-      await dispatch(updateFooter({ body: working })).unwrap();
-      toast.success("Updated");
-      navigate("/footer");
-    } catch (err) {
-      console.error(err);
-      toast.error("Update failed");
-    }
-  }
 };
 
 export default EditFooterItemPage;
