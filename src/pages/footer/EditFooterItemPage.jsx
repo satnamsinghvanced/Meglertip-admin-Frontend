@@ -204,6 +204,7 @@ const EditFooterItemPage = () => {
                 <input
                   id="newpage"
                   type="checkbox"
+                   className="!relative"
                   checked={form.newPage || false}
                   onChange={(e) =>
                     setForm({ ...form, newPage: e.target.checked })
@@ -249,6 +250,7 @@ const EditFooterItemPage = () => {
                 <input
                   id="contact-newpage"
                   type="checkbox"
+                  className="!relative"
                   checked={form.newPage || false}
                   onChange={(e) =>
                     setForm({ ...form, newPage: e.target.checked })
