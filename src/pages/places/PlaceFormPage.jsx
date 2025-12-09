@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
@@ -13,6 +13,7 @@ import {
 } from "../../store/slices/placeSlice";
 import { toast } from "react-toastify";
 import ImageUploader from "../../UI/ImageUpload";
+import { getCompaniesAll } from "../../store/slices/companySlice";
 
 const quillModules = {
   toolbar: [
@@ -63,7 +64,8 @@ const PlaceFormPage = () => {
 
   const { selectedPlace } = useSelector((state) => state.places || {});
   const { counties } = useSelector((state) => state.counties);
-  console.log(counties, "test");
+  const { allCompanies } = useSelector((state) => state.companies);
+  // console.log(counties, "test");
   const [form, setForm] = useState({
     name: "",
     countyId: "",
@@ -104,15 +106,28 @@ const PlaceFormPage = () => {
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [showCompaniesDropdown, setShowCompaniesDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowCompaniesDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   useEffect(() => {
     if (isEditMode && placeId) dispatch(getPlaceById(placeId));
     else dispatch(clearSelectedPlace());
     return () => dispatch(clearSelectedPlace());
   }, [dispatch, isEditMode, placeId]);
   useEffect(() => {
-    // console.log("DISPATCHING FROM PLACE FORM");
     dispatch(getCountiesForPlace({}));
+  }, []);
+  useEffect(() => {
+    dispatch(getCompaniesAll({}));
   }, []);
   useEffect(() => {
     if (isEditMode && selectedPlace) {
@@ -126,7 +141,7 @@ const PlaceFormPage = () => {
         isRecommended: selectedPlace.isRecommended || false,
         rank: selectedPlace.rank || 0,
         companiesId: Array.isArray(selectedPlace.companiesId)
-          ? selectedPlace.companiesId
+          ? selectedPlace.companiesId.map((id) => String(id))
           : [],
         metaTitle: selectedPlace.metaTitle || "",
         metaDescription: selectedPlace.metaDescription || "",
@@ -188,7 +203,7 @@ const PlaceFormPage = () => {
     excerpt: form.excerpt || "",
     title: form.title || "",
     description: form.description || "",
-    isRecommended: form.isRecommended,
+    isRecommended: form.isRecommended ,
     rank: Number(form.rank) || 0,
     companiesId: form.companiesId,
 
@@ -339,7 +354,96 @@ const PlaceFormPage = () => {
               )}
             </div>
 
-            <div className="md:col-span-2">
+            <div ref={dropdownRef}>
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Companies <span className="text-red-500">*</span>
+              </label>
+
+              {/* Trigger Button */}
+              <div
+                className="w-full border border-slate-200 rounded-xl px-3 py-2 mt-1 cursor-pointer"
+                onClick={() => setShowCompaniesDropdown((prev) => !prev)}
+              >
+                {form.companiesId.length === 0 ? (
+                  <span className="text-slate-500 text-sm">
+                    Select Companies
+                  </span>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {form.companiesId.map((id) => {
+                      const company = allCompanies.find((c) => c._id === id);
+                      return (
+                        <span
+                          key={id}
+                          className="bg-gray-100 text-slate-700 px-2 py-1 text-xs rounded-lg flex items-center gap-1"
+                        >
+                          {company?.companyName}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setForm((prev) => ({
+                                ...prev,
+                                companiesId: prev.companiesId.filter(
+                                  (x) => x !== id
+                                ),
+                              }));
+                            }}
+                            className="text-blue-700 hover:text-blue-900"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown */}
+              {showCompaniesDropdown && (
+                <div className="absolute z-20 mt-2 w-full max-h-64 overflow-y-auto bg-white border rounded-xl shadow">
+                  {allCompanies?.map((company) => (
+                    <label
+                      key={company._id}
+                      className="flex items-center gap-2 p-2 hover:bg-slate-100 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="!relative"
+                        checked={form.companiesId.includes(company._id)}
+                        onChange={(e) => {
+                          const id = company._id;
+
+                          let updated = [...form.companiesId];
+
+                          if (e.target.checked) {
+                            if (updated.length >= 10) {
+                              toast.info(
+                                "You can select a maximum of 10 companies."
+                              );
+                              return;
+                            }
+                            updated.push(id);
+                          } else {
+                            updated = updated.filter((item) => item !== id);
+                          }
+
+                          setForm((prev) => ({
+                            ...prev,
+                            companiesId: updated,
+                          }));
+                        }}
+                      />
+                      <span>{company.companyName}</span>
+                      {company.isRecommended && <span className="text-red-500">(Recommended)</span>}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* <div className="md:col-span-2">
               <label
                 htmlFor="isRecommended-toggle"
                 className="flex items-center cursor-pointer pt-2"
@@ -367,12 +471,11 @@ const PlaceFormPage = () => {
                   ></div>
                 </div>
 
-                {/* Label Text */}
                 <span className="ml-3 text-sm font-semibold text-slate-700 uppercase tracking-wide">
                   Recommended Place
                 </span>
               </label>
-            </div>
+            </div> */}
 
             <div className="md:col-span-2">
               <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">

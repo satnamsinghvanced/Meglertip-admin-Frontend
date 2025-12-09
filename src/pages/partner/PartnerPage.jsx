@@ -126,9 +126,10 @@ const DynamicField = ({
         <div className="flex items-center mt-2">
           <input
             type="checkbox"
+
             checked={required}
             onChange={() => onRequiredToggle(name)}
-            className="mr-2 text-blue-600 relative"
+            className="mr-2 text-blue-600 !relative"
           />
           <label className="text-sm text-gray-600">Required</label>
         </div>

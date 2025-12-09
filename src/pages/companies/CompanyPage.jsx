@@ -236,6 +236,7 @@ export const Company = () => {
                 <th className="px-6 py-3">Company Name</th>
                 <th className="px-6 py-3">Address (Competitor)</th>
                 <th className="px-6 py-3">Description</th>
+                 <th className="px-6 py-3">Recommended</th>
                 <th className="px-6 py-3">Extractor's</th>
                 <th className="px-6 py-3">Actions</th>
               </tr>
@@ -280,6 +281,13 @@ export const Company = () => {
                         }}
                       ></div>
                     </td>
+                    <td className="px-6 py-4">
+                      {company.isRecommended ? (
+                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Recommended</span>
+                      ) : (
+                        <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700 truncate">Not Recommended</span>
+                      )}
+                    </td> 
                     <td className="px-6 py-4">
                       <div className="line-clamp-2 space-y-1 text-sm text-slate-700 break-words">
                         {company.extractor.map((item, idx) => (

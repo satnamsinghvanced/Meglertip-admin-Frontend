@@ -21,6 +21,18 @@ export const getCompanies = createAsyncThunk(
   }
 );
 
+export const getCompaniesAll = createAsyncThunk(
+  "companies/getCompaniesAll",
+  async ({ search = "" } = {}, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`/companies/all?search=${search}`);
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 export const getCompanyById = createAsyncThunk(
   "companies/getCompanyById",
   async (id, { rejectWithValue }) => {
@@ -94,6 +106,8 @@ const companySlice = createSlice({
   initialState: {
     companies: { data: [], pagination: {} },
     selectedCompany: null,
+    allCompanies: [],
+
     loading: false,
     error: null,
   },
@@ -125,7 +139,21 @@ const companySlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Failed to fetch companies";
       })
+      .addCase(getCompaniesAll.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCompaniesAll.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.allCompanies = action.payload.data;
+      })
 
+      .addCase(getCompaniesAll.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        toast.error(action.payload || "Failed to fetch all companies");
+      })
       .addCase(getCompanyById.fulfilled, (state, action) => {
         state.selectedCompany = action.payload.data || action.payload;
       })

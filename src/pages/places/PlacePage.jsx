@@ -177,7 +177,7 @@ export const Places = () => {
                 <th className="px-6 py-3">Slug</th>
                 <th className="px-6 py-3">Title</th>
                 <th className="px-6 py-3">Description</th>
-                <th className="px-6 py-3">Recommended</th>
+                {/* <th className="px-6 py-3">Recommended</th> */}
                 <th className="px-6 py-3">Actions</th>
               </tr>
             </thead>
@@ -207,13 +207,13 @@ export const Places = () => {
                     <td className="px-6 py-4">{place.slug}</td>
                     <td className="px-6 py-4">{place.title?.length > 20 ? place.title.slice(0, 20) + "..." : place.title}</td>
                     <td className="px-6 py-4 line-clamp-1 break-words">{place.description}</td>
-                    <td className="px-6 py-4">
+                    {/* <td className="px-6 py-4">
                       {place.isRecommended ? (
                         <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Recommended</span>
                       ) : (
                         <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700">Not Recommended</span>
                       )}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
                         <button

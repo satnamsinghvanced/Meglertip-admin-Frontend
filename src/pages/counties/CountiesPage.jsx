@@ -96,7 +96,7 @@ export const CountyPage = () => {
                 <th className="px-6 py-4">#</th>
                 <th className="px-6 py-4">County Name</th>
                 <th className="px-6 py-4">Slug</th>
-                <th className="px-6 py-4">Excerpt</th>
+                {/* <th className="px-6 py-4">Excerpt</th> */}
                 <th className="px-6 py-4 text-center">Actions</th>
               </tr>
             </thead>
@@ -126,7 +126,7 @@ export const CountyPage = () => {
                     </td>
                     <td className="px-6 py-4 font-medium text-slate-900">{county.name}</td>
                     <td className="px-6 py-4">{county.slug}</td>
-                    <td className="px-6 py-4">{county.excerpt}</td>
+                    {/* <td className="px-6 py-4">{county.excerpt}</td> */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-center gap-2">
                         <button

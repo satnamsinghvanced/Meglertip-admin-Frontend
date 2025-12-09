@@ -55,7 +55,7 @@ const PlaceDetailPage = () => {
   const detailItems = [
     { label: "slug", value: selectedPlace?.slug },
     { label: "County", value: selectedPlace?.countyId?.name },
-    { label: "isRecommended", value: selectedPlace?.isRecommended },
+    // { label: "isRecommended", value: selectedPlace?.isRecommended },
     { label: "title", value: selectedPlace?.title },
     { label: "rank", value: selectedPlace?.rank },
   ];

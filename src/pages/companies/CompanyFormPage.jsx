@@ -68,7 +68,7 @@ const CompanyFormPage = () => {
     // email: "",
     // zipCode: "",
     companyImage: "",
-
+    isRecommended: false,
     metaTitle: "",
     metaDescription: "",
     metaKeywords: "",
@@ -151,6 +151,7 @@ const CompanyFormPage = () => {
           : "",
         // email: selectedCompany.email || "",
         // zipCode: selectedCompany.zipCode || "",
+         isRecommended: selectedCompany.isRecommended || false,
         companyImage: selectedCompany.companyImage || "",
 
         metaTitle: selectedCompany.metaTitle || "",
@@ -225,11 +226,18 @@ const CompanyFormPage = () => {
     return map[name] || name;
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    validateField(name, value);
-  };
+const handleChange = (e) => {
+  const { name, type, checked, value } = e.target;
+
+  const newValue = type === "checkbox" ? checked : value;
+
+  setForm((prev) => ({
+    ...prev,
+    [name]: newValue,
+  }));
+
+  validateField(name, newValue);
+};
 
   const handleImageChange = async (e) => {
     const file = e.target.files?.[0];
@@ -447,6 +455,39 @@ const CompanyFormPage = () => {
             ))}
           </div>
 
+          <div className="md:col-span-2">
+            <label
+              htmlFor="isRecommended-toggle"
+              className="flex items-center cursor-pointer pt-2"
+            >
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  name="isRecommended"
+                  checked={form.isRecommended}
+                  onChange={handleChange}
+                  id="isRecommended-toggle"
+                  className="sr-only"
+                />
+
+                <div
+                  className={`w-11 h-6 rounded-full shadow-inner transition-colors duration-300 ease-in-out ${
+                    form.isRecommended ? "bg-primary" : "bg-slate-300"
+                  }`}
+                ></div>
+
+                <div
+                  className={`dot absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ease-in-out ${
+                    form.isRecommended ? "translate-x-full" : "translate-x-0"
+                  }`}
+                ></div>
+              </div>
+
+              <span className="ml-3 text-sm font-semibold text-slate-700 uppercase tracking-wide">
+                Recommended Company
+              </span>
+            </label>
+          </div>
           <div className="mt-4">
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Description
