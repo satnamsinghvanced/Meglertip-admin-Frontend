@@ -18,7 +18,7 @@ function labelFor(name) {
   const map = {
     name: "County Name",
     slug: "Slug",
-    // excerpt: "Excerpt",
+    excerpt: "Excerpt",
   };
   return map[name] || name;
 }
@@ -38,7 +38,7 @@ const CountiesFormPage = () => {
   const [form, setForm] = useState({
     name: "",
     slug: "",
-    // excerpt:"",
+    excerpt:"",
     icon :""
   });
  const [imageFile, setImageFile] = useState(null);
@@ -59,7 +59,7 @@ const CountiesFormPage = () => {
       setForm({
         name: selectedCounty.name || "",
         slug: selectedCounty.slug || "",
-        // excerpt: selectedCounty.excerpt || "",
+        excerpt: selectedCounty.excerpt || "",
       });
         setPreviewImage(selectedCounty.icon || "");
     }
@@ -104,7 +104,7 @@ const buildPayload = () => {
   const payload = {
     name: form.name?.trim() || "",
     slug: form.slug?.trim() || "",
-    // excerpt: form.excerpt?.trim() || "",
+    excerpt: form.excerpt?.trim() || "",
     icon: form.icon || "",
   };
 
@@ -129,7 +129,7 @@ const handleSubmit = async (e) => {
       payload = new FormData();
       payload.append("name", form.name);
       payload.append("slug", form.slug);
-      // payload.append("excerpt", form.excerpt);
+      payload.append("excerpt", form.excerpt);
       payload.append("icon", imageFile); // ✔ Upload file
     } else {
       payload = buildPayload(); // ✔ normal JSON
@@ -186,7 +186,7 @@ const handleSubmit = async (e) => {
             {[
               { label: "County Name", name: "name" },
               { label: "Slug", name: "slug" },
-              // { label: "Excerpt", name: "excerpt" },
+              { label: "Excerpt", name: "excerpt" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
