@@ -410,7 +410,7 @@ export const AddPartnerPage = () => {
                 key={idx}
                 className="flex gap-3 mb-3 items-center p-3 rounded-xl"
               >
-                <label className="w-1/2 font-medium">{lt.typeId.formTitle}</label>
+                <label className="w-1/2 font-medium">{lt.formTitle}</label>
                 <input
                   type="number"
                   value={lt.price}
