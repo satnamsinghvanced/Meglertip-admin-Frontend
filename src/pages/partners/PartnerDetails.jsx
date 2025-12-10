@@ -20,7 +20,7 @@ export const PartnerDetailPage = () => {
 
   if (loading) return <p className="p-5 text-sm">Loading...</p>;
   if (!partnerDetail) return <p className="p-5 text-sm">Partner not found</p>;
-
+console.log(partnerDetail)
   const p = partnerDetail;
 
   // Format postal codes
@@ -97,7 +97,7 @@ export const PartnerDetailPage = () => {
                   className="bg-gray-50 p-3 rounded-lg border border-slate-200"
                 >
                   <p className="text-sm font-medium">
-                    {lt.name} —{" "}
+                    {lt.typeId.formTitle} —{" "}
                     <span className="text-primary font-semibold">
                       ₹{lt.price}
                     </span>

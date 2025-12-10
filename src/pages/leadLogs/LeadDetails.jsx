@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
+import { FaRegCopy } from "react-icons/fa6";
 import {
   getLeadById,
   updateLeadStatus,
@@ -159,8 +160,8 @@ const LeadDetails = () => {
             />
           </div>
         </div>
+        <p></p>
 
-        {/* Dynamic Form Data */}
         <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
           <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
             Form Filled Details ({values.selectedFormTitle || "N/A"})
@@ -174,7 +175,20 @@ const LeadDetails = () => {
               let label = key;
               switch (key) {
                 case "selectedFormType":
-                  label = "Lead Type ID";
+                  label = "Lead Type Id";
+                  value = (
+                    <span className="">
+                      {selectedLead.formNumber || 0}
+                      <button
+                        onClick={() =>
+                          navigator.clipboard.writeText(selectedLead.formNumber)
+                        }
+                        className="px-2 py-1 ml-1 text-xs bg-slate-200 hover:bg-slate-300 rounded gap-2"
+                      >
+                       <FaRegCopy />
+                      </button>
+                    </span>
+                  );
                   break;
                 case "selectedFormTitle":
                   label = "Lead Type";
