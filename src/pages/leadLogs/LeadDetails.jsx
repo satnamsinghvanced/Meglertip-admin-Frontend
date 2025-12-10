@@ -8,6 +8,7 @@ import {
   updateLeadStatus,
   updateLeadProfit,
 } from "../../store/slices/leadLogsSlice";
+import { toast } from "react-toastify";
 
 const LeadDetails = () => {
   const { id } = useParams();
@@ -180,12 +181,15 @@ const LeadDetails = () => {
                     <span className="">
                       {selectedLead.formNumber || 0}
                       <button
-                        onClick={() =>
-                          navigator.clipboard.writeText(selectedLead.formNumber)
-                        }
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            selectedLead.formNumber
+                          );
+                          toast.info("Lead Type ID is  copied!");
+                        }}
                         className="px-2 py-1 ml-1 text-xs bg-slate-200 hover:bg-slate-300 rounded gap-2"
                       >
-                       <FaRegCopy />
+                        <FaRegCopy />
                       </button>
                     </span>
                   );
