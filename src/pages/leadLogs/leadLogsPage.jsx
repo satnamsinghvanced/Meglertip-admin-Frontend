@@ -158,7 +158,7 @@ const LeadLogs = () => {
                       <td className="px-6 py-4">
                         {lead.partnerIds?.length
                           ? lead.partnerIds.map((p, i) => (
-                              <div key={i}>{p.name}</div>
+                              <div key={i}>{p.partnerId?.name}</div>
                             ))
                           : "-"}
                       </td>

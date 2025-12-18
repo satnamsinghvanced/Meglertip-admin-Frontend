@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import { FaRegCopy } from "react-icons/fa6";
+import axios from "axios";
+import { toast } from "react-toastify";
 import {
   getLeadById,
   updateLeadStatus,
-  updateLeadProfit,
 } from "../../store/slices/leadLogsSlice";
-import { toast } from "react-toastify";
+import api from "../../api/axios";
 
 const LeadDetails = () => {
   const { id } = useParams();
@@ -16,29 +17,70 @@ const LeadDetails = () => {
   const navigate = useNavigate();
 
   const { selectedLead, loading } = useSelector((s) => s.lead);
+  const [partnerPrices, setPartnerPrices] = useState([]);
+  const [status, setStatus] = useState("");
+  const [profit, setProfit] = useState(0);
 
   useEffect(() => {
     if (id) dispatch(getLeadById(id));
   }, [id, dispatch]);
-  const [status, setStatus] = useState("");
-  const [profit, setProfit] = useState(0);
+
   useEffect(() => {
     if (selectedLead) {
       setStatus(selectedLead.status);
       setProfit(selectedLead.profit);
+      if (selectedLead.partnerIds) {
+        setPartnerPrices(
+          selectedLead.partnerIds.map((p) => ({
+            partnerId: p.partnerId?._id,
+            name: p.partnerId?.name,
+            email: p.partnerId?.email,
+            leadPrice: p.leadPrice || 0,
+          }))
+        );
+      }
     }
   }, [selectedLead]);
+
   const handleStatusChange = (e) => {
     const newStatus = e.target.value;
-    setStatus(newStatus); // update UI immediately
+    setStatus(newStatus);
     dispatch(updateLeadStatus({ leadId: id, status: newStatus }));
+  };
+
+  // ✅ Handle per-partner lead price update
+  const handlePartnerPriceChange = async (partnerId, value) => {
+    const updated = partnerPrices.map((p) =>
+      p.partnerId === partnerId ? { ...p, leadPrice: Number(value) } : p
+    );
+    setPartnerPrices(updated);
+
+    try {
+      const res = await api.patch("/lead-logs/update-partner-profit", {
+        leadId: id,
+        partnerId,
+        leadPrice: Number(value),
+      });
+
+      if (res.data.success) {
+        toast.success("Partner lead price updated!");
+        setProfit(res.data.data.profit); // update total profit from backend
+      } else {
+        toast.error(res.data.message || "Failed to update price");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong!");
+    }
   };
 
   const handleProfitChange = (e) => {
     const newProfit = Number(e.target.value);
-    setProfit(newProfit); // update UI immediately
-    dispatch(updateLeadProfit({ leadId: id, profit: newProfit }));
+    setProfit(newProfit);
+    // Optional: If you still want to update total profit manually
+    // axios.put("/update-lead-profit", { leadId: id, profit: newProfit })
   };
+
   const headerButtons = [
     {
       value: "Back to leads",
@@ -63,7 +105,8 @@ const LeadDetails = () => {
   }
 
   const values = selectedLead.dynamicFields?.[0]?.values || {};
-const leadLog = selectedLead.log ? JSON.parse(selectedLead.log) : null;
+  const leadLog = selectedLead.log ? JSON.parse(selectedLead.log) : null;
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -84,7 +127,7 @@ const leadLog = selectedLead.log ? JSON.parse(selectedLead.log) : null;
               value: new Date(selectedLead.createdAt).toLocaleString(),
             },
             { label: "Status", value: selectedLead.status },
-            { label: "Profit", value: selectedLead.profit },
+            { label: "Profit", value: profit },
           ].map((item, i) => (
             <div
               key={i}
@@ -103,14 +146,70 @@ const leadLog = selectedLead.log ? JSON.parse(selectedLead.log) : null;
         {/* Partners */}
         <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
           <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
-            Partners
+            Partners & Lead Price
           </p>
-          {selectedLead.partnerIds?.length ? (
-            <div className="space-y-1 text-sm">
-              {selectedLead.partnerIds.map((p) => (
-                <p key={p._id}>
-                  {p.name} {p.email ? `(${p.email})` : ""}
-                </p>
+          {partnerPrices.length ? (
+            <div className="space-y-3">
+              {partnerPrices.map((p) => (
+                <div
+                  key={p.partnerId}
+                  className="flex items-center justify-between gap-2 bg-white border border-slate-200 rounded-lg p-3"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-slate-900">
+                      {p.name}
+                    </p>
+                    <p className="text-xs text-slate-500">{p.email}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={p.leadPrice}
+                      onChange={(e) => {
+                        const updated = partnerPrices.map((partner) =>
+                          partner.partnerId === p.partnerId
+                            ? { ...partner, leadPrice: Number(e.target.value) }
+                            : partner
+                        );
+                        setPartnerPrices(updated);
+                      }}
+                      className="w-28 border border-slate-300 rounded-md px-2 py-1 text-sm"
+                    />
+
+                    {/* Tick Button */}
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await api.patch(
+                            "/lead-logs/update-partner-profit",
+                            {
+                              leadId: id,
+                              partnerId: p.partnerId,
+                              leadPrice: p.leadPrice,
+                            }
+                          );
+
+                          if (res.data.success) {
+                            toast.success("Partner lead price updated!");
+                            setProfit(res.data.data.profit); // update total profit
+                          } else {
+                            toast.error(
+                              res.data.message || "Failed to update price"
+                            );
+                          }
+                        } catch (err) {
+                          console.error(err);
+                          toast.error("Something went wrong!");
+                        }
+                      }}
+                      className="px-2 py-1 bg-primary text-white rounded hover:bg-primary/80"
+                      title="Update partner price"
+                    >
+                      ✔
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
@@ -118,21 +217,7 @@ const leadLog = selectedLead.log ? JSON.parse(selectedLead.log) : null;
           )}
         </div>
 
-        {/* Lead Types */}
-        {/* <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
-          <p className="text-xs font-semibold uppercase text-slate-500 mb-2">Lead Types</p>
-          {selectedLead.leadTypes?.length ? (
-            selectedLead.leadTypes.map((t) => (
-              <p key={t._id} className="text-sm">
-                {t.title || "Unknown Type"} {t.description ? `- ${t.description}` : ""}
-              </p>
-            ))
-          ) : (
-            <p className="text-sm">-</p>
-          )}
-        </div> */}
-
-        {/* Status & Profit Updates */}
+        {/* Status & Total Profit */}
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
             <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
@@ -151,7 +236,7 @@ const leadLog = selectedLead.log ? JSON.parse(selectedLead.log) : null;
 
           <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
             <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
-              Update Profit
+              Total Profit
             </p>
             <input
               type="number"
@@ -161,112 +246,6 @@ const leadLog = selectedLead.log ? JSON.parse(selectedLead.log) : null;
             />
           </div>
         </div>
-        <p></p>
-
-        <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
-          <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
-            Form Filled Details ({values.selectedFormTitle || "N/A"})
-          </p>
-
-          <div className="grid gap-4 md:grid-cols-2 text-sm">
-            {Object.entries(values).map(([key, value]) => {
-              if (!value) return null;
-
-              // Map field keys to friendly names
-              let label = key;
-              switch (key) {
-                case "selectedFormType":
-                  label = "Lead Type Id";
-                  value = (
-                    <span className="">
-                      {selectedLead.formNumber || 0}
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(
-                            selectedLead.formNumber
-                          );
-                          toast.info("Lead Type ID is  copied!");
-                        }}
-                        className="px-2 py-1 ml-1 text-xs bg-slate-200 hover:bg-slate-300 rounded gap-2"
-                      >
-                        <FaRegCopy />
-                      </button>
-                    </span>
-                  );
-                  break;
-                case "selectedFormTitle":
-                  label = "Lead Type";
-                  break;
-                case "streetName":
-                  label = "Street Name";
-                  break;
-                case "postalCode":
-                  label = "Postal Code";
-                  break;
-                case "details":
-                  label = "Details";
-                  break;
-                case "name":
-                  label = "Full Name";
-                  break;
-                case "email":
-                  label = "Email Address";
-                  break;
-                case "phone":
-                  label = "Phone Number";
-                  break;
-                default:
-                  label = key;
-              }
-
-              return (
-                <p key={key}>
-                  <strong>{label}:</strong> {value}
-                </p>
-              );
-            })}
-          </div>
-        </div>
-{leadLog && (
-  <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 mt-6">
-    <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
-      Lead Processing Log
-    </p>
-
-    {Object.entries(leadLog.steps || {}).map(([stepKey, step], idx) => (
-      <div key={idx} className="mb-4">
-        <p className="text-sm font-medium text-slate-700 mb-1">
-          {step.name} ({step.description})
-        </p>
-        <div className="ml-4 space-y-2 text-sm text-slate-600">
-          {step.log?.map((entry, i) => (
-            <div key={i} className="p-2 border border-slate-200 rounded bg-white">
-              {Object.entries(entry).map(([k, v]) => (
-                <p key={k}>
-                  <strong>{k}:</strong>{" "}
-                  {typeof v === "object" ? JSON.stringify(v) : String(v)}
-                </p>
-              ))}
-            </div>
-          ))}
-          {step.summary && (
-            <p className="mt-1 text-xs text-slate-500">
-              <strong>Summary:</strong> {JSON.stringify(step.summary)}
-            </p>
-          )}
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-        {/* Raw JSON */}
-        {/* <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-inner">
-          <p className="text-xs font-semibold uppercase text-slate-500 mb-2">Raw Data</p>
-          <pre className="text-xs overflow-auto bg-slate-100 p-3 rounded-md">
-            {JSON.stringify(selectedLead, null, 2)}
-          </pre>
-        </div> */}
       </div>
     </div>
   );
