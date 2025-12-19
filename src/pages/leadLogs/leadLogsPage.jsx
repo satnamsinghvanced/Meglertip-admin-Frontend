@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllLeads,
+  getPartnerLeads,
   updateLeadProfit,
   updateLeadStatus,
 } from "../../store/slices/leadLogsSlice";
@@ -18,23 +19,33 @@ const LeadLogs = () => {
 
   const [page, setPage] = useState(1);
   const limit = 10;
-  const [search, setSearch] = useState("");
+  const [leadSearch, setLeadSearch] = useState("");
+  const [partnerSearch, setPartnerSearch] = useState("");
   const [status, setStatus] = useState("");
-
   useEffect(() => {
     const delay = setTimeout(() => {
-      dispatch(
-        getAllLeads({
-          page,
-          limit,
-          search,
-          status,
-        })
-      );
+      if (partnerSearch) {
+        dispatch(
+          getPartnerLeads({
+            page,
+            limit,
+            search: partnerSearch,
+          })
+        );
+      } else {
+        dispatch(
+          getAllLeads({
+            page,
+            limit,
+            search: leadSearch,
+            status,
+          })
+        );
+      }
     }, 400);
 
     return () => clearTimeout(delay);
-  }, [page, search, status]);
+  }, [page, leadSearch, partnerSearch, status]);
 
   const badgeColor = (status) => {
     switch (status) {
@@ -59,19 +70,34 @@ const LeadLogs = () => {
         description="Manage all incoming leads with search, filters, and pagination."
       />
 
-      {/* Filters */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-4">
+        {/* Lead Search */}
         <input
           type="text"
-          placeholder="Search name, email, partner..."
-          value={search}
+          placeholder="Search lead name, email, phone, ID..."
+          value={leadSearch}
           onChange={(e) => {
             setPage(1);
-            setSearch(e.target.value);
+            setPartnerSearch(""); // clear partner search
+            setLeadSearch(e.target.value);
           }}
           className="border border-slate-200 px-3 py-2 rounded-md w-64"
         />
 
+        {/* Partner Search */}
+        <input
+          type="text"
+          placeholder="Search partner name..."
+          value={partnerSearch}
+          onChange={(e) => {
+            setPage(1);
+            setLeadSearch(""); // clear lead search
+            setPartnerSearch(e.target.value);
+          }}
+          className="border border-slate-200 px-3 py-2 rounded-md w-64"
+        />
+
+        {/* Status Filter */}
         <select
           value={status}
           onChange={(e) => {
