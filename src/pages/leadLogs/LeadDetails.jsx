@@ -245,7 +245,104 @@ const LeadDetails = () => {
               className="border border-slate-200 px-3 py-2 rounded-md w-full"
             />
           </div>
+          
         </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+          <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
+            Form Filled Details ({values.selectedFormTitle || "N/A"})
+          </p>
+
+          <div className="grid gap-4 md:grid-cols-2 text-sm">
+            {Object.entries(values).map(([key, value]) => {
+              if (!value) return null;
+
+              // Map field keys to friendly names
+              let label = key;
+              switch (key) {
+                case "selectedFormType":
+                  label = "Lead Type Id";
+                  value = (
+                    <span className="">
+                      {selectedLead.formNumber || 0}
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            selectedLead.formNumber
+                          );
+                          toast.info("Lead Type ID is  copied!");
+                        }}
+                        className="px-2 py-1 ml-1 text-xs bg-slate-200 hover:bg-slate-300 rounded gap-2"
+                      >
+                        <FaRegCopy />
+                      </button>
+                    </span>
+                  );
+                  break;
+                case "selectedFormTitle":
+                  label = "Lead Type";
+                  break;
+                case "streetName":
+                  label = "Street Name";
+                  break;
+                case "postalCode":
+                  label = "Postal Code";
+                  break;
+                case "details":
+                  label = "Details";
+                  break;
+                case "name":
+                  label = "Full Name";
+                  break;
+                case "email":
+                  label = "Email Address";
+                  break;
+                case "phone":
+                  label = "Phone Number";
+                  break;
+                default:
+                  label = key;
+              }
+
+              return (
+                <p key={key}>
+                  <strong>{label}:</strong> {value}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+{leadLog && (
+  <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 mt-6">
+    <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
+      Lead Processing Log
+    </p>
+
+    {Object.entries(leadLog.steps || {}).map(([stepKey, step], idx) => (
+      <div key={idx} className="mb-4">
+        <p className="text-sm font-medium text-slate-700 mb-1">
+          {step.name} ({step.description})
+        </p>
+        <div className="ml-4 space-y-2 text-sm text-slate-600">
+          {step.log?.map((entry, i) => (
+            <div key={i} className="p-2 border border-slate-200 rounded bg-white">
+              {Object.entries(entry).map(([k, v]) => (
+                <p key={k}>
+                  <strong>{k}:</strong>{" "}
+                  {typeof v === "object" ? JSON.stringify(v) : String(v)}
+                </p>
+              ))}
+            </div>
+          ))}
+          {step.summary && (
+            <p className="mt-1 text-xs text-slate-500">
+              <strong>Summary:</strong> {JSON.stringify(step.summary)}
+            </p>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
       </div>
     </div>
   );
