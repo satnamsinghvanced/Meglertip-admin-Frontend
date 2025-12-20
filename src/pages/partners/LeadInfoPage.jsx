@@ -36,54 +36,59 @@ const LeadInfo = () => {
     fetchLeadInfo();
   }, [dateFilter]);
 
-  // NEW: Direct Download Logic
-  const handleExportCSV = () => {
-    if (!partnerData) return;
+const handleExportCSV = () => {
+  if (!partnerData) return;
 
-    // 1. Build the rows as arrays to ensure column alignment
-    const rows = [
-      ["Lead Type", "Count", "Price per Lead", "Total Price"], // Header 1
-      ...partnerData.leadTypes.map(lt => [
-        lt.leadType, 
-        lt.count, 
-        lt.pricePerLead, 
-        lt.totalPrice
-      ]),
-      [""], // Spacer
-      ["Lead ID", "Type", "Price", "Sent Date"], // Header 2
-      ...partnerData.leadDetails.map(lead => [
-        lead.leadId,
-        lead.type,
-        lead.price,
-        new Date(lead.sent).toLocaleDateString("no-NO")
-      ]),
-      [""], // Spacer
-      ["", "Total", partnerData.grandTotal, ""] // Footer
-    ];
+  const rows = [
+    ["Partner Name", partnerData.partnerName],
+    [""],
 
-    // 2. Convert arrays to CSV string
-    const csvContent = rows.map(r => r.join(",")).join("\n");
+    // ["Lead Type", "Count", "Price per Lead", "Total Price"],
+    // ...partnerData.leadTypes.map(lt => [
+    //   lt.leadType,
+    //   lt.count,
+    //   lt.pricePerLead,
+    //   lt.totalPrice
+    // ]),
 
-    // 3. Create Blob and trigger download
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `export_${partnerId}_${Date.now()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+    [""],
+    ["Lead ID", "Type", "Price", "Sent Date"],
+    ...partnerData.leadDetails.map(lead => [
+      lead.leadId,
+      lead.type,
+      lead.price,
+      new Date(lead.sent).toLocaleDateString("en-GB")
+    ]),
+
+    [""],
+    ["", "Grand Total", partnerData.grandTotal]
+  ];
+
+  const csvContent = rows.map(r => r.join(",")).join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute(
+    "download",
+    `${partnerData.partnerName}_leads_${Date.now()}.csv`
+  );
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
   const headerButtons = [
     {
       value: "Back",
       variant: "white",
-      className: "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
+      className:
+        "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
       onClick: () => navigate(-1),
     },
   ];
-
+console.log(partnerData);
   return (
     <div className="space-y-6">
       <PageHeader
@@ -103,7 +108,10 @@ const LeadInfo = () => {
           <option value="custom">Custom Range</option>
         </select>
 
-        <button onClick={fetchLeadInfo} className="bg-primary text-white px-4 py-2 rounded">
+        <button
+          onClick={fetchLeadInfo}
+          className="bg-primary text-white px-4 py-2 rounded"
+        >
           Filter
         </button>
 
@@ -119,9 +127,13 @@ const LeadInfo = () => {
       {/* Table UI */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">
         <div className="px-6 py-4 border-b border-slate-100">
-          <p className="text-sm font-semibold text-slate-900">Lead Overview</p>
+          <p className="text-sm font-semibold text-slate-900">
+            Lead Overview — {partnerData?.partnerName || "Partner"}
+          </p>
+
           <p className="text-xs text-slate-500">
-            Total Leads: {partnerData?.totalLeads || 0} | Grand Total: {partnerData?.grandTotal || 0}
+            Total Leads: {partnerData?.totalLeads || 0} | Grand Total:{" "}
+            {partnerData?.grandTotal || 0}
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -147,6 +159,39 @@ const LeadInfo = () => {
           </table>
         </div>
       </div>
+      {/* Lead Details Table */}
+<div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">
+  <div className="px-6 py-4 border-b border-slate-100">
+    <p className="text-sm font-semibold text-slate-900">Lead Details</p>
+  </div>
+
+  <div className="overflow-x-auto">
+    <table className="min-w-full divide-y divide-slate-100 text-sm">
+      <thead className="bg-slate-50 text-left text-[11px] font-semibold uppercase text-slate-500">
+        <tr>
+          <th className="px-6 py-3">Lead ID</th>
+          <th className="px-6 py-3">Type</th>
+          <th className="px-6 py-3">Price</th>
+          <th className="px-6 py-3">Sent Date</th>
+        </tr>
+      </thead>
+
+      <tbody className="divide-y divide-slate-100 text-slate-600">
+        {partnerData?.leadDetails.map((lead, idx) => (
+          <tr key={idx} className="hover:bg-slate-50">
+            <td className="px-6 py-4">{lead.leadId}</td>
+            <td className="px-6 py-4">{lead.type}</td>
+            <td className="px-6 py-4 font-medium">{lead.price}</td>
+            <td className="px-6 py-4">
+              {new Date(lead.sent).toLocaleDateString("en-GB")}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
     </div>
   );
 };
