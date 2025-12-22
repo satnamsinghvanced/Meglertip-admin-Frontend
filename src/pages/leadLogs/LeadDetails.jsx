@@ -10,6 +10,11 @@ import {
   updateLeadStatus,
 } from "../../store/slices/leadLogsSlice";
 import api from "../../api/axios";
+const escapeCSV = (value) => {
+  if (value === null || value === undefined) return "";
+  const str = String(value).replace(/"/g, '""');
+  return `"${str}"`;
+};
 
 const LeadDetails = () => {
   const { id } = useParams();
@@ -80,6 +85,117 @@ const LeadDetails = () => {
     // Optional: If you still want to update total profit manually
     // axios.put("/update-lead-profit", { leadId: id, profit: newProfit })
   };
+  const exportToCSV = () => {
+    if (!selectedLead) return;
+
+    const rows = [];
+    const values = selectedLead.dynamicFields?.[0]?.values || {};
+    const log = selectedLead.log ? JSON.parse(selectedLead.log) : {};
+    const stats = log.statistics || {};
+
+    const add = (...cols) => rows.push(cols);
+
+    // ================= LEAD SUMMARY =================
+    add("Section", "Field", "Value");
+    add("Lead Summary", "Lead ID", selectedLead.uniqueId);
+    add("Lead Summary", "Status", selectedLead.status);
+    add("Lead Summary", "Lead Type", values.selectedFormTitle);
+    add("Lead Summary", "Form Number", selectedLead.formNumber);
+    add(
+      "Lead Summary",
+      "Created At",
+      new Date(selectedLead.createdAt).toLocaleString()
+    );
+    add("Lead Summary", "Total Profit", selectedLead.profit);
+    add("Lead Summary", "IP Address", selectedLead.ip);
+    add("");
+
+    // ================= USER DETAILS =================
+    add("User Details", "Field", "Value");
+    const fieldMap = {
+      name: "Full Name",
+      email: "Email",
+      phone: "Phone",
+      streetName: "Street Name",
+      postalCode: "Postal Code",
+      accommodationType: "Accommodation Type",
+      homeSize: "Home Size",
+      roomCount: "Room Count",
+      roomCondition: "Condition",
+      sellingDate: "Selling Timeline",
+      details: "Details",
+    };
+
+    Object.entries(fieldMap).forEach(([key, label]) => {
+      if (values[key]) add("User Details", label, values[key]);
+    });
+    add("");
+
+    // ================= PARTNERS =================
+    add("Partners", "Partner Name", "Email", "Lead Price");
+    selectedLead.partnerIds.forEach((p) => {
+      add("Partners", p.partnerId?.name, p.partnerId?.email, p.leadPrice);
+    });
+    add("");
+
+    // ================= EMAIL RESULTS =================
+    add("Email Results", "Email", "Status", "Sent At", "Error");
+    selectedLead.emailResults.forEach((er) => {
+      add(
+        "Email Results",
+        er.email,
+        er.status,
+        er.sentAt ? new Date(er.sentAt).toLocaleString() : "",
+        er.error || ""
+      );
+    });
+    add("");
+
+    // ================= PROCESSING STATS =================
+    add("Processing Stats", "Metric", "Value");
+    add("Processing Stats", "Initial Partners", stats.initialPartners);
+    add("Processing Stats", "Postal Matched", stats.postalMatched);
+    add("Processing Stats", "Wishes Matched", stats.wishesMatched);
+    add("Processing Stats", "Limit Available", stats.limitAvailable);
+    add("Processing Stats", "Final Selected", stats.finalSelected);
+    add("Processing Stats", "Max Allowed", stats.maxPartnersAllowed);
+    add("");
+
+    // ================= PROCESSING LOGS =================
+    add("Processing Logs", "Step", "Partner", "Result", "Details");
+
+    Object.values(log.steps || {}).forEach((step) => {
+      step.log?.forEach((entry) => {
+        add(
+          "Processing Logs",
+          step.name,
+          entry.partnerName || "",
+          entry.match === true
+            ? "Matched"
+            : entry.match === false
+            ? "Not Matched"
+            : entry.limitReached === false
+            ? "Passed"
+            : entry.isPremium
+            ? "Ranked"
+            : "Checked",
+          JSON.stringify(entry)
+        );
+      });
+    });
+
+    // ================= CSV DOWNLOAD =================
+    const escape = (v) =>
+      v === undefined || v === null ? "" : `"${String(v).replace(/"/g, '""')}"`;
+
+    const csv = rows.map((r) => r.map(escape).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `lead_${selectedLead.uniqueId}_detailed.csv`;
+    link.click();
+  };
 
   const headerButtons = [
     {
@@ -88,6 +204,11 @@ const LeadDetails = () => {
       className:
         "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
       onClick: () => navigate(-1),
+    },
+    {
+      value: "Export CSV",
+      variant: "primary",
+      onClick: exportToCSV,
     },
   ];
 
@@ -216,6 +337,53 @@ const LeadDetails = () => {
             <p className="text-sm">-</p>
           )}
         </div>
+        {/* Email Results */}
+        <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+          <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
+            Email Results
+          </p>
+
+          {selectedLead.emailResults && selectedLead.emailResults.length > 0 ? (
+            <div className="space-y-3">
+              {selectedLead.emailResults.map((er) => (
+                <div
+                  key={er._id}
+                  className="flex items-center justify-between bg-white border border-slate-200 rounded-lg p-3"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-slate-900">
+                      {er.email}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Sent at:{" "}
+                      {er.sentAt ? new Date(er.sentAt).toLocaleString() : "—"}
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-semibold ${
+                        er.status === "sent"
+                          ? "bg-green-100 text-green-700"
+                          : er.status === "failed"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {er.status.toUpperCase()}
+                    </span>
+
+                    {er.error && (
+                      <p className="text-xs text-red-600 mt-1">{er.error}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-slate-500">No email activity found.</p>
+          )}
+        </div>
 
         {/* Status & Total Profit */}
         <div className="grid gap-4 md:grid-cols-2">
@@ -245,9 +413,8 @@ const LeadDetails = () => {
               className="border border-slate-200 px-3 py-2 rounded-md w-full"
             />
           </div>
-          
         </div>
-                <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
           <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
             Form Filled Details ({values.selectedFormTitle || "N/A"})
           </p>
@@ -311,38 +478,43 @@ const LeadDetails = () => {
             })}
           </div>
         </div>
-{leadLog && (
-  <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 mt-6">
-    <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
-      Lead Processing Log
-    </p>
-
-    {Object.entries(leadLog.steps || {}).map(([stepKey, step], idx) => (
-      <div key={idx} className="mb-4">
-        <p className="text-sm font-medium text-slate-700 mb-1">
-          {step.name} ({step.description})
-        </p>
-        <div className="ml-4 space-y-2 text-sm text-slate-600">
-          {step.log?.map((entry, i) => (
-            <div key={i} className="p-2 border border-slate-200 rounded bg-white">
-              {Object.entries(entry).map(([k, v]) => (
-                <p key={k}>
-                  <strong>{k}:</strong>{" "}
-                  {typeof v === "object" ? JSON.stringify(v) : String(v)}
-                </p>
-              ))}
-            </div>
-          ))}
-          {step.summary && (
-            <p className="mt-1 text-xs text-slate-500">
-              <strong>Summary:</strong> {JSON.stringify(step.summary)}
+        {leadLog && (
+          <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 mt-6">
+            <p className="text-xs font-semibold uppercase text-slate-500 mb-2">
+              Lead Processing Log
             </p>
-          )}
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+
+            {Object.entries(leadLog.steps || {}).map(([stepKey, step], idx) => (
+              <div key={idx} className="mb-4">
+                <p className="text-sm font-medium text-slate-700 mb-1">
+                  {step.name} ({step.description})
+                </p>
+                <div className="ml-4 space-y-2 text-sm text-slate-600">
+                  {step.log?.map((entry, i) => (
+                    <div
+                      key={i}
+                      className="p-2 border border-slate-200 rounded bg-white"
+                    >
+                      {Object.entries(entry).map(([k, v]) => (
+                        <p key={k}>
+                          <strong>{k}:</strong>{" "}
+                          {typeof v === "object"
+                            ? JSON.stringify(v)
+                            : String(v)}
+                        </p>
+                      ))}
+                    </div>
+                  ))}
+                  {step.summary && (
+                    <p className="mt-1 text-xs text-slate-500">
+                      <strong>Summary:</strong> {JSON.stringify(step.summary)}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

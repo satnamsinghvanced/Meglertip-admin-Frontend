@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllLeads,
@@ -12,20 +12,26 @@ import { useNavigate } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import Pagination from "../../UI/pagination";
 import { FaRegEye } from "react-icons/fa6";
+import { getForms } from "../../store/slices/formSelectSlice";
 
 const LeadLogs = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { leads = [], loading, error, pagination } = useSelector(
-    (s) => s.lead
-  );
+  const { leads = [], loading, error, pagination } = useSelector((s) => s.lead);
 
   const [page, setPage] = useState(1);
   const limit = 10;
   const [leadSearch, setLeadSearch] = useState("");
   const [partnerSearch, setPartnerSearch] = useState("");
   const [status, setStatus] = useState("");
+  const [formType, setFormType] = useState("");
+  const { forms = [], loading: formsLoading } = useSelector(
+    (s) => s.formSelect
+  );
+  useEffect(() => {
+    dispatch(getForms());
+  }, []);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -35,6 +41,8 @@ const LeadLogs = () => {
             page,
             limit,
             search: partnerSearch,
+            status,
+            formType,
           })
         );
       } else {
@@ -44,13 +52,14 @@ const LeadLogs = () => {
             limit,
             search: leadSearch,
             status,
+            formType, // ✅ ADD THIS
           })
         );
       }
     }, 400);
 
     return () => clearTimeout(delay);
-  }, [page, leadSearch, partnerSearch, status]);
+  }, [page, leadSearch, partnerSearch, status, formType]);
 
   const badgeColor = (status) => {
     switch (status) {
@@ -124,6 +133,26 @@ const LeadLogs = () => {
           <option value="Complete">Complete</option>
           <option value="Reject">Reject</option>
         </select>
+        <select
+          value={formType}
+          onChange={(e) => {
+            setPage(1);
+            setFormType(e.target.value);
+          }}
+          className="border border-slate-200 px-3 py-2 rounded-md"
+        >
+          <option value="">All Lead Types</option>
+
+          {formsLoading ? (
+            <option disabled>Loading...</option>
+          ) : (
+            forms.map((form) => (
+              <option key={form._id} value={form.formTitle}>
+                {form.formTitle}
+              </option>
+            ))
+          )}
+        </select>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -166,7 +195,10 @@ const LeadLogs = () => {
                 ))
               ) : error ? (
                 <tr>
-                  <td colSpan="10" className="px-6 py-6 text-center text-red-500">
+                  <td
+                    colSpan="10"
+                    className="px-6 py-6 text-center text-red-500"
+                  >
                     {error}
                   </td>
                 </tr>
@@ -259,7 +291,10 @@ const LeadLogs = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan="10" className="px-6 py-6 text-center text-slate-500">
+                  <td
+                    colSpan="10"
+                    className="px-6 py-6 text-center text-slate-500"
+                  >
                     No leads found
                   </td>
                 </tr>
@@ -270,11 +305,7 @@ const LeadLogs = () => {
 
         {totalLeads > 0 && (
           <div className="border-t border-slate-100 px-6 py-4">
-            <Pagination
-              totalPages={totalPages}
-              page={page}
-              setPage={setPage}
-            />
+            <Pagination totalPages={totalPages} page={page} setPage={setPage} />
           </div>
         )}
       </div>

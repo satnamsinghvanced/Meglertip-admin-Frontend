@@ -4,7 +4,7 @@ import api from "../../api/axios";
 export const getAllLeads = createAsyncThunk(
   "lead/getAllLeads",
   async (
-    { page = 1, limit = 10, search = "", status = "" },
+    { page = 1, limit = 10, search = "", status = "", formType = "" },
     { rejectWithValue }
   ) => {
     try {
@@ -13,7 +13,7 @@ export const getAllLeads = createAsyncThunk(
       params.append("limit", limit);
       if (search) params.append("search", search);
       if (status) params.append("status", status);
-
+      if (formType) params.append("formType", formType);
       const res = await api.get(`lead-logs/all?${params.toString()}`);
       return res.data;
     } catch (err) {
