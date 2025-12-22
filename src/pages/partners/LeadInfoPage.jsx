@@ -163,11 +163,11 @@ const LeadInfo = () => {
         <>
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">
             <div className="px-6 py-4 border-b border-slate-100">
-              <p className="text-sm font-semibold text-slate-900">
+              <p className="text-xl font-semibold text-slate-900">
                 Lead Overview — {partnerData?.partnerName || "Partner"}
               </p>
 
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-slate-500">
                 Total Leads: {partnerData?.totalLeads || 0} | Grand Total:{" "}
                 {partnerData?.grandTotal || 0}
               </p>
@@ -200,7 +200,7 @@ const LeadInfo = () => {
 
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">
             <div className="px-6 py-4 border-b border-slate-100">
-              <p className="text-sm font-semibold text-slate-900">
+              <p className="text-xl font-semibold text-slate-900">
                 Lead Details
               </p>
             </div>
