@@ -147,7 +147,7 @@ const Dashboard = () => {
   if (!stats || !statsType) return <DashboardSkeleton />;
 
   const { topPartners, growthData, totals, trendlineData } = stats;
-  console.log(statsType);
+  // console.log(statsType);
 
   return (
     <div className="space-y-6">
@@ -155,13 +155,20 @@ const Dashboard = () => {
         title="Dashboard"
         description="Overview of leads, performance, and partner ranking."
       />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Total Leads Box */}
         <div className="rounded-xl border border-slate-200 bg-white p-6">
           <p className="text-sm text-slate-500">Total Leads Sent</p>
           <p className="mt-4"> </p>
           <p className="text-3xl font-bold text-slate-900">
             {statsType?.totalLeads || 0}
+          </p>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
+          <p className="text-sm text-slate-500">Leads Rejects</p>
+          <p className="mt-5"> </p>
+          <p className="text-3xl font-bold text-slate-900">
+            {totals?.totalRejects || 0}
           </p>
         </div>
 
