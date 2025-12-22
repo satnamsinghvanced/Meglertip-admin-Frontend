@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unescaped-entities */
+import  { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllLeads,
@@ -15,13 +17,16 @@ const LeadLogs = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { leads = [], loading, error, pagination } = useSelector((s) => s.lead);
+  const { leads = [], loading, error, pagination } = useSelector(
+    (s) => s.lead
+  );
 
   const [page, setPage] = useState(1);
   const limit = 10;
   const [leadSearch, setLeadSearch] = useState("");
   const [partnerSearch, setPartnerSearch] = useState("");
   const [status, setStatus] = useState("");
+
   useEffect(() => {
     const delay = setTimeout(() => {
       if (partnerSearch) {
@@ -60,6 +65,17 @@ const LeadLogs = () => {
     }
   };
 
+  const leadTypeBadge = (type) => {
+    switch (type) {
+      case "selge_bolig":
+        return "bg-blue-100 text-blue-700";
+      case "verdivurdering":
+        return "bg-green-100 text-green-700";
+      default:
+        return "bg-slate-100 text-slate-600";
+    }
+  };
+
   const totalLeads = leads?.length || 0;
   const totalPages = pagination?.pages || 1;
 
@@ -71,33 +87,30 @@ const LeadLogs = () => {
       />
 
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-4">
-        {/* Lead Search */}
         <input
           type="text"
           placeholder="Search lead name, email, phone, ID..."
           value={leadSearch}
           onChange={(e) => {
             setPage(1);
-            setPartnerSearch(""); // clear partner search
+            setPartnerSearch("");
             setLeadSearch(e.target.value);
           }}
           className="border border-slate-200 px-3 py-2 rounded-md w-64"
         />
 
-        {/* Partner Search */}
         <input
           type="text"
           placeholder="Search partner name..."
           value={partnerSearch}
           onChange={(e) => {
             setPage(1);
-            setLeadSearch(""); // clear lead search
+            setLeadSearch("");
             setPartnerSearch(e.target.value);
           }}
           className="border border-slate-200 px-3 py-2 rounded-md w-64"
         />
 
-        {/* Status Filter */}
         <select
           value={status}
           onChange={(e) => {
@@ -113,7 +126,6 @@ const LeadLogs = () => {
         </select>
       </div>
 
-      {/* Lead Table */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex justify-between px-6 py-4 border-b border-slate-100">
           <p className="text-sm font-semibold text-slate-900">
@@ -132,6 +144,7 @@ const LeadLogs = () => {
                 <th className="px-6 py-3">Name</th>
                 <th className="px-6 py-3">Email</th>
                 <th className="px-6 py-3">Phone</th>
+                <th className="px-6 py-3">Lead Type</th>
                 <th className="px-6 py-3">Partner's</th>
                 <th className="px-6 py-3">Status</th>
                 <th className="px-6 py-3">Profit</th>
@@ -144,7 +157,7 @@ const LeadLogs = () => {
               {loading ? (
                 [...Array(10)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    {[...Array(8)].map((__, idx) => (
+                    {[...Array(9)].map((__, idx) => (
                       <td key={idx} className="px-6 py-4">
                         <div className="h-4 rounded bg-slate-100"></div>
                       </td>
@@ -153,16 +166,13 @@ const LeadLogs = () => {
                 ))
               ) : error ? (
                 <tr>
-                  <td
-                    colSpan="8"
-                    className="px-6 py-6 text-center text-red-500"
-                  >
+                  <td colSpan="10" className="px-6 py-6 text-center text-red-500">
                     {error}
                   </td>
                 </tr>
               ) : totalLeads > 0 ? (
-                leads.map((lead, idx) => {
-                  const values = lead.dynamicFields?.[0]?.values || {}; // shortcut
+                leads.map((lead) => {
+                  const values = lead.dynamicFields?.[0]?.values || {};
 
                   return (
                     <tr
@@ -170,17 +180,23 @@ const LeadLogs = () => {
                       className="hover:bg-slate-50 cursor-pointer"
                     >
                       <td className="px-6 py-4">{lead.uniqueId}</td>
-
-                      {/* Name */}
                       <td className="px-6 py-4">{values.name || "-"}</td>
-
-                      {/* Email */}
                       <td className="px-6 py-4">{values.email || "-"}</td>
-
-                      {/* Phone */}
                       <td className="px-6 py-4">{values.phone || "-"}</td>
 
-                      {/* Partner Names */}
+                      {/* Lead Type */}
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 text-xs font-semibold rounded-full capitalize ${leadTypeBadge(
+                            values.leadType
+                          )}`}
+                        >
+                          {values.selectedFormTitle
+                            ? values.selectedFormTitle
+                            : "-"}
+                        </span>
+                      </td>
+
                       <td className="px-6 py-4">
                         {lead.partnerIds?.length
                           ? lead.partnerIds.map((p, i) => (
@@ -189,7 +205,6 @@ const LeadLogs = () => {
                           : "-"}
                       </td>
 
-                      {/* Status */}
                       <td className="px-6 py-4">
                         <select
                           value={lead.status}
@@ -207,13 +222,11 @@ const LeadLogs = () => {
                         >
                           <option value="Pending">Pending</option>
                           <option value="Complete">Complete</option>
-                          <option value="Reject">Reject</option> {/* FIXED */}
+                          <option value="Reject">Reject</option>
                         </select>
                       </td>
 
-                      {/* Profit */}
                       <td className="px-6 py-4">
-                        {" "}
                         <input
                           type="number"
                           value={lead.profit}
@@ -225,14 +238,14 @@ const LeadLogs = () => {
                               })
                             )
                           }
-                          className="border border-slate-200 px-2 py-1 w-20 items-center rounded-md"
+                          className="border border-slate-200 px-2 py-1 w-20 rounded-md"
                         />
                       </td>
 
-                      {/* Created Date */}
                       <td className="px-6 py-4 text-sm">
                         {new Date(lead.createdAt).toLocaleDateString()}
                       </td>
+
                       <td className="px-6 py-4 text-sm">
                         <button
                           className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
@@ -246,10 +259,7 @@ const LeadLogs = () => {
                 })
               ) : (
                 <tr>
-                  <td
-                    colSpan="8"
-                    className="px-6 py-6 text-center text-slate-500"
-                  >
+                  <td colSpan="10" className="px-6 py-6 text-center text-slate-500">
                     No leads found
                   </td>
                 </tr>
@@ -260,7 +270,11 @@ const LeadLogs = () => {
 
         {totalLeads > 0 && (
           <div className="border-t border-slate-100 px-6 py-4">
-            <Pagination totalPages={totalPages} page={page} setPage={setPage} />
+            <Pagination
+              totalPages={totalPages}
+              page={page}
+              setPage={setPage}
+            />
           </div>
         )}
       </div>
