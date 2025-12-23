@@ -184,7 +184,7 @@ const PartnerPage = () => {
   const [formData, setFormData] = useState({
     heading: "", subHeading: "", contactFormTitle: "", formText: "", buttonText: "",
     title: "", description: "", metaTitle: "", metaKeywords: "", metaDescription: "",
-    metaImage: "", canonicalUrl: "", jsonLd: "", ogTitle: "", ogDescription: "",
+    metaImage: "", canonicalUrl: "", jsonLd: "", customHead: "", ogTitle: "", ogDescription: "",
     ogImage: "", ogType: "website",
     contactFields: [
         { name: "name", label: "Name", placeholder: "Enter name", type: "text", required: true },
@@ -348,7 +348,7 @@ const PartnerPage = () => {
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
           {isEditing ? (
-            <ReactQuill theme="snow" value={formData.description || ""} onChange={(val) => setFormData(p => ({...p, description: val}))} modules={modules} formats={formats} />
+            <ReactQuill theme="snow" value={formData.description || ""} onChange={(val) => setFormData(p => ({...p, description: val.replace(/&nbsp;/g, " ")}))} modules={modules} formats={formats} />
           ) : (
             <div className="border border-gray-300 rounded-lg px-3 py-2 bg-white min-h-[100px]" dangerouslySetInnerHTML={{ __html: formData.description || "" }} />
           )}
@@ -361,6 +361,7 @@ const PartnerPage = () => {
         <Textarea label="Meta Description" value={formData.metaDescription} onChange={(e) => handleChange(e, "metaDescription")} disabled={!isEditing} />
         <Input label="Canonical URL" value={formData.canonicalUrl} onChange={(e) => handleChange(e, "canonicalUrl")} disabled={!isEditing} />
         <Textarea label="JSON-LD" value={formData.jsonLd} onChange={(e) => handleChange(e, "jsonLd")} disabled={!isEditing} />
+        <Textarea label="Custom Head Tags" value={formData.customHead} onChange={(e) => handleChange(e, "customHead")} disabled={!isEditing} />
       </Section>
 
       <Section title="Open Graph (Social Sharing)">

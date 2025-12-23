@@ -121,7 +121,7 @@ const RealEstateAgentsPage = () => {
           </label>
           <ReactQuill
             value={form.description}
-            onChange={(value) => setForm({ ...form, description: value })}
+            onChange={(value) => setForm({ ...form, description: value.replace(/&nbsp;/g, " ") })}
             modules={quillModules}
             formats={quillFormats}
             className="rounded-2xl [&_.ql-container]:rounded-b-2xl [&_.ql-toolbar]:rounded-t-2xl"
@@ -134,7 +134,7 @@ const RealEstateAgentsPage = () => {
           </label>
            <ReactQuill
             value={form.descriptionBottom}
-            onChange={(value) => setForm({ ...form, descriptionBottom: value })}
+            onChange={(value) => setForm({ ...form, descriptionBottom: value.replace(/&nbsp;/g, " ") })}
             modules={quillModules}
             formats={quillFormats}
             className="rounded-2xl [&_.ql-container]:rounded-b-2xl [&_.ql-toolbar]:rounded-t-2xl"
