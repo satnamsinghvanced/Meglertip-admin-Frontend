@@ -61,7 +61,7 @@ const CountiesFormPage = () => {
     loading: citiesLoading,
     selectedCounty,
   } = useSelector((state) => state.counties || {});
-  const { allCompanies } = useSelector((state) => state.companies);
+   const { allCompanies } = useSelector((state) => state.companies);
     const [companySearch, setCompanySearch] = useState("");
 
   const [form, setForm] = useState({
@@ -152,14 +152,7 @@ const CountiesFormPage = () => {
         ogImage: selectedCounty.ogImage || "",
         ogType: selectedCounty.ogType || "website",
 
-        robots: selectedCounty.robots || {
-          noindex: false,
-          nofollow: false,
-          noarchive: false,
-          nosnippet: false,
-          noimageindex: false,
-          notranslate: false,
-        },
+       robots: selectedCounty.robots,
       });
 
       setPreviewImage(selectedCounty.icon || "");

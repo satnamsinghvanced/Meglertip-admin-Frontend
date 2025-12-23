@@ -99,7 +99,7 @@ console.log(partnerDetail)
                   <p className="text-sm font-medium">
                     {lt.typeId.formTitle} —{" "}
                     <span className="text-primary font-semibold">
-                      ₹{lt.price}
+                      NOK {lt.price}
                     </span>
                   </p>
                   {/* <p className="text-xs text-gray-600">Type ID: {lt.typeId}</p> */}
