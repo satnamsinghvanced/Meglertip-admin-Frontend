@@ -198,7 +198,7 @@ const ThemeSettings = () => {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-4">
               <h4 className="font-bold text-xl">Logo's Settings</h4>
-              <button
+              {/* <button
                 onClick={() => setEditingLogos(!editingLogos)}
                 className={`text-xs px-3 py-1 rounded-full border transition ${
                   editingLogos
@@ -207,7 +207,7 @@ const ThemeSettings = () => {
                 }`}
               >
                 {editingLogos ? "Hide Text Fields" : "Edit Wordmark Text"}
-              </button>
+              </button> */}
             </div>
             {loading && <span className="text-xs text-blue-400">Loading...</span>}
           </div>
