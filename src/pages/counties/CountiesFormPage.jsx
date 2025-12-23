@@ -580,7 +580,7 @@ const CountiesFormPage = () => {
                         <ReactQuill
                           value={form.description}
                           onChange={(value) =>
-                            setForm((prev) => ({ ...prev, description: value }))
+                            setForm((prev) => ({ ...prev, description: value.replace(/&nbsp;/g, " ") }))
                           }
                           modules={quillModules}
                           formats={quillFormats}

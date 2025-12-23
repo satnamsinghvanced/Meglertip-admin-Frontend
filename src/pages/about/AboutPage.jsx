@@ -196,7 +196,7 @@ const AboutPage = () => {
           </label>
           <ReactQuill
             value={form.subHeading1}
-            onChange={(value) => setForm({ ...form, subHeading1: value })}
+            onChange={(value) => setForm({ ...form, subHeading1: value.replace(/&nbsp;/g, " ") })}
             modules={quillModules}
             formats={quillFormats}
             className="rounded-2xl [&_.ql-container]:rounded-b-2xl [&_.ql-toolbar]:rounded-t-2xl"
