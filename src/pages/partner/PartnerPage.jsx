@@ -27,7 +27,7 @@ const modules = {
 };
 
 const formats = [
-  "header", "bold", "italic", "underline", "strike", "list", "bullet", "blockquote", "code-block", "align", "link", "image",
+  "header", "bold", "italic", "underline", "strike", "list",  "blockquote", "code-block", "align", "link", "image",
 ];
 
 // --- Helper Components ---

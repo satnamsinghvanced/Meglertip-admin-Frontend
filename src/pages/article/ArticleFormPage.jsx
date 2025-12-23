@@ -39,7 +39,6 @@ const quillFormats = [
   "underline",
   "strike",
   "list",
-  "bullet",
   "blockquote",
   "code-block",
   "align",

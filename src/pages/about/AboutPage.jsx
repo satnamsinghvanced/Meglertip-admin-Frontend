@@ -28,73 +28,88 @@ const quillFormats = [
   "underline",
   "strike",
   "list",
-  "bullet",
   "blockquote",
   "code-block",
   "align",
   "link",
   "image",
 ];
+const defaultFormState = {
+  heading: "",
+  subHeading: "",
+  image: "",
+
+  heading1: "",
+  subHeading1: "",
+
+  metaTitle: "",
+  metaDescription: "",
+  metaKeywords: "",
+  metaImage: "",
+
+  canonicalUrl: "",
+  jsonLd: "",
+
+  ogTitle: "",
+  ogDescription: "",
+  ogImage: "",
+  ogType: "website",
+
+  publishedDate: "",
+  lastUpdatedDate: "",
+  showPublishedDate: false,
+  showLastUpdatedDate: false,
+
+  robots: {
+    noindex: false,
+    nofollow: false,
+    noarchive: false,
+    nosnippet: false,
+    noimageindex: false,
+    notranslate: false,
+  },
+
+  customHead: "",
+  slug: "",
+
+  redirect: {
+    enabled: false,
+    from: "",
+    to: "",
+    type: 301,
+  },
+
+  breadcrumbs: [],
+
+  includeInSitemap: true,
+  priority: 0.7,
+  changefreq: "weekly",
+
+  isScheduled: false,
+  scheduledPublishDate: "",
+
+  isDeleted: false,
+  isHidden: false,
+};
+
 const AboutPage = () => {
   const dispatch = useDispatch();
   const { about, loading } = useSelector((state) => state.about || {});
 
-  const [form, setForm] = useState({
-    heading: "",
-    subHeading: "",
-    image: "",
-
-    heading1: "",
-    subHeading1: "",
-
-    metaTitle: "",
-    metaDescription: "",
-    metaKeywords: "",
-    metaImage: "",
-
-    canonicalUrl: "",
-    jsonLd: "",
-
-    ogTitle: "",
-    ogDescription: "",
-    ogImage: "",
-    ogType: "website",
-
-    publishedDate: "",
-    lastUpdatedDate: "",
-    showPublishedDate: false,
-    showLastUpdatedDate: false,
-
-    robots: {
-      noindex: false,
-      nofollow: false,
-      noarchive: false,
-      nosnippet: false,
-      noimageindex: false,
-      notranslate: false,
-    },
-
-    customHead: "",
-    slug: "",
-
-    redirect: {
-      enabled: false,
-      from: "",
-      to: "",
-      type: 301,
-    },
-
-    breadcrumbs: [],
-
-    includeInSitemap: true,
-    priority: 0.7,
-    changefreq: "weekly",
-
-    isScheduled: false,
-    scheduledPublishDate: "",
-
-    isDeleted: false,
-    isHidden: false,
+  // Initialize form synchronously from Redux if available
+  const [form, setForm] = useState(() => {
+    if (about) {
+      return {
+        ...defaultFormState,
+        ...about,
+        subHeading1: about.subHeading1 || "", // Ensure string
+        metaKeywords: about.metaKeywords || "",
+        robots: about.robots || defaultFormState.robots,
+        redirect: about.redirect || defaultFormState.redirect,
+        breadcrumbs: about.breadcrumbs || [],
+      };
+    }
+    return defaultFormState;
   });
 
   useEffect(() => {
@@ -103,14 +118,15 @@ const AboutPage = () => {
 
   useEffect(() => {
     if (about) {
-      setForm({
-        ...form,
+      setForm((prev) => ({
+        ...prev,
         ...about,
+        subHeading1: about.subHeading1 || "", // Ensure string
         metaKeywords: about.metaKeywords || "",
-        robots: about.robots || form.robots,
-        redirect: about.redirect || form.redirect,
+        robots: about.robots || defaultFormState.robots,
+        redirect: about.redirect || defaultFormState.redirect,
         breadcrumbs: about.breadcrumbs || [],
-      });
+      }));
     }
   }, [about]);
 
