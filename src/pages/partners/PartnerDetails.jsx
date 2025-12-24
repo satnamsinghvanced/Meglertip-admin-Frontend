@@ -77,7 +77,9 @@ console.log(partnerDetail)
             value={p.isActive ? "Active" : "Inactive"}
             badge={p.isActive}
           />
-          <InfoCard title="Total Leads" value={p.leads.total} />
+          <InfoCard title="Monthly Lead Limit" value={p.leads.total} />
+          <InfoCard title="Current Month Leads Reach" value={p.leads.currentMonth} />
+          <InfoCard title="Last Month Leads" value={p.leads.lastMonth} />
 
           <InfoCard
             title="Created At"

@@ -257,7 +257,7 @@ export const AddPartnerPage = () => {
             </div>
             <div>
               <label className="text-sm font-semibold text-slate-700">
-                Total Leads
+              Monthly Lead Limit
               </label>
               <input
                 type="number"

@@ -246,7 +246,7 @@ export const CollaboratePartnerPage = () => {
                   <th className="px-6 py-3">Name</th>
                   <th className="px-6 py-3">City</th>
                   <th className="px-6 py-3">Postal Codes</th>
-                  <th className="px-6 py-3">Total Leads</th>
+                 <th className="px-6 py-3">Monthly Lead Limit</th>
                   <th className="px-6 py-3">Premium</th>
                   <th className="px-6 py-3">Status</th>
                   <th className="px-6 py-3 text-center">Actions</th>
