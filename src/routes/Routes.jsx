@@ -93,7 +93,7 @@ const Routes = () => {
 
       
         <Route path={ROUTES.HOMEPAGE} element={<HomePage />} />
-        <Route path={ROUTES.ABOUT} element={<AboutPage />} />
+        <Route path="/about" element={<AboutPage />} />
 
         <Route path={ROUTES.FAQ} element={<Faq />} />
 

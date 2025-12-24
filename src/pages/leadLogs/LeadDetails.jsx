@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import { FaRegCopy } from "react-icons/fa6";
-import axios from "axios";
 import { toast } from "react-toastify";
 import {
   getLeadById,

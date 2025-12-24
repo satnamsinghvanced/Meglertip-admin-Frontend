@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import PageHeader from "../../components/PageHeader";
 import Skeleton from "react-loading-skeleton";
 import dayjs from "dayjs";
@@ -124,9 +124,7 @@ const Dashboard = () => {
   const fetchStats = () => {
     axios
       .get(
-        `${
-          import.meta.env.VITE_API_URL
-        }/dashboard/stats?start=${startDate}&end=${endDate}&partnerName=${partnerName}`
+        `/dashboard/stats?start=${startDate}&end=${endDate}&partnerName=${partnerName}`
       )
       .then((res) => setStats(res.data))
       .catch(() => {});
@@ -137,7 +135,7 @@ const Dashboard = () => {
 
   const fetchPartners = (search = "") => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/partners/all?search=${search}`)
+      .get(`/partners/all?search=${search}`)
       .then((res) => setPartners(res.data?.data || []))
       .catch(() => {});
   };
@@ -154,7 +152,7 @@ const Dashboard = () => {
   }, [partnerSearch]);
   const fetchStatsOfType = () => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/dashboard/total-leads`)
+      .get(`/dashboard/total-leads`)
       .then((res) => setStatsType(res.data))
       .catch(() => {});
   };
@@ -289,12 +287,12 @@ const Dashboard = () => {
               <option value="month">This Month</option>
             </select>
           </div>
-            <div>
-          <label className="text-sm text-slate-600 block mb-1">
-            Filter by Partner
-          </label>
+          <div>
+            <label className="text-sm text-slate-600 block mb-1">
+              Filter by Partner
+            </label>
 
-          {/* <input
+            {/* <input
             type="text"
             placeholder="Search partner..."
             className="border border-slate-200 p-2 rounded w-56 mb-2"
@@ -302,21 +300,20 @@ const Dashboard = () => {
             onChange={(e) => setPartnerSearch(e.target.value)}
           /> */}
 
-          <select
-            className="border border-slate-200 p-2 rounded w-56"
-            value={partnerName}
-            onChange={(e) => setPartnerName(e.target.value)}
-          >
-            <option value="">All Partners</option>
-            {partners.map((p) => (
-              <option key={p._id} value={p.name}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            <select
+              className="border border-slate-200 p-2 rounded w-56"
+              value={partnerName}
+              onChange={(e) => setPartnerName(e.target.value)}
+            >
+              <option value="">All Partners</option>
+              {partners.map((p) => (
+                <option key={p._id} value={p.name}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        </div>
-      
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 p-6">

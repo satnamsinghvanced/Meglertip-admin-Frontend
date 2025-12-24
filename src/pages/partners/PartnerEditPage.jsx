@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import axios from "axios";
+import api from "../../api/axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,14 +35,14 @@ export const PartnerEditPage = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    axios
+    api
       .get(`${import.meta.env.VITE_API_URL}/partners/questions`)
       .then((res) => setAllQuestions(res.data?.questions || []))
       .catch((err) => console.error("Error fetching questions:", err));
   }, []);
 
   useEffect(() => {
-    axios
+    api
       .get(`${import.meta.env.VITE_API_URL}/form-select`)
       .then((res) => setLeadTypesList(res.data?.data || []))
       .catch((err) => console.error("Error fetching lead types:", err));
@@ -138,7 +138,7 @@ export const PartnerEditPage = () => {
     if (!question) return;
 
     try {
-      const res = await axios.get(
+      const res = await api.get(
         `${import.meta.env.VITE_API_URL}/partners/answer?question=${question}`
       );
 
