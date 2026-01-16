@@ -2,36 +2,34 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
-import {
-  clearSelectedPlace,
-  getPlaceById,
-} from "../../store/slices/placeSlice";
 
-const PlaceDetailPage = () => {
-  const { placeId } = useParams();
+import { getCountyById ,clearSelectedCounty} from "../../store/slices/countySlice";
+
+const CountiesDetailPage = () => {
+  const { countyId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { selectedPlace, loading } = useSelector((state) => state.places);
+  const { selectedCounty, loading } = useSelector((state) => state.counties);
 
   useEffect(() => {
-    if (placeId) dispatch(getPlaceById(placeId));
-    return () => dispatch(clearSelectedPlace());
-  }, [dispatch, placeId]);
+    if (countyId) dispatch(getCountyById(countyId));
+    return () => dispatch(clearSelectedCounty());
+  }, [dispatch, countyId]);
 
   const headerButtons = [
     {
-      value: "Back to Places",
+      value: "Back to Counties",
       variant: "white",
       className:
         "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
       onClick: () => navigate(-1),
     },
     {
-      value: "Edit Place",
+      value: "Edit County",
       variant: "primary",
       className:
         "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
-      onClick: () => navigate(`/place/${placeId}/edit`),
+      onClick: () => navigate(`/county/${countyId}/edit`),
     },
   ];
 
@@ -53,58 +51,58 @@ const PlaceDetailPage = () => {
   };
 
   const detailItems = [
-    { label: "slug", value: selectedPlace?.slug },
-    { label: "County", value: selectedPlace?.countyId?.name },
-    // { label: "isRecommended", value: selectedPlace?.isRecommended },
-    { label: "title", value: selectedPlace?.title },
-    { label: "rank", value: selectedPlace?.rank },
+    { label: "slug", value: selectedCounty?.slug },
+    // { label: "County", value: selectedCounty?.countyId?.name },
+    // { label: "isRecommended", value: selectedCounty?.isRecommended },
+    { label: "title", value: selectedCounty?.title },
+    // { label: "rank", value: selectedCounty?.rank },
   ];
 
   const seoItems = [
-    { label: "Meta Title", value: selectedPlace?.metaTitle },
-    { label: "Meta Description", value: selectedPlace?.metaDescription },
-    { label: "Meta Keywords", value: selectedPlace?.metaKeywords },
-    { label: "Canonical URL", value: selectedPlace?.canonicalUrl },
+    { label: "Meta Title", value: selectedCounty?.metaTitle },
+    { label: "Meta Description", value: selectedCounty?.metaDescription },
+    { label: "Meta Keywords", value: selectedCounty?.metaKeywords },
+    { label: "Canonical URL", value: selectedCounty?.canonicalUrl },
 
-    { label: "OG Title", value: selectedPlace?.ogTitle },
-    { label: "OG Description", value: selectedPlace?.ogDescription },
-    { label: "OG Type", value: selectedPlace?.ogType },
+    { label: "OG Title", value: selectedCounty?.ogTitle },
+    { label: "OG Description", value: selectedCounty?.ogDescription },
+    { label: "OG Type", value: selectedCounty?.ogType },
 
-    { label: "JSON-LD", value: selectedPlace?.jsonLd },
-    // { label: "Include in Sitemap", value: selectedPlace?.includeInSitemap ? "Yes" : "No" },
-    // { label: "Priority", value: selectedPlace?.priority },
-    // { label: "Change Frequency", value: selectedPlace?.changefreq },
+    { label: "JSON-LD", value: selectedCounty?.jsonLd },
+    // { label: "Include in Sitemap", value: selectedCounty?.includeInSitemap ? "Yes" : "No" },
+    // { label: "Priority", value: selectedCounty?.priority },
+    // { label: "Change Frequency", value: selectedCounty?.changefreq },
 
-    // { label: "Published Date", value: selectedPlace?.publishedDate },
-    // { label: "Last Updated", value: selectedPlace?.lastUpdatedDate },
+    // { label: "Published Date", value: selectedCounty?.publishedDate },
+    // { label: "Last Updated", value: selectedCounty?.lastUpdatedDate },
 
     {
       label: "Robots (noindex)",
-      value: selectedPlace?.robots?.noindex ? "Yes" : "No",
+      value: selectedCounty?.robots?.noindex ? "Yes" : "No",
     },
     {
       label: "Robots (nofollow)",
-      value: selectedPlace?.robots?.nofollow ? "Yes" : "No",
+      value: selectedCounty?.robots?.nofollow ? "Yes" : "No",
     },
     {
       label: "Robots (noarchive)",
-      value: selectedPlace?.robots?.noarchive ? "Yes" : "No",
+      value: selectedCounty?.robots?.noarchive ? "Yes" : "No",
     },
     {
       label: "Robots (nosnippet)",
-      value: selectedPlace?.robots?.nosnippet ? "Yes" : "No",
+      value: selectedCounty?.robots?.nosnippet ? "Yes" : "No",
     },
     {
       label: "Robots (noimageindex)",
-      value: selectedPlace?.robots?.noimageindex ? "Yes" : "No",
+      value: selectedCounty?.robots?.noimageindex ? "Yes" : "No",
     },
     {
       label: "Robots (notranslate)",
-      value: selectedPlace?.robots?.notranslate ? "Yes" : "No",
+      value: selectedCounty?.robots?.notranslate ? "Yes" : "No",
     },
   ];
 
-  if (loading && !selectedPlace) {
+  if (loading && !selectedCounty) {
     return (
       <div className="space-y-6">
         <PageHeader title="Place details" />
@@ -117,7 +115,7 @@ const PlaceDetailPage = () => {
     );
   }
 
-  if (!selectedPlace) {
+  if (!selectedCounty) {
     return (
       <div className="space-y-6">
         <PageHeader title="Place details" buttonsList={headerButtons} />
@@ -131,15 +129,15 @@ const PlaceDetailPage = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={selectedPlace.name}
-        description="Preview the full content for this place."
+        title={selectedCounty.name}
+        description="Preview the full content for this county."
         buttonsList={headerButtons}
       />
-   {selectedPlace.icon && (
+   {selectedCounty.icon && (
             <div className="flex justify-center mb-6">
               <img
-                src={(selectedPlace.icon)}
-                alt={`${selectedPlace.name} icon`}
+                src={(selectedCounty.icon)}
+                alt={`${selectedCounty.name} icon`}
                 className="h-24 w-24 rounded-full object-cover border border-slate-200"
               />
             </div>
@@ -165,13 +163,13 @@ const PlaceDetailPage = () => {
        
 
           {/* EXCERPT */}
-          {selectedPlace.excerpt && (
+          {selectedCounty.excerpt && (
             <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
               <p className="text-xs font-semibold text-slate-500 uppercase">
                 Excerpt
               </p>
               <p className="mt-2 text-sm text-slate-700">
-                {selectedPlace.excerpt}
+                {selectedCounty.excerpt}
               </p>
             </div>
           )}
@@ -185,7 +183,7 @@ const PlaceDetailPage = () => {
               className="prose mt-3 max-w-none text-slate-700"
               dangerouslySetInnerHTML={{
                 __html:
-                  selectedPlace.description ||
+                  selectedCounty.description ||
                   "<p>No description provided.</p>",
               }}
             />
@@ -194,13 +192,13 @@ const PlaceDetailPage = () => {
           {/* COMPANIES SECTION */}
           <div className="rounded-xl mt-6 p-5 border border-slate-200 bg-slate-50">
             <p className="text-xs font-semibold uppercase text-slate-600 mb-4">
-              Companies in this Place
+              Companies in this County
             </p>
 
-            {Array.isArray(selectedPlace.companies) &&
-            selectedPlace.companies.length > 0 ? (
+            {Array.isArray(selectedCounty.companies) &&
+            selectedCounty.companies.length > 0 ? (
               <div className="space-y-3">
-                {[...selectedPlace.companies]
+                {[...selectedCounty.companies]
                   .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
                   .map((item, index) => (
                     <div
@@ -266,4 +264,4 @@ const PlaceDetailPage = () => {
   );
 };
 
-export default PlaceDetailPage;
+export default CountiesDetailPage;
