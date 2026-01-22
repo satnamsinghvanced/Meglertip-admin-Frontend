@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
@@ -58,6 +58,7 @@ function labelFor(name) {
 
 const PlaceFormPage = () => {
   const { placeId } = useParams();
+  const [searchParams] = useSearchParams();
   const isEditMode = Boolean(placeId);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -315,7 +316,9 @@ const PlaceFormPage = () => {
         toast.success("Place created!");
       }
 
-      navigate("/places");
+      const page = searchParams.get('page');
+      const redirectUrl = page ? `/places?page=${page}` : "/places";
+      navigate(redirectUrl);
     } catch (err) {
       console.error(err);
       toast.error(
@@ -345,7 +348,11 @@ const PlaceFormPage = () => {
               variant: "white",
               className:
                 "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
-              onClick: () => navigate("/places"),
+              onClick: () => {
+                const page = searchParams.get('page');
+                const redirectUrl = page ? `/places?page=${page}` : "/places";
+                navigate(redirectUrl);
+              },
             },
           ],
           [navigate]
