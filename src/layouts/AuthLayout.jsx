@@ -23,7 +23,7 @@ const AuthLayout = () => {
           <div className="bg-[#161925] w-full h-full flex items-center justify-center">
             <img
               src={`${IMAGE_URL}${logos?.logoDark}`}
-              alt="Boligtip"
+              alt="Meglertipset"
               className="w-80 h-18"
             />
           </div>

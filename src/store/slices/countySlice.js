@@ -3,7 +3,7 @@ import api from "../../api/axios";
 const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
 
 const fixImageUrl = (url) => {
-  if (!url) return null;
+  if (!url || typeof url !== "string") return url;
   return url.startsWith("http") ? url : `${IMAGE_URL}${url}`;
 };
 
@@ -53,15 +53,21 @@ export const getCountyById = createAsyncThunk(
 
 export const createCounty = createAsyncThunk(
   "county/createCounty",
-  async (countyData, { rejectWithValue }) => {
+  async ({ countyData, isFormData }, { rejectWithValue }) => {
     try {
-      const { data } = await api.post("/counties/create", countyData);
+      // If using FormData, send it directly
+      const config = isFormData
+        ? { headers: { "Content-Type": "multipart/form-data" } }
+        : {};
+      const { data } = await api.post("/counties/create", countyData, config);
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
+
 
 export const updateCounty = createAsyncThunk(
   "county/updateCounty",

@@ -1,14 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../../api/axios";
 import { toast } from "react-toastify";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export const getCategories = createAsyncThunk(
   "category/getCategories",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${API_URL}/category`);
+      const res = await api.get(`/category`);
       return res.data.data;
     } catch (err) {
       return rejectWithValue(
@@ -22,11 +20,11 @@ export const createCategory = createAsyncThunk(
   "category/createCategory",
   async (formData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/category/create`, formData);
-      toast.success(res.data.message || "Category created successfully!");
+      const res = await api.post(`/category/create`, formData);
+      // toast.success(res.data.message || "Category created successfully!");
       return res.data;
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to create category");
+      // toast.error(err.response?.data?.message || "Failed to create category");
       return rejectWithValue(err.response?.data?.message);
     }
   }
@@ -36,14 +34,11 @@ export const updateCategory = createAsyncThunk(
   "category/updateCategory",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const res = await axios.put(
-        `${API_URL}/category/update?id=${id}`,
-        formData
-      );
-      toast.success(res.data.message || "Category updated successfully!");
+      const res = await api.put(`/category/update?id=${id}`, formData);
+      // toast.success(res.data.message || "Category updated successfully!");
       return res.data;
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update category");
+      // toast.error(err.response?.data?.message || "Failed to update category");
       return rejectWithValue(err.response?.data?.message);
     }
   }
@@ -53,7 +48,7 @@ export const deleteCategory = createAsyncThunk(
   "category/deleteCategory",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await axios.delete(`${API_URL}/category/delete?id=${id}`);
+      const res = await api.delete(`/category/delete?id=${id}`);
       toast.success(res.data.message || "Category deleted successfully!");
       return id;
     } catch (err) {

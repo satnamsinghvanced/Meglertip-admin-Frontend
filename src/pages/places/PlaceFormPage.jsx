@@ -35,7 +35,6 @@ const quillFormats = [
   "underline",
   "strike",
   "list",
-  "bullet",
   "blockquote",
   "code-block",
   "align",
@@ -146,10 +145,10 @@ const PlaceFormPage = () => {
         rank: selectedPlace.rank || 0,
         companies: Array.isArray(selectedPlace.companies)
           ? selectedPlace.companies.map((c, index) => ({
-              companyId: String(c.companyId._id || c.companyId),
-              rank: c.rank ?? index + 1,
-              isRecommended: !!c.isRecommended,
-            }))
+            companyId: String(c.companyId._id || c.companyId),
+            rank: c.rank ?? index + 1,
+            isRecommended: !!c.isRecommended,
+          }))
           : [],
         metaTitle: selectedPlace.metaTitle || "",
         metaDescription: selectedPlace.metaDescription || "",
@@ -310,7 +309,7 @@ const PlaceFormPage = () => {
         toast.success("Place updated!");
       } else {
         await dispatch(
-          createPlace({ placeData: payload, isFormData })
+          createPlace({ data: payload, isFormData })
         ).unwrap();
         toast.success("Place created!");
       }
@@ -374,10 +373,9 @@ const PlaceFormPage = () => {
                   value={form[field.name] ?? ""}
                   onChange={handleChange}
                   className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    ${
-                      errors[field.name]
-                        ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-primary"
+                    ${errors[field.name]
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-slate-200 focus:border-primary"
                     }`}
                 />
                 {errors[field.name] && (
@@ -397,11 +395,10 @@ const PlaceFormPage = () => {
                 value={form.countyId}
                 onChange={handleChange}
                 className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    ${
-                      errors.countyId
-                        ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-primary"
-                    }`}
+                    ${errors.countyId
+                    ? "border-red-400 focus:border-red-500"
+                    : "border-slate-200 focus:border-primary"
+                  }`}
               >
                 <option value="">Select County</option>
                 {counties?.map((c) => (
@@ -432,7 +429,9 @@ const PlaceFormPage = () => {
                 ) : (
                   <div className="flex flex-wrap gap-2">
                     {form.companies.map((item) => {
-                       const company = allCompanies.find((c) => c._id === item.companyId);
+                      const company = allCompanies.find(
+                        (c) => c._id === item.companyId
+                      );
                       // console.log(company)
                       return (
                         <span
@@ -464,7 +463,7 @@ const PlaceFormPage = () => {
 
               {/* Dropdown */}
               {showCompaniesDropdown && (
-                <div className="absolute z-20 mt-2 w-full max-h-64 overflow-y-auto bg-white border rounded-xl shadow p-2">
+                <div className="z-20 mt-2 w-full max-h-64 overflow-y-auto bg-white border rounded-xl shadow p-2">
                   {/* Search input */}
                   <input
                     type="text"
@@ -652,21 +651,39 @@ const PlaceFormPage = () => {
           </div>
 
           <div className="mt-4">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
               Description
+              {/* Tooltip */}
+              <span className="relative flex items-center group">
+                <span className="flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
+                  i
+                </span>
+
+                {/* Tooltip content */}
+                <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-lg bg-slate-900 px-3 py-2 text-xs font-normal text-white opacity-0 shadow-xl transition-opacity duration-200 group-hover:opacity-100">
+                  Please use <i>##</i> for H2 tags and <i>#</i> for H3 tags. The
+                  remaining text should stay unchanged, and please ensure the
+                  content matches what is provided in the CSV file.
+                </span>
+              </span>
             </label>
+
             <div className="mt-2 rounded-2xl border border-slate-200 p-1">
-              <ReactQuill
+              <textarea
+                name="description"
                 value={form.description}
-                onChange={(value) =>
-                  setForm((prev) => ({ ...prev, description: value }))
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
                 }
-                modules={quillModules}
-                formats={quillFormats}
-                className="rounded-2xl [&_.ql-container]:rounded-b-2xl [&_.ql-toolbar]:rounded-t-2xl"
+                rows={10}
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-secondary"
               />
             </div>
           </div>
+
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm mt-4">
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Icon
@@ -861,8 +878,8 @@ const PlaceFormPage = () => {
               {submitting
                 ? "Saving..."
                 : isEditMode
-                ? "Save Changes"
-                : "Create Place"}
+                  ? "Save Changes"
+                  : "Create Place"}
             </button>
 
             {isDisabled && hasErrors && (
