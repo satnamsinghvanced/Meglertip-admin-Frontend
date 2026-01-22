@@ -141,6 +141,7 @@ const PlaceFormPage = () => {
         excerpt: selectedPlace.excerpt || "",
         title: selectedPlace.title || "",
         description: selectedPlace.description || "",
+        icon: selectedPlace.icon || "",
         // isRecommended: selectedPlace.isRecommended || false,
         rank: selectedPlace.rank || 0,
         companies: Array.isArray(selectedPlace.companies)
@@ -702,6 +703,7 @@ const PlaceFormPage = () => {
                     onClick={() => {
                       setImageFile(null);
                       setPreviewImage("");
+                      setForm((prev) => ({ ...prev, icon: "" }));
                     }}
                     title="Remove image"
                   >
