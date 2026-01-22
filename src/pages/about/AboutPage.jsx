@@ -8,37 +8,10 @@ import {
   updateAboutPage,
 } from "../../store/slices/aboutPageSlice";
 import { toast } from "react-toastify";
-import ReactQuill from "react-quill-new";
-const quillModules = {
-  toolbar: [
-    [{ header: [1, 2, 3, false] }],
-    ["bold", "italic", "underline", "strike"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["blockquote", "code-block"],
-    [{ align: [] }],
-    ["link", "image"],
-    ["clean"],
-  ],
-};
 
-const quillFormats = [
-  "header",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "list",
-  "bullet",
-  "blockquote",
-  "code-block",
-  "align",
-  "link",
-  "image",
-];
 const AboutPage = () => {
   const dispatch = useDispatch();
   const { about, loading } = useSelector((state) => state.about || {});
-
   const [form, setForm] = useState({
     heading: "",
     subHeading: "",
@@ -150,6 +123,7 @@ const AboutPage = () => {
         </div>
       ) : (
         <div className="space-y-8">
+          {/* // MAIN CONTENT */}
           <Input
             label="Heading"
             value={form.heading}
@@ -172,22 +146,11 @@ const AboutPage = () => {
             value={form.heading1}
             onChange={(e) => setForm({ ...form, heading1: e.target.value })}
           />
-          <label
-            htmlFor="Sub Heading1"
-            className="block text-sm font-medium text-gray-600 mb-1"
-          >
-            Sub Heading 1
-          </label>
-          <ReactQuill
+          <Input
+            label="Sub Heading 1"
             value={form.subHeading1}
-            onChange={(value) => setForm({ ...form, subHeading1: value })}
-            modules={quillModules}
-            formats={quillFormats}
-            className="rounded-2xl [&_.ql-container]:rounded-b-2xl [&_.ql-toolbar]:rounded-t-2xl"
+            onChange={(e) => setForm({ ...form, subHeading1: e.target.value })}
           />
-
-          {/* <Input label="Sub Heading 1" value={form.subHeading1}
-            onChange={(e) => setForm({ ...form, subHeading1: e.target.value })} /> */}
 
           {/* SEO SECTION */}
           <div className="border-t pt-6">
