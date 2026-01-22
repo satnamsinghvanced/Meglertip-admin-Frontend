@@ -13,7 +13,7 @@ const Button = ({
   ...rest
 }) => {
   return (
-    <button
+    <button 
       {...rest}
       className={`btn group ${
         isLoading
