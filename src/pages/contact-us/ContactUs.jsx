@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import PageHeader from "../../components/PageHeader";
-import Pagination from "../../UI/pagination";
-import {
-  fetchContacts,
-  deleteContact,
-} from "../../store/slices/contactUsSlice";
-import { RiDeleteBin5Line } from "react-icons/ri";
+import { useEffect, useState } from "react";
 import { FaRegEye } from "react-icons/fa";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
+import PageHeader from "../../components/PageHeader";
+import {
+  deleteContact,
+  fetchContacts,
+} from "../../store/slices/contactUsSlice";
 import ConfirmModal from "../../UI/ConfirmDeleteModal";
+import Pagination from "../../UI/pagination";
 
 const ContactUsListPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const contactState = useSelector((state) => state.contact);
   const { data, loading } = contactState;
   const [modalOpen, setModalOpen] = useState(false);
@@ -22,8 +23,36 @@ const ContactUsListPage = () => {
   const entries = data?.items || [];
   const total = data?.total || 0;
 
-  const [page, setPage] = useState(1);
+  // Initialize page from URL
+  const getInitialPage = () => {
+    const pageParam = searchParams.get("page");
+    return pageParam ? parseInt(pageParam, 10) || 1 : 1;
+  };
+
+  const [page, setPage] = useState(getInitialPage);
   const limit = 10;
+
+  // Update page when URL changes
+  useEffect(() => {
+    const pageParam = searchParams.get("page");
+    const newPage = pageParam ? parseInt(pageParam, 10) || 1 : 1;
+    if (newPage !== page) {
+      setPage(newPage);
+    }
+  }, [searchParams]);
+
+  // Update URL when page changes
+  useEffect(() => {
+    const pageParam = searchParams.get("page");
+    const currentPageInUrl = pageParam ? parseInt(pageParam, 10) || 1 : 1;
+    if (page !== currentPageInUrl) {
+      if (page > 1) {
+        setSearchParams({ page: page.toString() });
+      } else {
+        setSearchParams({});
+      }
+    }
+  }, [page, searchParams, setSearchParams]);
 
   useEffect(() => {
     dispatch(fetchContacts({ page, limit }));
@@ -119,7 +148,7 @@ const ContactUsListPage = () => {
                       <div className="flex items-center gap-3 text-center">
                         <button
                           title="View Details"
-                          onClick={() => navigate(`/contact/${item._id}`)}
+                          onClick={() => navigate(`/contact/${item._id}?page=${page}`)}
                           className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
                         >
                           <FaRegEye size={16} />
@@ -127,7 +156,7 @@ const ContactUsListPage = () => {
 
                         <button
                           title="Delete"
-                           onClick={() => handleDeleteClick(item._id)}
+                          onClick={() => handleDeleteClick(item._id)}
                           className="rounded-full border border-red-200 p-2 text-red-500 hover:bg-red-50"
                         >
                           <RiDeleteBin5Line size={16} />
@@ -148,12 +177,12 @@ const ContactUsListPage = () => {
         )}
       </div>
       <ConfirmModal
-  isOpen={modalOpen}
-  title="Confirm Delete"
-  message="Are you sure you want to delete this message?"
-  onConfirm={handleConfirmDelete}
-  onCancel={handleCancelDelete}
-/>
+        isOpen={modalOpen}
+        title="Confirm Delete"
+        message="Are you sure you want to delete this message?"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 };
