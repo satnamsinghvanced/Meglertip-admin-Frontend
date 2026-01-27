@@ -371,7 +371,7 @@ const CountiesFormPage = () => {
               },
             },
           ],
-          [navigate]
+          [navigate, searchParams]
         )}
       />
 

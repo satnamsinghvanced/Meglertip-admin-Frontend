@@ -250,7 +250,7 @@ export const Places = () => {
 
                         <button
                           className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/place/${place._id}`)}
+                          onClick={() => navigate(`/place/${place._id}?page=${page}`)}
                           title="Preview"
                         >
                           <FaRegEye size={16} />

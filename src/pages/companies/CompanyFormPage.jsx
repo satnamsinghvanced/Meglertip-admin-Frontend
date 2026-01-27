@@ -409,7 +409,7 @@ const CompanyFormPage = () => {
               },
             },
           ],
-          [navigate]
+          [navigate, searchParams]
         )}
       />
 

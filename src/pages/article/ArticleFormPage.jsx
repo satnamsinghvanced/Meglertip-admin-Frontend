@@ -163,7 +163,7 @@ const ArticleFormPage = () => {
         },
       },
     ],
-    [navigate, isEditMode, articleId]
+    [navigate, isEditMode, articleId, searchParams]
   );
 
   const handleChange = (e) => {

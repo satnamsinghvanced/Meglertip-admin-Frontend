@@ -331,7 +331,7 @@ const LeadLogs = () => {
                       <td className="px-6 py-4 text-sm">
                         <button
                           className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/leads/${lead._id}`)}
+                          onClick={() => navigate(`/leads/${lead._id}?page=${page}`)}
                         >
                           <FaRegEye size={16} />
                         </button>

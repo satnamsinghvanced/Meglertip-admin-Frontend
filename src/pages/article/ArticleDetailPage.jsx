@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import {
   clearSelectedArticle,
@@ -12,6 +12,8 @@ const ArticleDetailPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { selectedArticle, loading } = useSelector((state) => state.articles);
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page");
 
   useEffect(() => {
     if (articleId) {
@@ -28,14 +30,17 @@ const ArticleDetailPage = () => {
       variant: "white",
       className:
         "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
-      onClick: () => navigate(-1),
+      onClick: () => {
+        const redirectUrl = page ? `/articles?page=${page}` : "/articles";
+        navigate(redirectUrl);
+      },
     },
     {
       value: "Edit article",
       variant: "primary",
       className:
         "!bg-primary !text-white !border-primary hover:!bg-secondary hover:!border-secondary",
-      onClick: () => navigate(`/articles/${articleId}/edit`),
+      onClick: () => navigate(`/articles/${articleId}/edit${page ? `?page=${page}` : ""}`),
     },
   ];
 
@@ -98,12 +103,12 @@ const ArticleDetailPage = () => {
                 {selectedArticle.createdBy?.username || "N/A"}
               </p>
             </div> */}
-             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+            <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Article Position
               </p>
               <p className="mt-1 text-base font-semibold text-slate-900">
-                {selectedArticle.articlePosition || 0 }
+                {selectedArticle.articlePosition || 0}
               </p>
             </div>
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
@@ -122,7 +127,7 @@ const ArticleDetailPage = () => {
               </p>
               <div className="flex flex-wrap gap-2 mt-1">
                 {Array.isArray(selectedArticle.articleTags) &&
-                selectedArticle.articleTags.length > 0 ? (
+                  selectedArticle.articleTags.length > 0 ? (
                   selectedArticle.articleTags.map((tag, index) => (
                     <span
                       key={index}
@@ -162,7 +167,7 @@ const ArticleDetailPage = () => {
               }}
             />
           </div>
-             <div className="rounded-xl mt-6 p-5 border border-slate-200 ">
+          <div className="rounded-xl mt-6 p-5 border border-slate-200 ">
             <p className="text-xs font-semibold uppercase text-slate-600 mb-4">
               SEO Information
             </p>

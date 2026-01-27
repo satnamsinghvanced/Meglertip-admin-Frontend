@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 import { FaRegCopy } from "react-icons/fa6";
 import { toast } from "react-toastify";
@@ -21,6 +21,8 @@ const LeadDetails = () => {
   const navigate = useNavigate();
 
   const { selectedLead, loading } = useSelector((s) => s.lead);
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page");
   const [partnerPrices, setPartnerPrices] = useState([]);
   const [status, setStatus] = useState("");
   const [profit, setProfit] = useState(0);
@@ -172,12 +174,12 @@ const LeadDetails = () => {
           entry.match === true
             ? "Matched"
             : entry.match === false
-            ? "Not Matched"
-            : entry.limitReached === false
-            ? "Passed"
-            : entry.isPremium
-            ? "Ranked"
-            : "Checked",
+              ? "Not Matched"
+              : entry.limitReached === false
+                ? "Passed"
+                : entry.isPremium
+                  ? "Ranked"
+                  : "Checked",
           JSON.stringify(entry)
         );
       });
@@ -202,7 +204,10 @@ const LeadDetails = () => {
       variant: "white",
       className:
         "border border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-white",
-      onClick: () => navigate(-1),
+      onClick: () => {
+        const redirectUrl = page ? `/lead-logs?page=${page}` : "/lead-logs";
+        navigate(redirectUrl);
+      },
     },
     {
       value: "Export CSV",
@@ -361,13 +366,12 @@ const LeadDetails = () => {
 
                   <div className="text-right">
                     <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        er.status === "sent"
-                          ? "bg-green-100 text-green-700"
-                          : er.status === "failed"
+                      className={`px-2 py-1 rounded text-xs font-semibold ${er.status === "sent"
+                        ? "bg-green-100 text-green-700"
+                        : er.status === "failed"
                           ? "bg-red-100 text-red-700"
                           : "bg-yellow-100 text-yellow-700"
-                      }`}
+                        }`}
                     >
                       {er.status.toUpperCase()}
                     </span>

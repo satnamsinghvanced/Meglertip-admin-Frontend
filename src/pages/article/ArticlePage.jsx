@@ -162,7 +162,7 @@ const ArticlePage = () => {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           className="rounded-full border p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/articles/${article._id}`)}
+                          onClick={() => navigate(`/articles/${article._id}?page=${page}`)}
                         >
                           <FaRegEye size={16} />
                         </button>

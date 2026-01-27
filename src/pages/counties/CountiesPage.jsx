@@ -162,7 +162,7 @@ export const CountyPage = () => {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/county/${county._id}`)}
+                          onClick={() => navigate(`/county/${county._id}?page=${page}`)}
                           title="Preview"
                         >
                           <FaRegEye size={16} />

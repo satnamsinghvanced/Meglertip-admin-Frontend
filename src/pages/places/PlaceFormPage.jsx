@@ -355,7 +355,7 @@ const PlaceFormPage = () => {
               },
             },
           ],
-          [navigate]
+          [navigate, searchParams]
         )}
       />
 
