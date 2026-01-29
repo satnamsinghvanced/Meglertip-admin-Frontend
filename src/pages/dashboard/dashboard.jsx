@@ -12,6 +12,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { toast } from "react-toastify";
 const DashboardSkeleton = () => {
   return (
     <div className="space-y-6">
@@ -122,6 +123,10 @@ const Dashboard = () => {
   );
   const [range, setRange] = useState("");
   const fetchStats = () => {
+     if (dayjs(endDate).isBefore(dayjs(startDate))) {
+    toast.error("End date cannot be less than start date");
+    return; 
+  }
     axios
       .get(
         `/dashboard/stats?start=${startDate}&end=${endDate}&partnerName=${partnerName}`,
@@ -231,6 +236,7 @@ const Dashboard = () => {
                 type="date"
                 className="border border-slate-200 p-2 rounded w-full"
                 value={endDate}
+                min={startDate}
                 max={dayjs().format("YYYY-MM-DD")}
                 onChange={(e) => setEndDate(e.target.value)}
               />
