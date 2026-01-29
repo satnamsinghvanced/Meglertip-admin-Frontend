@@ -312,61 +312,51 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h3 className="font-semibold text-lg mb-1">Lead Trend</h3>
-        <p className="text-xs text-slate-500 mb-4">
-          Trend of leads between selected dates
-        </p>
+     <div className="bg-white rounded-xl border border-slate-200 p-6">
+  <h3 className="font-semibold text-lg mb-1">Lead Trend</h3>
+  <p className="text-xs text-slate-500 mb-4">
+    Trend of leads between selected dates
+  </p>
 
-        <div className="h-64 outline-0">
-          <ResponsiveContainer className="outline-0" width="100%" height="100%">
-            <LineChart className="outline-0"
-              data={
-                trendlineData?.length === 1
-                  ? [
-                      ...trendlineData,
-                      {
-                        ...trendlineData[0],
-                        date: trendlineData[0].date + " ",
-                      },
-                    ]
-                  : trendlineData || []
-              }
-            >
-              <defs>
-                <linearGradient id="colorLead" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#4F46E5" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#4F46E5" stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
+  {trendlineData && trendlineData.length > 0 ? (
+    <div className="h-64 outline-0">
+      <ResponsiveContainer className="outline-0" width="100%" height="100%">
+        <LineChart
+          data={
+            trendlineData.length === 1
+              ? [
+                  ...trendlineData,
+                  {
+                    ...trendlineData[0],
+                    date: trendlineData[0].date + " ",
+                  },
+                ]
+              : trendlineData
+          }
+        >
+          <CartesianGrid strokeDasharray="4 4" stroke="#ddd" />
+          <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+          <Tooltip />
 
-              <CartesianGrid strokeDasharray="4 4" stroke="#ddd" />
+          <Line
+            type="monotone"
+            dataKey="leads"
+            stroke="#4F46E5"
+            strokeWidth={3}
+            dot={{ r: 5 }}
+            activeDot={{ r: 7 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  ) : (
+    <div className="h-64 flex items-center justify-center text-slate-500">
+      No Stats to Show
+    </div>
+  )}
+</div>
 
-              <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-
-              <Tooltip
-                contentStyle={{
-                  background: "white",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                }}
-              />
-
-              <Line
-                type="monotone"
-                dataKey="leads"
-                stroke="#4F46E5"
-                strokeWidth={3}
-                dot={{ fill: "#4F46E5", strokeWidth: 2, r: 5 }}
-                activeDot={{ r: 7, stroke: "#4F46E5", strokeWidth: 2 }}
-                fill="url(#colorLead)"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
 
       <div className="border border-slate-200 rounded-xl bg-white">
         <div className="border-0 border-slate-200 px-6 py-4 rounded-t-xl">
@@ -374,17 +364,24 @@ const Dashboard = () => {
           <p className="text-xs text-slate-500">Based on total leads</p>
         </div>
 
-        <ul className="">
-          {topPartners?.map((p, i) => (
-            <li
-              key={i}
-              className="px-6 py-4 flex justify-between border-t-1 border-slate-200"
-            >
-              <span className="font-medium"> {p?.partnerName}</span>
-              <span className="font-semibold">{p?.totalLeads} Leads</span>
-            </li>
-          ))}
-        </ul>
+       <ul>
+  {topPartners && topPartners.length > 0 ? (
+    topPartners.map((p, i) => (
+      <li
+        key={i}
+        className="px-6 py-4 flex justify-between border-t border-slate-200"
+      >
+        <span className="font-medium">{p?.partnerName}</span>
+        <span className="font-semibold">{p?.totalLeads} Leads</span>
+      </li>
+    ))
+  ) : (
+    <li className="px-6 py-6 text-center text-slate-500">
+      No partners found for selected dates
+    </li>
+  )}
+</ul>
+
       </div>
 
       <div className="border-slate-200 rounded-xl bg-white">
@@ -403,26 +400,44 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {growthData?.map((row, i) => (
-                <tr
-                  key={i}
-                  className="border border-slate-200 border-x-0 border-b-0"
-                >
-                  <td className="px-6 py-3">{row?.partnerName}</td>
-                  <td className="px-6 py-3">{row?.lastMonth || 0}</td>
-                  <td className="px-6 py-3">{row?.leadsThisMonth || 0}</td>
-                  <td
-                    className={`px-6 py-3 font-semibold ${
-                      row?.growthPercent >= 0
-                        ? "text-emerald-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {row?.growthPercent}%
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {growthData && growthData.length > 0 ? (
+    growthData.map((row, i) => (
+      <tr
+        key={i}
+        className="border border-slate-200 border-x-0 border-b-0"
+      >
+        <td className="px-6 py-4 font-medium">
+          {row.partnerName}
+        </td>
+        <td className="px-6 py-4 text-center">
+          {row.leadsThisMonth}
+        </td>
+        <td className="px-6 py-4 text-center">
+          {row.lastMonthLeads}
+        </td>
+        <td
+          className={`px-6 py-4 text-center font-semibold ${
+            row.growthPercent >= 0
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {row.growthPercent}%
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td
+        colSpan={4}
+        className="px-6 py-6 text-center text-slate-500"
+      >
+        No partners found for selected dates
+      </td>
+    </tr>
+  )}
+</tbody>
+
           </table>
         </div>
       </div>
