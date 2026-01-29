@@ -54,7 +54,6 @@ const ArticleFormPage = () => {
   const navigate = useNavigate();
   const { selectedArticle } = useSelector((state) => state.articles);
   const { categoriesAll } = useSelector((state) => state.categories);
-  // console.log(categoriesAll )
   const [form, setForm] = useState({
     title: "",
     slug: "",

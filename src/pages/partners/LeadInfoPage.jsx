@@ -11,16 +11,19 @@ const LeadInfo = () => {
   const [loading, setLoading] = useState(false);
   const [dateFilter, setDateFilter] = useState("currentMonth");
   const [customDates, setCustomDates] = useState({ start: "", end: "" });
-
+  
   const fetchLeadInfo = async () => {
     setLoading(true);
     try {
       const params = { partnerId, filter: dateFilter };
+
       if (dateFilter === "custom") {
         if (customDates.start) params.startDate = customDates.start;
         if (customDates.end) params.endDate = customDates.end;
       }
+
       const res = await api.get("/lead-logs/partner-summary", { params });
+
       if (res.data.success) {
         setPartnerData(res.data.data);
       }
@@ -72,7 +75,7 @@ const LeadInfo = () => {
     link.href = url;
     link.setAttribute(
       "download",
-      `${partnerData.partnerName}_leads_${Date.now()}.csv`
+      `${partnerData.partnerName}_leads_${Date.now()}.csv`,
     );
     document.body.appendChild(link);
     link.click();
@@ -88,7 +91,6 @@ const LeadInfo = () => {
       onClick: () => navigate(-1),
     },
   ];
-  console.log(partnerData);
   const noLeadsFound =
     !partnerData ||
     (partnerData.leadTypes?.length === 0 &&
@@ -143,22 +145,20 @@ const LeadInfo = () => {
 
         <button
           onClick={handleExportCSV}
-         disabled={loading || noLeadsFound}
+          disabled={loading || noLeadsFound}
           className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 disabled:opacity-50"
         >
           Export CSV
         </button>
       </div>
       {!loading && noLeadsFound && (
-  <div className="bg-white border border-slate-200 rounded-xl p-10 shadow text-center">
-    <p className="text-sm font-semibold text-slate-800">
-      No leads found
-    </p>
-    <p className="text-xs text-slate-500 mt-1">
-      There are no leads available for the selected date range.
-    </p>
-  </div>
-)}
+        <div className="bg-white border border-slate-200 rounded-xl p-10 shadow text-center">
+          <p className="text-sm font-semibold text-slate-800">No leads found</p>
+          <p className="text-xs text-slate-500 mt-1">
+            There are no leads available for the selected date range.
+          </p>
+        </div>
+      )}
       {!noLeadsFound && (
         <>
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm w-full">

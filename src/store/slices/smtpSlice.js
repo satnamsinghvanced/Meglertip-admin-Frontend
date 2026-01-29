@@ -1,20 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
-// GET SMTP CONFIG
 export const getSmtpConfig = createAsyncThunk(
   "smtp/getSmtpConfig",
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get("/smtp");
-        // console.log(res.data.data," from slice")
       return res.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
-
-// SAVE SMTP CONFIG
 export const saveSmtpConfig = createAsyncThunk(
   "smtp/saveSmtpConfig",
   async (data, { rejectWithValue }) => {
@@ -24,10 +20,9 @@ export const saveSmtpConfig = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 
-// UPDATE SMTP CONFIG
 export const updateSmtpConfig = createAsyncThunk(
   "smtp/updateSmtpConfig",
   async (data, { rejectWithValue }) => {
@@ -37,7 +32,7 @@ export const updateSmtpConfig = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 
 const smtpSlice = createSlice({
@@ -47,7 +42,7 @@ const smtpSlice = createSlice({
     loading: false,
     error: null,
   },
-   reducers: {
+  reducers: {
     clearSmtpState: (state) => {
       state.config = null;
       state.error = null;
@@ -57,7 +52,6 @@ const smtpSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      // GET
       .addCase(getSmtpConfig.pending, (state) => {
         state.loading = true;
       })
@@ -83,7 +77,6 @@ const smtpSlice = createSlice({
         state.error = action.payload;
       })
 
-      // UPDATE
       .addCase(updateSmtpConfig.pending, (state) => {
         state.loading = true;
       })

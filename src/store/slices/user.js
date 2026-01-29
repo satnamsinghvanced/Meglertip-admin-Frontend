@@ -60,7 +60,7 @@ export const signIn = (body) => async (dispatch) => {
   try {
     const data = await axios.post(
       `${import.meta.env.VITE_API_URL}/admin/login`,
-      body
+      body,
     );
 
     dispatch(setAuthUser(data.admin));
@@ -87,12 +87,11 @@ export const updateUserInfo = (id, body) => async (dispatch, getState) => {
   try {
     const data = await axios.put(
       `${import.meta.env.VITE_API_URL}/admin/update-profile?id=${id}`,
-      body
+      body,
     );
     dispatch(setAuthUser(data?.admin));
     toast.success(data?.message);
   } catch (error) {
-    console.log(error?.response?.data);
     toast.error(error?.response?.data?.message || "Unauthorized");
   }
 
@@ -105,12 +104,10 @@ export const changePassword = (id, body) => async (dispatch, getState) => {
   try {
     const data = await axios.post(
       `${import.meta.env.VITE_API_URL}/admin/change-password?id=${id}`,
-      body
+      body,
     );
-    // dispatch(setAuthUser(data?.admin));
     toast.success(data?.message);
   } catch (error) {
-    console.log(error?.response?.data);
     toast.error(error?.response?.data?.message || "Unauthorized");
   }
 

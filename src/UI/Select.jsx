@@ -20,11 +20,7 @@ const Select = ({
   buttonClass = "px-3 py-3.5",
 }) => {
   const [selected, setSelected] = useState(value || options[0].value);
-
   const selectedItem = options.find((option) => option.value === selected);
-
-  console.log(selectedItem);
-
   return (
     <div className="relative">
       {label && (

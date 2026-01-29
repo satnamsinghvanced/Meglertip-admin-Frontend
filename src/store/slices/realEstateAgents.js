@@ -7,7 +7,6 @@ export const getAgents = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await api.get(`/real-estate-agent/`);
-      // console.log(data)
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

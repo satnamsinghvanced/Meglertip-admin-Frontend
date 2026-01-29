@@ -6,7 +6,6 @@ export const fetchQuotes = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await api.get("/quote/");
-      console.log(data)
       return data;
 
     } catch (err) {
@@ -22,7 +21,6 @@ export const createQuote = createAsyncThunk(
   async (quoteData, { rejectWithValue }) => {
     try {
       const { data } = await api.post("/quote/create", quoteData);
-      console.log(data);
       return data;
     } catch (err) {
       return rejectWithValue(

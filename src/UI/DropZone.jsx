@@ -98,8 +98,6 @@ const DropZone = ({
         );
         const data = await response.json();
         onUpload(data?.fileUrl);
-        console.log(data?.fileUrl, "adjfaslkfsjdklf")
-        // toast.success(data?.message);
       } catch (error) {
         toast.error(error);
       }

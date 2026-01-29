@@ -21,7 +21,6 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   function (response) {
-    console.log(response);
     if (response.data.data?.redirect) {
       window.location = response.data.data.redirect;
     }

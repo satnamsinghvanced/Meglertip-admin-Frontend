@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { uploadImage } from "../store/slices/imageUpload";
-import { AiOutlineCloudUpload, AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 import { RxCrossCircled } from "react-icons/rx";
 import { toast } from "react-toastify";
 const ImageUploader = ({ label, value, onChange, disabled }) => {
@@ -20,7 +20,7 @@ const ImageUploader = ({ label, value, onChange, disabled }) => {
 
     if (!allowedExtensions.includes(file.type)) {
       toast.error(
-        "Invalid file type. Please upload an image or icon (jpeg, png, gif, webp, svg, ico)."
+        "Invalid file type. Please upload an image or icon (jpeg, png, gif, webp, svg, ico).",
       );
       return;
     }
@@ -31,7 +31,6 @@ const ImageUploader = ({ label, value, onChange, disabled }) => {
     setIsUploading(true);
     const imageUrl = await uploadImage(file);
     setIsUploading(false);
-    console.log(imageUrl);
     if (imageUrl) {
       onChange(imageUrl);
     }
@@ -56,7 +55,7 @@ const ImageUploader = ({ label, value, onChange, disabled }) => {
                   ? value
                   : `${import.meta.env.VITE_API_URL_IMAGE}/${value.replace(
                       /^\//,
-                      ""
+                      "",
                     )}`
                 : ""
             }

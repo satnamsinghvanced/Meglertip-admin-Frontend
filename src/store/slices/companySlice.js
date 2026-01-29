@@ -53,7 +53,6 @@ export const createCompany = createAsyncThunk(
   "companies/createCompany",
   async (companyData, { rejectWithValue }) => {
     try {
-      console.log(companyData);
       const { data } = await api.post("/companies/create", companyData);
       return data;
     } catch (err) {
@@ -66,7 +65,6 @@ export const updateCompany = createAsyncThunk(
   "companies/updateCompany",
   async ({ id, companyData }, { rejectWithValue }) => {
     try {
-      console.log("companyData:", companyData);
       const { data } = await api.put(`/companies/update/${id}`, companyData);
       return data;
     } catch (err) {

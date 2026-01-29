@@ -9,7 +9,6 @@ import { checkAuth } from "../store/slices/user";
 const AuthLayout = () => {
   const dispatch = useDispatch();
   const { logos } = useSelector((state) => state.settings);
-  // console.log(logos);
   useEffect(() => {
     dispatch(checkAuth());
     dispatch(fetchTheme());

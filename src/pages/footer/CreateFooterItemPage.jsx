@@ -52,17 +52,16 @@ const CreateFooterItemPage = () => {
 
     try {
       const working = { ...(footer || { title: "Footer", pages: [] }) };
-       if (tab === "address") {
-      working.address = form;    // <-- direct object replace
-    } 
-    
-    // ✅ ALL OTHER TABS → arrays
-    else {
-      const arr = Array.isArray(working[tab]) ? [...working[tab]] : [];
-      arr.push(form);
-      working[tab] = arr;
-    }
-      console.log(working);
+      if (tab === "address") {
+        working.address = form; // <-- direct object replace
+      }
+
+      // ✅ ALL OTHER TABS → arrays
+      else {
+        const arr = Array.isArray(working[tab]) ? [...working[tab]] : [];
+        arr.push(form);
+        working[tab] = arr;
+      }
       await dispatch(updateFooter({ body: working })).unwrap();
       toast.success("Added");
       navigate("/footer");

@@ -20,10 +20,8 @@ export const PartnerDetailPage = () => {
 
   if (loading) return <p className="p-5 text-sm">Loading...</p>;
   if (!partnerDetail) return <p className="p-5 text-sm">Partner not found</p>;
-console.log(partnerDetail)
   const p = partnerDetail;
 
-  // Format postal codes
   const postalExact =
     p.postalCodes?.exact?.map((e) => e.code).join(", ") || "-";
   const postalRanges =
@@ -32,7 +30,6 @@ console.log(partnerDetail)
   return (
     <div className="relative z-10  overflow-y-auto">
       <div className="mx-auto max-w-8xl p-4">
-        {/* HEADER */}
         <div className="flex  w-full justify-end lg:items-center gap-5 mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -59,7 +56,6 @@ console.log(partnerDetail)
           </div>
         </div>
 
-        {/* BASIC INFO */}
         <div className="bg-white rounded-xl shadow-sm p-5 grid sm:grid-cols-2 gap-5 mb-6">
           <InfoCard title="City" value={p.city} />
           <InfoCard title="Address" value={p.address || "-"} />
@@ -86,8 +82,6 @@ console.log(partnerDetail)
             value={new Date(p.createdAt).toLocaleString()}
           />
         </div>
-
-        {/* LEAD TYPES */}
         <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
           <h2 className="text-sm font-semibold mb-3">Lead Types & Prices</h2>
 
@@ -104,7 +98,6 @@ console.log(partnerDetail)
                       NOK {lt.price}
                     </span>
                   </p>
-                  {/* <p className="text-xs text-gray-600">Type ID: {lt.typeId}</p> */}
                 </div>
               ))}
             </div>
@@ -113,18 +106,6 @@ console.log(partnerDetail)
           )}
         </div>
 
-        {/* LEADS SUMMARY */}
-        {/* <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
-          <h2 className="text-sm font-semibold mb-3">Leads Summary</h2>
-
-          <div className="grid sm:grid-cols-3 gap-4">
-            <StatCard title="Last Month" value={p.leads?.lastMonth || 0} />
-            <StatCard title="Current Month" value={p.leads?.currentMonth || 0} />
-            <StatCard title="Total Leads" value={p.leads?.total || 0} />
-          </div>
-        </div> */}
-
-        {/* WISHES */}
         <div className="bg-white rounded-xl shadow-sm p-5">
           <h2 className="text-sm font-semibold mb-3">Partner Preferences</h2>
 

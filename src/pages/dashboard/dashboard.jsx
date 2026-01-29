@@ -115,16 +115,16 @@ const Dashboard = () => {
   const [partners, setPartners] = useState([]);
   const [partnerSearch, setPartnerSearch] = useState("");
   const [startDate, setStartDate] = useState(
-    dayjs().startOf("month").format("YYYY-MM-DD")
+    dayjs().startOf("month").format("YYYY-MM-DD"),
   );
   const [endDate, setEndDate] = useState(
-    dayjs().endOf("month").format("YYYY-MM-DD")
+    dayjs().endOf("month").format("YYYY-MM-DD"),
   );
   const [range, setRange] = useState("");
   const fetchStats = () => {
     axios
       .get(
-        `/dashboard/stats?start=${startDate}&end=${endDate}&partnerName=${partnerName}`
+        `/dashboard/stats?start=${startDate}&end=${endDate}&partnerName=${partnerName}`,
       )
       .then((res) => setStats(res.data))
       .catch(() => {});
@@ -164,7 +164,7 @@ const Dashboard = () => {
   if (!stats || !statsType) return <DashboardSkeleton />;
 
   const { topPartners, growthData, totals, trendlineData } = stats;
-  console.log("topPartners", topPartners);
+  console.log("stats", stats);
 
   return (
     <div className="space-y-6">
@@ -220,7 +220,7 @@ const Dashboard = () => {
                 type="date"
                 className="border border-slate-200 p-2 rounded w-56"
                 value={startDate}
-                 max={dayjs().format("YYYY-MM-DD")} 
+                max={dayjs().format("YYYY-MM-DD")}
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
@@ -231,7 +231,7 @@ const Dashboard = () => {
                 type="date"
                 className="border border-slate-200 p-2 rounded w-full"
                 value={dayjs().format("YYYY-MM-DD")}
-               max={dayjs().format("YYYY-MM-DD")} 
+                max={dayjs().format("YYYY-MM-DD")}
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
@@ -270,7 +270,6 @@ const Dashboard = () => {
                     start = today.startOf("month").format("YYYY-MM-DD");
                     end = today.format("YYYY-MM-DD");
                     break;
-
                   default:
                     return;
                 }
@@ -291,15 +290,6 @@ const Dashboard = () => {
             <label className="text-sm text-slate-600 block mb-1">
               Filter by Partner
             </label>
-
-            {/* <input
-            type="text"
-            placeholder="Search partner..."
-            className="border border-slate-200 p-2 rounded w-56 mb-2"
-            value={partnerSearch}
-            onChange={(e) => setPartnerSearch(e.target.value)}
-          /> */}
-
             <select
               className="border border-slate-200 p-2 rounded w-56"
               value={partnerName}
@@ -322,9 +312,9 @@ const Dashboard = () => {
           Trend of leads between selected dates
         </p>
 
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
+        <div className="h-64 outline-0">
+          <ResponsiveContainer className="outline-0" width="100%" height="100%">
+            <LineChart className="outline-0"
               data={
                 trendlineData?.length === 1
                   ? [
@@ -380,7 +370,10 @@ const Dashboard = () => {
 
         <ul className="">
           {topPartners?.map((p, i) => (
-            <li key={i} className="px-6 py-4 flex justify-between border-t-1 border-slate-200">
+            <li
+              key={i}
+              className="px-6 py-4 flex justify-between border-t-1 border-slate-200"
+            >
               <span className="font-medium"> {p?.partnerName}</span>
               <span className="font-semibold">{p?.totalLeads} Leads</span>
             </li>
