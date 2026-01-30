@@ -225,7 +225,7 @@ const Dashboard = () => {
                 type="date"
                 className="border border-slate-200 p-2 rounded w-56"
                 value={startDate}
-                max={dayjs().format("YYYY-MM-DD")}
+                max={endDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
