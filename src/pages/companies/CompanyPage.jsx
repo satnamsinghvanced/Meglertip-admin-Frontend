@@ -204,7 +204,7 @@ export const Company = () => {
   ];
 
   const totalCompanies = companies?.data?.length || 0;
-
+  
   return (
     <div className="space-y-6">
       <PageHeader
@@ -299,7 +299,16 @@ export const Company = () => {
                     <td className="px-6 py-4 text-slate-500">
                       {(page - 1) * limit + index + 1}
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-900">
+                    <td
+                      className="px-6 py-4 font-medium text-slate-900 cursor-pointer hover:text-blue-600 transition-colors"
+                      onClick={(e) => {
+                        if (e.ctrlKey || e.metaKey || e.button === 1) {
+                          window.open(`/company/${company._id}?page=${page}`, "_blank");
+                        } else {
+                          navigate(`/company/${company._id}?page=${page}`);
+                        }
+                      }}
+                    >
                       {company.companyName}
                     </td>
 
@@ -335,7 +344,16 @@ export const Company = () => {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/company/${company._id}?page=${page}`)}
+                          onClick={(e) => {
+                            if (e.ctrlKey || e.metaKey || e.button === 1) {
+                              window.open(`/company/${company._id}?page=${page}`, "_blank");
+                              return;
+                            } else {
+                              navigate(`/company/${company._id}?page=${page}`)
+                            }
+                          }
+                          }
+
                           title="Preview"
                         >
                           <FaRegEye size={16} />
