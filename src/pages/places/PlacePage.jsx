@@ -234,7 +234,22 @@ export const Places = () => {
                 places.data.map((place, index) => (
                   <tr key={place._id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 text-slate-500">{(page - 1) * limit + index + 1}</td>
-                    <td className="px-6 py-4 font-medium text-slate-900">{place.name}</td>
+                    <td className="font-medium text-slate-900">
+                      <button
+                        className="px-6 py-4 text-start hover:text-blue-500"
+                        onClick={(E) => {
+                          if (E.ctrlKey || E.metaKey || E.button === 1) {
+                            window.open(`/place/${place._id}?page=${page}`, "_blank");
+                            return;
+                          } else {
+                            navigate(`/place/${place._id}?page=${page}`)
+                          }
+                        }}
+                        title="Preview"
+                      >
+                        {place.name}
+                      </button>
+                    </td>
                     <td className="px-6 py-4">{place.slug}</td>
                     <td className="px-6 py-4">{place.title?.length > 20 ? place.title.slice(0, 20) + "..." : place.title}</td>
                     <td className="px-6 py-4 line-clamp-1 break-words">{place.description}</td>
@@ -250,7 +265,14 @@ export const Places = () => {
 
                         <button
                           className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/place/${place._id}?page=${page}`)}
+                          onClick={(E) => {
+                            if (E.ctrlKey || E.metaKey || E.button === 1) {
+                              window.open(`/place/${place._id}?page=${page}`, "_blank");
+                              return;
+                            } else {
+                              navigate(`/place/${place._id}?page=${page}`)
+                            }
+                          }}
                           title="Preview"
                         >
                           <FaRegEye size={16} />

@@ -262,7 +262,23 @@ const LeadLogs = () => {
                       className="hover:bg-slate-50 cursor-pointer"
                     >
                       <td className="px-6 py-4">{lead.uniqueId}</td>
-                      <td className="px-6 py-4">{values.name || "-"}</td>
+                      <td className="">
+                        <button
+                          className="hover:text-blue-500 px-6 py-4"
+
+                          onClick={(e) => {
+                            if (e.ctrlKey || e.metaKey || e.button === 1) {
+                              window.open(`/leads/${lead._id}?page=${page}`, "_blank");
+                              return;
+                            } else {
+                              navigate(`/leads/${lead._id}?page=${page}`)
+                            }
+                          }
+                          }
+                        >
+                          {values.name || "-"}
+                        </button>
+                      </td>
                       <td className="px-6 py-4">{values.email || "-"}</td>
                       <td className="px-6 py-4">{values.phone || "-"}</td>
 
@@ -331,7 +347,17 @@ const LeadLogs = () => {
                       <td className="px-6 py-4 text-sm">
                         <button
                           className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900"
-                          onClick={() => navigate(`/leads/${lead._id}?page=${page}`)}
+
+                          onClick={(e) => {
+                            if (e.ctrlKey || e.metaKey || e.button === 1) {
+                              window.open(`/leads/${lead._id}?page=${page}`, "_blank");
+                              return;
+                            } else {
+                              navigate(`/leads/${lead._id}?page=${page}`)
+                            }
+                          }
+                          }
+
                         >
                           <FaRegEye size={16} />
                         </button>
