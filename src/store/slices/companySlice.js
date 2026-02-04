@@ -39,10 +39,7 @@ export const getCompanyById = createAsyncThunk(
     try {
       const res = await api.get(`/companies/detail/${id}`);
       // return data;
-      return {
-        ...res.data.data,
-        companyImage: fixImageUrl(res.data.data.companyImage),
-      };
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }

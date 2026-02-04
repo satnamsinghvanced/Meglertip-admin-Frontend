@@ -27,9 +27,6 @@ export const getPlaceById = createAsyncThunk(
     try {
       const { data } = await api.get(`/places/detail/${id}`);
 
-      if (data?.data?.icon) {
-        data.data.icon = fixImageUrl(data.data.icon);
-      }
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

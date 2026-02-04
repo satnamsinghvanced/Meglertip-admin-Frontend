@@ -20,6 +20,11 @@ import {
 import { toast } from "react-toastify";
 import ImageUploader from "../../UI/ImageUpload";
 
+const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
+const fixImageUrl = (url) => {
+  if (!url || typeof url !== "string") return url;
+  return url.startsWith("http") ? url : `${IMAGE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+};
 const quillModules = {
   toolbar: [
     [{ header: [1, 2, 3, false] }],
@@ -144,7 +149,7 @@ const ArticleFormPage = () => {
 
         robots: selectedArticle.robots,
       });
-      setPreviewImage(selectedArticle.image || "");
+      setPreviewImage(fixImageUrl(selectedArticle.image || ""));
     }
   }, [isEditMode, selectedArticle]);
 

@@ -16,6 +16,12 @@ import ImageUploader from "../../UI/ImageUpload";
 import { getCompaniesAll } from "../../store/slices/companySlice";
 import { RiDeleteBin5Line } from "react-icons/ri";
 
+const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
+const fixImageUrl = (url) => {
+  if (!url || typeof url !== "string") return url;
+  return url.startsWith("http") ? url : `${IMAGE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 const quillModules = {
   toolbar: [
     [{ header: [1, 2, 3, false] }],
@@ -144,10 +150,10 @@ const PlaceFormPage = () => {
         rank: selectedPlace.rank || 0,
         companies: Array.isArray(selectedPlace.companies)
           ? selectedPlace.companies.map((c, index) => ({
-              companyId: String(c.companyId._id || c.companyId),
-              rank: c.rank ?? index + 1,
-              isRecommended: !!c.isRecommended,
-            }))
+            companyId: String(c.companyId._id || c.companyId),
+            rank: c.rank ?? index + 1,
+            isRecommended: !!c.isRecommended,
+          }))
           : [],
         metaTitle: selectedPlace.metaTitle || "",
         metaDescription: selectedPlace.metaDescription || "",
@@ -163,7 +169,7 @@ const PlaceFormPage = () => {
         ogType: selectedPlace.ogType || "website",
         robots: selectedPlace.robots,
       });
-      setPreviewImage(selectedPlace.icon || "");
+      setPreviewImage(fixImageUrl(selectedPlace.icon || ""));
     }
   }, [isEditMode, selectedPlace]);
 
@@ -357,10 +363,9 @@ const PlaceFormPage = () => {
                   value={form[field.name] ?? ""}
                   onChange={handleChange}
                   className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    ${
-                      errors[field.name]
-                        ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-primary"
+                    ${errors[field.name]
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-slate-200 focus:border-primary"
                     }`}
                 />
                 {errors[field.name] && (
@@ -380,11 +385,10 @@ const PlaceFormPage = () => {
                 value={form.countyId}
                 onChange={handleChange}
                 className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    ${
-                      errors.countyId
-                        ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-primary"
-                    }`}
+                    ${errors.countyId
+                    ? "border-red-400 focus:border-red-500"
+                    : "border-slate-200 focus:border-primary"
+                  }`}
               >
                 <option value="">Select County</option>
                 {counties?.map((c) => (

@@ -14,6 +14,13 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import ImageUploader from "../../UI/ImageUpload";
 import { getCompaniesAll } from "../../store/slices/companySlice";
 import ReactQuill from "react-quill-new";
+
+const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
+const fixImageUrl = (url) => {
+  if (!url || typeof url !== "string") return url;
+  return url.startsWith("http") ? url : `${IMAGE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 const quillModules = {
   toolbar: [
     [{ header: [1, 2, 3, false] }],
@@ -184,7 +191,7 @@ const CountiesFormPage = () => {
             },
       });
 
-      setPreviewImage(selectedCounty.icon || "");
+      setPreviewImage(fixImageUrl(selectedCounty.icon || ""));
     }
   }, [isEditMode, selectedCounty]);
 

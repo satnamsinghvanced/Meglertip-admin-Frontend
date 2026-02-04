@@ -39,10 +39,7 @@ export const getCountyById = createAsyncThunk(
     try {
       const { data } = await api.get(`/counties/detail/${id}`);
 
-      // --- FIX ICON URL ---
-      if (data?.data?.icon) {
-        data.data.icon = fixImageUrl(data.data.icon);
-      }
+      return data;
 
       return data;
     } catch (err) {

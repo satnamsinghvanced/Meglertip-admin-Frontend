@@ -7,6 +7,12 @@ import {
   getArticleById,
 } from "../../store/slices/articleSlice";
 
+const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
+const fixImageUrl = (url) => {
+  if (!url || typeof url !== "string") return url;
+  return url.startsWith("http") ? url : `${IMAGE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 const ArticleDetailPage = () => {
   const { articleId } = useParams();
   const dispatch = useDispatch();
@@ -79,7 +85,7 @@ const ArticleDetailPage = () => {
       <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
         {selectedArticle.image && (
           <img
-            src={selectedArticle.image}
+            src={fixImageUrl(selectedArticle.image)}
             alt={selectedArticle.title}
             className="h-72 w-full rounded-t-2xl object-cover"
           />

@@ -7,6 +7,12 @@ import {
   getPlaceById,
 } from "../../store/slices/placeSlice";
 
+const IMAGE_URL = import.meta.env.VITE_API_URL_IMAGE;
+const fixImageUrl = (url) => {
+  if (!url || typeof url !== "string") return url;
+  return url.startsWith("http") ? url : `${IMAGE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 const PlaceDetailPage = () => {
   const { placeId } = useParams();
   const dispatch = useDispatch();
@@ -143,7 +149,7 @@ const PlaceDetailPage = () => {
       {selectedPlace.icon && (
         <div className="flex justify-center mb-6">
           <img
-            src={(selectedPlace.icon)}
+            src={fixImageUrl(selectedPlace.icon)}
             alt={`${selectedPlace.name} icon`}
             className="h-24 w-24 rounded-full object-cover border border-slate-200"
           />
