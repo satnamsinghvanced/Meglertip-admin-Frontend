@@ -145,11 +145,13 @@ const CountiesFormPage = () => {
         icon: selectedCounty.icon || "",
 
         companies: Array.isArray(selectedCounty.companies)
-          ? selectedCounty.companies.map((c, index) => ({
-            companyId: String(c.companyId._id || c.companyId),
-            rank: c.rank ?? index + 1,
-            isRecommended: !!c.isRecommended,
-          }))
+          ? selectedCounty.companies
+            .filter((c) => c.companyId)
+            .map((c, index) => ({
+              companyId: String(c.companyId._id || c.companyId),
+              rank: c.rank ?? index + 1,
+              isRecommended: !!c.isRecommended,
+            }))
           : [],
 
         metaTitle: selectedCounty.metaTitle || "",
