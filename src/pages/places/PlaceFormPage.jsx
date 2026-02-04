@@ -149,11 +149,13 @@ const PlaceFormPage = () => {
         icon: selectedPlace.icon || "",
         rank: selectedPlace.rank || 0,
         companies: Array.isArray(selectedPlace.companies)
-          ? selectedPlace.companies.map((c, index) => ({
-            companyId: String(c.companyId._id || c.companyId),
-            rank: c.rank ?? index + 1,
-            isRecommended: !!c.isRecommended,
-          }))
+          ? selectedPlace.companies
+            .filter((c) => c.companyId)
+            .map((c, index) => ({
+              companyId: String(c.companyId._id || c.companyId),
+              rank: c.rank ?? index + 1,
+              isRecommended: !!c.isRecommended,
+            }))
           : [],
         metaTitle: selectedPlace.metaTitle || "",
         metaDescription: selectedPlace.metaDescription || "",
