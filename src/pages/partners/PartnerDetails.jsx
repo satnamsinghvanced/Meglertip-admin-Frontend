@@ -141,9 +141,8 @@ const InfoCard = ({ title, value, badge }) => (
 
     {badge !== undefined ? (
       <span
-        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-          badge ? "bg-primary text-white" : "bg-red-600 text-white"
-        }`}
+        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${badge ? "bg-primary text-white" : "bg-red-600 text-white"
+          }`}
       >
         {value}
       </span>

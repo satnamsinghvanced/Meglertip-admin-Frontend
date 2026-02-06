@@ -69,9 +69,9 @@ export const PartnerEditPage = () => {
       ) || [""],
       postalCodesRanges: partnerDetail.postalCodes?.ranges?.length
         ? partnerDetail.postalCodes.ranges.map((r) => ({
-            from: r.from || "",
-            to: r.to || "",
-          }))
+          from: r.from || "",
+          to: r.to || "",
+        }))
         : [{ from: "", to: "" }],
     });
 

@@ -210,11 +210,10 @@ export const CollaboratePartnerPage = () => {
                 }
               }}
               className={`px-3 py-1 rounded-lg text-white 
-    ${
-      limitLoading
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-primary hover:bg-primary/80"
-    }
+    ${limitLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-primary/80"
+                }
   `}
             >
               {limitLoading ? (
@@ -246,7 +245,7 @@ export const CollaboratePartnerPage = () => {
                   <th className="px-6 py-3">Name</th>
                   <th className="px-6 py-3">City</th>
                   <th className="px-6 py-3">Postal Codes</th>
-                 <th className="px-6 py-3">Monthly Lead Limit</th>
+                  <th className="px-6 py-3">Monthly Lead Limit</th>
                   <th className="px-6 py-3">Premium</th>
                   <th className="px-6 py-3">Status</th>
                   <th className="px-6 py-3 text-center">Actions</th>
@@ -278,30 +277,28 @@ export const CollaboratePartnerPage = () => {
                         {Array.isArray(p.postalCodes)
                           ? p.postalCodes.join(", ")
                           : p.postalCodes?.exact?.length > 0
-                          ? p.postalCodes.exact.map((c) => c.code).join(", ")
-                          : p.postalCodes?.ranges?.length > 0
-                          ? p.postalCodes.ranges
-                              .map((r) => `${r.from}-${r.to}`)
-                              .join(", ")
-                          : ""}
+                            ? p.postalCodes.exact.map((c) => c.code).join(", ")
+                            : p.postalCodes?.ranges?.length > 0
+                              ? p.postalCodes.ranges
+                                .map((r) => `${r.from}-${r.to}`)
+                                .join(", ")
+                              : ""}
                       </td>
                       <td className="px-6 py-4 font-semibold text-slate-900">
                         {p.leads.total ?? 0}
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
-                            p.isPremium ? "bg-slate-900" : "bg-slate-400"
-                          }`}
+                          className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${p.isPremium ? "bg-slate-900" : "bg-slate-400"
+                            }`}
                         >
                           {p.isPremium ? "Premium" : "Non-Premium"}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${
-                            p.isActive ? "bg-slate-900" : "bg-slate-400"
-                          }`}
+                          className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold ${p.isActive ? "bg-slate-900" : "bg-slate-400"
+                            }`}
                         >
                           {p.isActive ? "Active" : "Inactive"}
                         </span>
