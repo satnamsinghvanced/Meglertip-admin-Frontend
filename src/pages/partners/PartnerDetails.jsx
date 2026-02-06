@@ -1,16 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchPartnerById } from "../../store/slices/partnersSlice";
+import { useEffect, useState } from "react";
 import { AiTwotoneEdit } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { fetchPartnerById } from "../../store/slices/partnersSlice";
 
 export const PartnerDetailPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const getInitialPage = () => {
+    const pageParam = searchParams.get('page');
+    return pageParam ? parseInt(pageParam, 10) || 1 : 1;
+  };
+
+  const [page, setPage] = useState(getInitialPage);
 
   const { partnerDetail, loading } = useSelector((state) => state.partners);
 
@@ -32,7 +40,7 @@ export const PartnerDetailPage = () => {
       <div className="mx-auto max-w-8xl p-4">
         <div className="flex  w-full justify-end lg:items-center gap-5 mb-8">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(`/partners?page=${page}`)}
             className="btn btn-white btn-sm rounded-lg border-slate-300 text-slate-700 px-6 py-2"
           >
             Back to Partners
@@ -48,7 +56,7 @@ export const PartnerDetailPage = () => {
             <div className="flex gap-2">
               <button
                 className="flex items-center gap-1 p-2 border rounded-full text-slate-600 hover:text-black"
-                onClick={() => navigate(`/partners/${p._id}/edit`)}
+                onClick={() => navigate(`/partners/${p._id}/edit?page=${page}`)}
               >
                 <AiTwotoneEdit size={16} />
               </button>
